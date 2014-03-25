@@ -3,15 +3,15 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
     <title>muplayer 『百度音频内核』</title>
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/bower_components/prism/themes/prism.css">
-    <link rel="stylesheet" href="/css/api.css">
+    <link rel="stylesheet" href="../lib/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/bower_components/prism/themes/prism.css">
+    <link rel="stylesheet" href="../dist/css/api.css">
   </head>
   <body>
     <header id="header" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">muplayer</a>
+          <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="index.html" class="navbar-brand">muplayer</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -84,7 +84,7 @@
               <tr>
                 <td>options</td>
                 <td>Object</td>
-                <td><table class="sub-params"> <tr> <th>选项</th> <th>说明</th> </tr> <tr> <td>mode</td> <td>默认值: 'loop'。加入播放器的歌曲列表的播放顺序逻辑，可选值为 'loop'（循环播放），'list'（列表播放，该列表播放到最后一首或第一首后则停止播放），'single'（单曲播放），'random'（单曲随机），'list-random'（列表随机，与random的区别是保证已随机过的列表中歌曲均播放一次后，再对列表随机重置）。</td> </tr> <tr> <td>mute</td> <td>默认值: false。是否静音。</td> </tr> <tr> <td>volume</td> <td>默认值: 80。播放音量，取值范围0 - 100。</td> </tr> <tr> <td>engine</td> <td>初始化Engine，根据传入的engines来指定具体使用FlashCore还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）： <pre> engines: [{<br> <span class="ts"></span>constructor: 'FlashCore',<br> <span class="ts"></span>args: { // 初始化FlashCore的参数<br> <span class="ts2"></span>swf: '/swf/fmp.swf' // 对应的swf文件路径<br> <span class="ts"></span>}<br> }, {<br> <span class="ts"></span>constructor: 'AudioCore'<br> }] </pre> </td> </tr></table></td>
+                <td><table class="sub-params"> <tr> <th>选项</th> <th>说明</th> </tr> <tr> <td>mode</td> <td>默认值: 'loop'。加入播放器的歌曲列表的播放顺序逻辑，可选值为 'loop'（循环播放），'list'（列表播放，该列表播放到最后一首或第一首后则停止播放），'single'（单曲播放），'random'（单曲随机），'list-random'（列表随机，与random的区别是保证已随机过的列表中歌曲均播放一次后，再对列表随机重置）。</td> </tr> <tr> <td>mute</td> <td>默认值: false。是否静音。</td> </tr> <tr> <td>volume</td> <td>默认值: 80。播放音量，取值范围0 - 100。</td> </tr> <tr> <td>engine</td> <td>初始化Engine，根据传入的engines来指定具体使用FlashCore还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）： <pre> engines: [{<br> <span class="ts"></span>constructor: 'FlashCore',<br> <span class="ts"></span>args: { // 初始化FlashCore的参数<br> <span class="ts2"></span>swf: '../dist/swf/fmp.swf' // 对应的swf文件路径<br> <span class="ts"></span>}<br> }, {<br> <span class="ts"></span>constructor: 'AudioCore'<br> }] </pre> </td> </tr></table></td>
               </tr>
             </tbody>
           </table>
@@ -447,10 +447,10 @@ cur  // 调用next时正在播放的歌曲</pre> </div>
         <p>Copyright (c) 2014 music-fe@baidu.com <a href="http://weibo.com/musicfe">@musicfe</a></p>
       </div>
     </footer>
-    <script src="/bower_components/jquery/jquery.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/bower_components/prism/prism.js"></script>
-    <script src="/bower_components/prefixfree/prefixfree.min.js"></script>
+    <script src="../lib/bower_components/jquery/jquery.min.js"></script>
+    <script src="../lib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../lib/bower_components/prism/prism.js"></script>
+    <script src="../lib/bower_components/prefixfree/prefixfree.min.js"></script>
     <script>
       $(function() {
         // IE10 viewport hack for Surface/desktop Windows 8 bug

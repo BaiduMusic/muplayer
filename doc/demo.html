@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Player Testing</title>
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/demo.css">
+    <link rel="stylesheet" href="../lib/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../dist/css/demo.css">
 </head>
 <body>
     <header id="header" class="navbar navbar-fixed-top" role="banner">
@@ -16,13 +16,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">muplayer</a>
+                <a class="navbar-brand" href="index.html">muplayer</a>
             </div>
             <nav class="collapse navbar-collapse navbar-ex1-collapse" role="navigation">
                 <ul class="nav navbar-nav">
-                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="index.html">Home</a></li>
                     <li class="active"><a href="#">Demo</a></li>
-                    <li><a href="/api.html">API</a></li>
+                    <li><a href="api.html">API</a></li>
                 </ul>
             </nav>
             <a class="github" target="_blank" href="https://github.com/Baidu-Music-FE/muplayer"><i></i>View On GitHub</a>
@@ -63,7 +63,7 @@
                         <i class="glyphicon glyphicon-volume-down"></i><span class="bar"></span>
                     </div>
                     <a class="avatar" href="javascript:;">
-                        <img alt="" src="/img/default.jpg">
+                        <img alt="" src="../dist/img/default.jpg">
                     </a>
                     <div class="progress-bar"></div>
                 </div>
@@ -72,18 +72,17 @@
         <script src="https://gist.github.com/hustKiwi/9682160.js"></script>
     </section>
 
-    <script src="/bower_components/jquery/jquery.min.js"></script>
-    <script src="/bower_components/jquery-ui/ui/jquery-ui.js"></script>
-    <script src="/bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
-    <script src="/bower_components/requirejs/require.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../lib/bower_components/jquery/jquery.min.js"></script>
+    <script src="../lib/bower_components/jquery-ui/ui/jquery-ui.js"></script>
+    <script src="../lib/bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
+    <script src="../lib/bower_components/requirejs/require.js"></script>
+    <script src="../lib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script>
     $(function() {
         require.config({
-            baseUrl: 'js',
             paths: {
-                'muplayer': './'
+                'muplayer': '../dist/js'
             }
         });
 
@@ -95,8 +94,8 @@
 
             // 将待播放歌曲的加入播放列表
             player.add([
-                '/mp3/rain.mp3',
-                '/mp3/walking.mp3'
+                '../dist/mp3/rain.mp3',
+                '../dist/mp3/walking.mp3'
             ]);
 
             var $player = $('.player-widget'),
@@ -122,8 +121,7 @@
             $ctrlBtn.click(function() {
                 if ($ctrlIcon.hasClass('glyphicon-play')) {
                     $ctrlIcon.removeClass('glyphicon-play').addClass('glyphicon-pause');
-                    // player.play(true)意味着重新选链从头播放，因此如果仅是暂停状态激活不需要传true参数
-                    player.play(player.getState() === 'pause' ? undefined : true);
+                    player.play();
                 } else if ($ctrlIcon.hasClass('glyphicon-pause')) {
                     $ctrlIcon.removeClass('glyphicon-pause').addClass('glyphicon-play');
                     player.pause();
