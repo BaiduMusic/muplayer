@@ -16,7 +16,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
 
     class FlashCore extends EngineCore
         @defaults:
-            swf: '/swf/fmp.swf'
+            swf: '../dist/swf/fmp.swf'
             instanceName: 'muplayer'
             flashVer: '9.0.0'
         _supportedTypes: ['mp3']

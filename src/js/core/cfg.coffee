@@ -10,8 +10,8 @@ do (root = this, factory = () ->
         # 这个不经测试调优就尽量不要改, 会影响部分统计数据和性能。
         timerResolution: 25
 
-        emptyMP3: '/mp3/empty.mp3'
-        expressInstaller: '/swf/expressInstall.swf'
+        emptyMP3: '../dist/mp3/empty.mp3'
+        expressInstaller: '../dist/swf/expressInstall.swf'
         engine:
             TYPES:
                 FLASH: 'FlashCore'

@@ -41,7 +41,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *    engines: [{<br>
          *    <span class="ts"></span>constructor: 'FlashCore',<br>
          *    <span class="ts"></span>args: { // 初始化FlashCore的参数<br>
-         *    <span class="ts2"></span>swf: '/swf/fmp.swf' // 对应的swf文件路径<br>
+         *    <span class="ts2"></span>swf: '../dist/swf/fmp.swf' // 对应的swf文件路径<br>
          *    <span class="ts"></span>}<br>
          *    }, {<br>
          *    <span class="ts"></span>constructor: 'AudioCore'<br>

@@ -48,9 +48,9 @@ html
     meta(name="viewport", content="width=device-width, initial-scale=1.0", charset="utf-8")
     title= title
 
-    link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
-    link(rel="stylesheet", href="/bower_components/prism/themes/prism.css")
-    link(rel="stylesheet", href="/css/api.css")
+    link(rel="stylesheet", href="../lib/bower_components/bootstrap/dist/css/bootstrap.min.css")
+    link(rel="stylesheet", href="../lib/bower_components/prism/themes/prism.css")
+    link(rel="stylesheet", href="../dist/css/api.css")
 
   body
     header#header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav
@@ -61,7 +61,7 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a(class="navbar-brand", href="/") muplayer
+          a(class="navbar-brand", href="index.html") muplayer
         .collapse.navbar-collapse
           ul.nav.navbar-nav
             if currentName == 'Main'
@@ -109,10 +109,10 @@ html
           | Copyright (c) 2014 music-fe@baidu.com 
           a(href="http://weibo.com/musicfe") @musicfe
 
-    script(src="/bower_components/jquery/jquery.min.js")
-    script(src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
-    script(src="/bower_components/prism/prism.js")
-    script(src="/bower_components/prefixfree/prefixfree.min.js")
+    script(src="../lib/bower_components/jquery/jquery.min.js")
+    script(src="../lib/bower_components/bootstrap/dist/js/bootstrap.min.js")
+    script(src="../lib/bower_components/prism/prism.js")
+    script(src="../lib/bower_components/prefixfree/prefixfree.min.js")
     script
         $(function() {
           // IE10 viewport hack for Surface/desktop Windows 8 bug
