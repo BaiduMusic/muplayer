@@ -1,0 +1,41 @@
+@import base
+
+// 参考：http://getbootstrap.com/
+.bs-sidebar
+    +border-radius(5px)
+    +text-shadow(0 1px 0 $white)
+    background-color: $lightBlueBg
+    display: none
+    padding: 10px 0
+    a
+        +link-colors($grey, $grey, $grey, $grey, $grey)
+    &.affix
+        position: static
+    .nav
+        margin-bottom: 8px
+        .active
+            &, &:hover, &:focus
+                a
+                    font-weight: bold
+                    color: $black
+                    background-color: transparent
+                    border-right: 1px solid $darkBlue
+
+@media (min-width: 992px)
+    .bs-sidebar
+        display: block
+        &.affix
+            position: fixed
+            top: 70px
+        &.affix-bottom
+            position: absolute
+        &.affix, &.affix-bottom
+            width: 213px
+            .bs-sidenav
+                margin-top: 0
+                margin-bottom: 0
+
+@media (min-width: 1200px)
+    .bs-sidebar
+        &.affix, &.affix-bottom
+            width: 263px

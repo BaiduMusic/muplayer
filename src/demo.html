@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Player Testing</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/demo.css">
+</head>
+<body>
+    <header id="header" class="navbar navbar-fixed-top" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">muplayer</a>
+            </div>
+            <nav class="collapse navbar-collapse navbar-ex1-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li><a href="/index.html">Home</a></li>
+                    <li class="active"><a href="#">Demo</a></li>
+                    <li><a href="/api.html">API</a></li>
+                </ul>
+            </nav>
+            <a class="github" target="_blank" href="https://github.com/Baidu-Music-FE/muplayer"><i></i>View On GitHub</a>
+        </div>
+    </header>
+
+    <section class="jumbotron">
+      <div class="container">
+        <h1>muplayer <small>Demo for Testing</small></h1>
+        <p> —— 跨平台、轻量级音频播放解决方案。</p>
+        <p>muplayer基本调用Demo，方便参考学习及简单测试。</p>
+      </div>
+    </section>
+
+    <section id="content" class="container">
+        <h2>快速上手</h2>
+        <script src="https://gist.github.com/hustKiwi/9682427.js"></script>
+
+        <div id="demo" class="panel panel-default highlight">
+            <div class="panel-heading">
+                <h3 class="panel-title">简单的播放器示例</h3>
+            </div>
+            <div class="panel-body">
+                <div class="player-widget">
+                    <div class="opts">
+                        <span class="prev">
+                            <i class="glyphicon glyphicon-step-backward"></i>
+                        </span>
+                        <span class="ctrl">
+                            <i class="glyphicon glyphicon-play"></i>
+                        </span>
+                        <span class="next">
+                            <i class="glyphicon glyphicon-step-forward"></i>
+                        </span>
+                        <span class="mode"><i class="glyphicon glyphicon-repeat"></i></span>
+                    </div>
+                    <div class="volume">
+                        <i class="glyphicon glyphicon-volume-down"></i><span class="bar"></span>
+                    </div>
+                    <a class="avatar" href="javascript:;">
+                        <img alt="" src="/img/default.jpg">
+                    </a>
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+        <script src="https://gist.github.com/hustKiwi/9682160.js"></script>
+    </section>
+
+    <script src="/bower_components/jquery/jquery.min.js"></script>
+    <script src="/bower_components/jquery-ui/ui/jquery-ui.js"></script>
+    <script src="/bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
+    <script src="/bower_components/requirejs/require.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>
+    $(function() {
+        require.config({
+            baseUrl: 'js',
+            paths: {
+                'muplayer': './'
+            }
+        });
+
+        require([
+            'muplayer/player'
+        ], function(Player) {
+            // 获得Player对象的实例
+            window._muplayer = player = new Player();
+
+            // 将待播放歌曲的加入播放列表
+            player.add([
+                '/mp3/rain.mp3',
+                '/mp3/walking.mp3'
+            ]);
+
+            var $player = $('.player-widget'),
+                $opts = $player.find('.opts'),
+                $ctrlBtn = $opts.find('.ctrl'),
+                $ctrlIcon = $ctrlBtn.find('i'),
+                $prevBtn = $opts.find('.prev'),
+                $nextBtn = $opts.find('.next'),
+                $modeBtn = $opts.find('.mode'),
+                $modeIcon = $modeBtn.find('i'),
+                $volume = $player.find('.volume'),
+                $progress = $player.find('.progress-bar'),
+                $avatar = $player.find('.avatar'),
+
+                // 监听播放时派发的timeupdate事件以更新播放进度条等相关UI
+                handleTimeupdate = function() {
+                    var pos = player.curPos(),
+                        duration = player.duration();
+                    $progress.slider('option', 'value', duration ? pos / duration * 1000 : 0);
+                };
+
+            // 在各个按钮上监听点击事件，触发时改变按钮的对应样式，并执行player的相应方法
+            $ctrlBtn.click(function() {
+                if ($ctrlIcon.hasClass('glyphicon-play')) {
+                    $ctrlIcon.removeClass('glyphicon-play').addClass('glyphicon-pause');
+                    // player.play(true)意味着重新选链从头播放，因此如果仅是暂停状态激活不需要传true参数
+                    player.play(player.getState() === 'pause' ? undefined : true);
+                } else if ($ctrlIcon.hasClass('glyphicon-pause')) {
+                    $ctrlIcon.removeClass('glyphicon-pause').addClass('glyphicon-play');
+                    player.pause();
+                }
+            });
+
+            $prevBtn.click(function() {
+                player.prev();
+            });
+
+            $nextBtn.click(function() {
+                player.next();
+            });
+
+            var modes = ['loop', 'list-random'],
+                modeIndex = 0;
+            $modeBtn.click(function() {
+                var mode = modes[++modeIndex % 2];
+                player.setMode(mode);
+                if (mode === 'loop') {
+                    $modeIcon.removeClass('glyphicon-random').addClass('glyphicon-refresh');
+                } else {
+                    $modeIcon.removeClass('glyphicon-refresh').addClass('glyphicon-random');
+                }
+            });
+
+            $volume.find('i').click(function() {
+                var $this = $(this),
+                    isMute = player.getMute();
+
+                if (isMute) {
+                    $this.removeClass('glyphicon-volume-off')
+                        .addClass('glyphicon-volume-down').parent().removeClass('mute');
+                    player.setMute(false);
+                } else {
+                    $this.removeClass('glyphicon-volume-down')
+                        .addClass('glyphicon-volume-off').parent().addClass('mute');
+                    player.setMute(true);
+                }
+            });
+
+            $volume.find('.bar').slider({
+                value: player.getVolume(),
+                range: 'min',
+                change: function(e, ui) {
+                    player.setVolume(ui.value);
+                },
+                stop: function(e, ui) {
+                    $(ui.handle).blur();
+                }
+            });
+
+            // 通过jquery-ui的slider组件实现播放进度条的交互
+            $progress.slider({
+                range: 'min',
+                max: 1000,
+                disabled: true,
+                start: function() {
+                    // 为了使拖动操作不受打断，进度条拖动操作开始时即暂停对timeupdate事件的监听
+                    player.off('timeupdate');
+                },
+                stop: function(e, ui) {
+                    // 拖动结束时再恢复对timeupdate事件的监听
+                    player.on('timeupdate', handleTimeupdate).play(ui.value * player.duration());
+                    $(ui.handle).blur();
+                }
+            });
+
+            // 事件驱动的UI：即UI应监听player派发的事件，以决定是否切换到对应的状态
+            player.on('player:play', function() {
+                $progress.slider('enable');
+                $ctrlIcon.removeClass('glyphicon-play').addClass('glyphicon-pause');
+            }).on('player:pause player:stop', function() {
+                $progress.slider('disable');
+                $ctrlIcon.removeClass('glyphicon-pause').addClass('glyphicon-play');
+            }).on('timeupdate', handleTimeupdate).on('player:fetchend', function(r) {
+                var info = r.songinfo;
+                if (info) {
+                    var title = info.title + ' - ' + info.author;
+                    $avatar.attr({
+                        title: title
+                    }).find('img').attr({
+                        alt: title,
+                        src: info.pic_small
+                    });
+                }
+            });
+        });
+    });
+    </script>
+    <footer class="bs-footer">
+        <div class="container">
+            <p><code>muplayer</code>: <a href="https://github.com/Baidu-Music-FE/muplayer">https://github.com/Baidu-Music-FE/muplayer</a></p>
+            <p>Copyright (c) 2014 music-fe@baidu.com <a href="http://weibo.com/musicfe">@musicfe</a></p>
+        </div>
+    </footer>
+</body>
+</html>

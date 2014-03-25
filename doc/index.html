@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+    <title>muplayer 『百度音频内核』</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/prism/themes/prism.css">
+    <link rel="stylesheet" href="/css/api.css">
+  </head>
+  <body>
+    <header id="header" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">muplayer</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="api.html">API</a></li>
+          </ul>
+        </div>
+      </div><a target="_blank" href="https://github.com/Baidu-Music-FE/muplayer" class="github"><i></i>View On GitHub</a>
+    </header>
+    <section class="jumbotron">
+      <div class="container">
+        <h1>muplayer『百度音频内核』</h1>
+        <p> —— 跨平台、轻量级音频播放解决方案。</p>
+      </div>
+    </section>
+    <section class="container bs-docs-container">
+      <section id="Main"><h1 id="muplayer-">muplayer概述</h1>
+<p><strong>muplayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及 Flash 音频技术，实现了<em>跨平台（PC &amp; Web App）、浏览器兼容 (ie6~9、firefox、chrome、safari etc) 及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
+<h2 id="-">源码目录</h2>
+<pre><code class="lang-text">muplayer/
+  +src/             (源码)
+    +demo.html      (一个完整的播放器demo示例)
+  +lib/             (第三方库、工具及grunt编译等)
+    +Gruntfile.js   (grunt配置)
+    +bower.json     (demo运行需要安装的静态文件声明)
+    +package.json   (grunt和bower等npm包的安装依赖声明)
+  +doc/             (本地Demo及API文档)
+  +test/            (qunit test)
+  +dist/            (grunt编译后生成的最终引用文件)</code></pre>
+<h2 id="-demo">安装及Demo</h2>
+<p>签出代码并安装必要依赖需执行：</p>
+<pre><code class="lang-shell">curl https://raw.githubusercontent.com/Baidu-Music-FE/muplayer/lib/install.sh | sh</code></pre>
+<p>之后进入lib/目录并运行 <code>grunt server [-p your port]</code>，可在 <code>localhost</code> 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口 (默认是7777)：</p>
+<pre><code class="lang-shell">cd muplayer/lib
+grunt server</code></pre>
+<p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a>。</p>
+<h2 id="api-">API详解</h2>
+<p>参见：<a href="api.html">muplayer API</a></p>
+<h2 id="-">事件说明</h2>
+<p>在播放内核的实现中，事件的派发非常重要，这是解耦内核与UI交互的最佳方式 (客户端可自行监听需要的事件并做出相应的UI响应)。除上述部分API方法会派发诸如player:play，player:add等操作相关的事件外，下面还讲对播放状态相关的事件做一说明。<br>所有事件常量见 <code>cfg.coffee</code> 中的声明。默认对外派发的事件遵循精简且与HTML5 Auido规范统一的原则，player实例对外派发的事件点有三个：</p>
+<ol>
+<li><code>EVENTS.STATECHANGE</code> 时，派发具体的change后的新状态。因此可以监听cfg.coffee中定义的所有STATES常量对应的状态。</li>
+<li><code>EVENTS.POSITIONCHANGE</code> 时，会派发timeupdate事件。</li>
+<li><code>EVENTS.PROGRESS</code> 时，会派发progress事件。<br>若以上均无法满足需求(在我们内部的产品中，还未曾遇到)，可以进一步监听player.engine的相应事件。</li>
+</ol>
+<h2 id="license">License</h2>
+<p><strong>muplayer</strong> is released under the MIT License.<br>Copyright (c) 2014 Baidu Music</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</section>
+    </section>
+    <footer class="bs-footer">
+      <div class="container">
+        <p><code>muplayer</code>: <a href="https://github.com/Baidu-Music-FE/muplayer">https://github.com/Baidu-Music-FE/muplayer</a></p>
+        <p>Copyright (c) 2014 music-fe@baidu.com <a href="http://weibo.com/musicfe">@musicfe</a></p>
+      </div>
+    </footer>
+    <script src="/bower_components/jquery/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower_components/prism/prism.js"></script>
+    <script src="/bower_components/prefixfree/prefixfree.min.js"></script>
+    <script>
+      $(function() {
+        // IE10 viewport hack for Surface/desktop Windows 8 bug
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+          var msViewportStyle = document.createElement('style');
+          msViewportStyle.appendChild(
+            document.createTextNode('@-ms-viewport{width:auto!important}')
+          );
+          document.getElementsByTagName('head')[0].appendChild(msViewportStyle);
+        }
+        
+        var $win = $(window),
+            $body = $(document.body),
+            $sideBar = $('.bs-sidebar'),
+            navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
+            
+        $body.scrollspy({
+            target: '.bs-sidebar',
+            offset: navHeight
+        });
+        
+          $win.on('load', function() {
+            $body.scrollspy('refresh');
+          });
+          
+          setTimeout(function() {
+            $sideBar.affix({
+              offset: {
+                top: function() {
+                  var offsetTop = $sideBar.offset().top;
+                  return (this.top = offsetTop - navHeight);
+                },
+                bottom: function() {
+                  return (this.bottom = $('.bs-footer').outerHeight(true));
+                }
+              }
+            });
+          }, 100);
+          
+          $sideBar.on('click', 'a[href^=#]', function() {
+            var id = $(this).attr('href').substr(1),
+              top = $('#'+ id).offset().top - navHeight + 10;
+              
+            $('html, body').animate({
+              scrollTop: top
+            }, 300);
+            
+            return false;
+          });
+      });
+    </script>
+  </body>
+</html>

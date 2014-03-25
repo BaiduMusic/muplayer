@@ -1,0 +1,165 @@
+mixin labelForSymbolType(symbol)
+  div(class=["label", "label-"+(symbol.gtype === "function" || symbol.gtype === "method" ? "info" : "success"), "mr5"])= symbol.ctx.type
+
+mixin mainContent
+  if locals.readme
+    section(id=name) !{readme}
+  each symbol in dox
+    if symbol.ctx.name
+      section(id=symbol.ctx.name)
+          h1= symbol.ctx.name
+          h5.subheader
+          if !symbol.gtype && symbol.type
+            p
+              div(class=["label", "label-inverse", "radius", "ctx-type"])= symbol.type
+          else
+            p
+              mixin labelForSymbolType(symbol)
+              if symbol.ctx.string
+                span= symbol.ctx.string
+              if symbol.return
+                |  ->
+                span= symbol.return
+
+    .description !{symbol.description.full} !{symbol.description.extra}
+    if symbol.hasParams
+      h5 参数说明
+      table.table.table-bordered.table-striped
+        thead
+          tr
+            th(style="width:15%") 名称
+            th(style="width:15%") 类型
+            th 描述
+        tbody
+          each tag in symbol.tags
+            if tag.type == 'param'
+              tr
+                td= tag.name
+                td= tag.types
+                td!= tag.description
+    if symbol.jsfiddle
+      h5 jsFiddle
+      p
+        iframe(width="100%", height="300", src=symbol.jsfiddle , allowfullscreen="allowfullscreen", frameborder="0")
+
+doctype 5
+html
+  head
+    meta(name="viewport", content="width=device-width, initial-scale=1.0", charset="utf-8")
+    title= title
+
+    link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
+    link(rel="stylesheet", href="/bower_components/prism/themes/prism.css")
+    link(rel="stylesheet", href="/css/api.css")
+
+  body
+    header#header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav
+      .container
+        .navbar-header
+          button(type="button", class="navbar-toggle", data-toggle="collapse", data-target=".navbar-collapse")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a(class="navbar-brand", href="/") muplayer
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            if currentName == 'Main'
+                li.active
+                  a(href="#") Home
+            else
+                li
+                    a(href="/") Home
+            li
+              a(href="demo.html") Demo
+            if currentName != 'Main'
+              li.active
+                a(href="#") API
+            else
+                li
+                  a(href="api.html") API
+      a(class="github", target="_blank", href="https://github.com/Baidu-Music-FE/muplayer")
+        i
+        | View On GitHub
+
+    section.jumbotron
+      .container
+        h1 muplayer『百度音频内核』
+        p  —— 跨平台、轻量级音频播放解决方案。
+
+    section.container.bs-docs-container
+      if symbols.length
+        .row
+          .col-md-3
+            .bs-sidebar.affix-top.hidden-print
+              ul.nav.bs-sidenav
+                each symbol in symbols
+                  li
+                    a(href='#'+symbol.name) #{symbol.name}
+          .col-md-9
+            mixin mainContent
+      else
+        mixin mainContent
+
+    footer.bs-footer
+      .container
+        p <code>muplayer</code>: 
+          a(href="https://github.com/Baidu-Music-FE/muplayer") https://github.com/Baidu-Music-FE/muplayer
+        p
+          | Copyright (c) 2014 music-fe@baidu.com 
+          a(href="http://weibo.com/musicfe") @musicfe
+
+    script(src="/bower_components/jquery/jquery.min.js")
+    script(src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
+    script(src="/bower_components/prism/prism.js")
+    script(src="/bower_components/prefixfree/prefixfree.min.js")
+    script
+        $(function() {
+          // IE10 viewport hack for Surface/desktop Windows 8 bug
+          if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+            var msViewportStyle = document.createElement('style');
+            msViewportStyle.appendChild(
+              document.createTextNode('@-ms-viewport{width:auto!important}')
+            );
+            document.getElementsByTagName('head')[0].appendChild(msViewportStyle);
+          }
+
+          var $win = $(window),
+              $body = $(document.body),
+              $sideBar = $('.bs-sidebar'),
+              navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
+
+            $body.scrollspy({
+              target: '.bs-sidebar',
+              offset: navHeight
+            });
+
+            $win.on('load', function() {
+              $body.scrollspy('refresh');
+            });
+
+            setTimeout(function() {
+              $sideBar.affix({
+                offset: {
+                  top: function() {
+                    var offsetTop = $sideBar.offset().top;
+                    return (this.top = offsetTop - navHeight);
+                  },
+                  bottom: function() {
+                    return (this.bottom = $('.bs-footer').outerHeight(true));
+                  }
+                }
+              });
+            }, 100);
+
+            $sideBar.on('click', 'a[href^=#]', function() {
+              var id = $(this).attr('href').substr(1),
+                top = $('#'+ id).offset().top - navHeight + 10;
+
+              $('html, body').animate({
+                scrollTop: top
+              }, 300);
+
+              return false;
+            });
+        });
