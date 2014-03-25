@@ -1,0 +1,133 @@
+do (root = this, factory = (utils, Events) ->
+    # 将sid统一转成字符串, 有利于减少对API返回的值特例处理
+    formatSid = (sids) ->
+        $.isArray(sids) and ('' + sid for sid in sids when sid) or '' + sids
+
+    class Playlist
+        constructor: () ->
+            @reset()
+
+        reset: () ->
+            @cur = ''
+            if $.isArray(@list)
+                @list.length = 0
+            else
+                @list = []
+
+        _resetListRandom: (index) ->
+            if @mode is 'list-random'
+                index = index || 0
+                @_listRandomIndex = index
+                @_listRandom = utils.shuffle([0...@list.length])
+                @cur = @list[@_listRandom[index]]
+
+        setMode: (mode) ->
+            if mode in [
+                'single',
+                'random',
+                'list-random',
+                'list',
+                'loop'
+            ] then @mode = mode
+            @_resetListRandom()
+
+        add: (sid) ->
+            sid = formatSid(sid)
+
+            # 剔除重复sid, 保证列表是一个set
+            @remove(sid)
+
+            if $.isArray(sid) and sid.length
+                @list = sid.concat(@list)
+            else if sid
+                @list.unshift(sid)
+
+            @trigger('playlist:add', sid)
+            @_resetListRandom()
+
+        remove: (sid) ->
+            remove = (sid) =>
+                i = $.inArray(sid, @list)
+                unless i is -1
+                    @list.splice(i, 1)
+
+            sid = formatSid(sid)
+            if $.isArray(sid)
+                remove(id) for id in sid
+            else
+                remove(sid)
+
+            @trigger('playlist:remove', sid)
+            @_resetListRandom()
+
+        prev: ->
+            list = @list
+            i = $.inArray(this.cur, list)
+            l = list.length
+            prev = i - 1
+
+            switch @mode
+                when 'single' then prev = i
+                when 'random' then prev = utils.random(0, l - 1)
+                when 'list'
+                    if i = 0
+                        @cur = list[0]
+                        return false
+                when 'list-random'
+                    i = @_listRandomIndex--
+                    prev = i - 1
+                    if i is 0
+                        prev = l - 1
+                        @_resetListRandom(prev)
+                    return @cur = list[@_listRandom[prev]]
+                when 'loop'
+                    prev = l - 1 if i is 0
+
+            @cur = list[prev]
+
+        next: ->
+            list = @list
+            i = $.inArray(this.cur, list)
+            l = list.length
+            next = i + 1
+
+            switch @mode
+                when 'single' then next = i
+                when 'random' then next = utils.random(0, l - 1)
+                when 'list'
+                    if i is l - 1
+                        @cur = list[0]
+                        return false
+                when 'list-random'
+                    i = @_listRandomIndex++
+                    next = i + 1
+                    if i is l - 1
+                        next = 0
+                        @_resetListRandom(next)
+                    return @cur = list[@_listRandom[next]]
+                when 'loop'
+                    next = 0 if i is l - 1
+
+            @cur = list[next]
+
+        setCur: (sid) ->
+            sid = sid + ''
+            unless sid in @list
+                @add(sid)
+            @cur = '' + sid
+
+    Events.mixTo(Playlist)
+    Playlist
+) ->
+    if typeof exports is 'object'
+        module.exports = factory()
+    else if typeof define is 'function' and define.amd
+        define([
+            'muplayer/core/utils'
+            'muplayer/lib/events'
+        ], factory)
+    else
+        root._mu.Playlist = factory(
+            _mu.cfg
+            _mu.Events
+        )

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+    <title>muplayer 『百度音频内核』</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/prism/themes/prism.css">
+    <link rel="stylesheet" href="/css/api.css">
+  </head>
+  <body>
+    <header id="header" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">muplayer</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li class="active"><a href="#">API</a></li>
+          </ul>
+        </div>
+      </div><a target="_blank" href="https://github.com/Baidu-Music-FE/muplayer" class="github"><i></i>View On GitHub</a>
+    </header>
+    <section class="jumbotron">
+      <div class="container">
+        <h1>muplayer『百度音频内核』</h1>
+        <p> —— 跨平台、轻量级音频播放解决方案。</p>
+      </div>
+    </section>
+    <section class="container bs-docs-container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="bs-sidebar affix-top hidden-print">
+            <ul class="nav bs-sidenav">
+              <li><a href="#Player">Player</a></li>
+              <li><a href="#play">play</a></li>
+              <li><a href="#pause">pause</a></li>
+              <li><a href="#stop">stop</a></li>
+              <li><a href="#replay">replay</a></li>
+              <li><a href="#prev">prev</a></li>
+              <li><a href="#next">next</a></li>
+              <li><a href="#getCur">getCur</a></li>
+              <li><a href="#setCur">setCur</a></li>
+              <li><a href="#curPos">curPos</a></li>
+              <li><a href="#duration">duration</a></li>
+              <li><a href="#add">add</a></li>
+              <li><a href="#remove">remove</a></li>
+              <li><a href="#reset">reset</a></li>
+              <li><a href="#getState">getState</a></li>
+              <li><a href="#setUrl">setUrl</a></li>
+              <li><a href="#getUrl">getUrl</a></li>
+              <li><a href="#setVolume">setVolume</a></li>
+              <li><a href="#getVolume">getVolume</a></li>
+              <li><a href="#setMute">setMute</a></li>
+              <li><a href="#getMute">getMute</a></li>
+              <li><a href="#canPlayType">canPlayType</a></li>
+              <li><a href="#getSongsNum">getSongsNum</a></li>
+              <li><a href="#setMode">setMode</a></li>
+              <li><a href="#getMode">getMode</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="description"><p>muplayer的Player类（对应player.js）是对外暴露的接口，它封装了音频操作及播放列表（Playlist）逻辑，并屏蔽了对音频内核适配的细节对音频内核适配的细节。<br /><b>对一般应用场景，只需签出编译后的 <code>dist/js/player.min.js</code> 即可</b>。<br />文档中 <code>player</code> 指代Player的实例。</p> </div>
+          <section id="Player">
+            <h1>Player</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">function</div><span>Player()</span>
+            </p>
+          </section>
+          <div class="description"><p>Player初始化方法</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>options</td>
+                <td>Object</td>
+                <td><table class="sub-params"> <tr> <th>选项</th> <th>说明</th> </tr> <tr> <td>mode</td> <td>默认值: 'loop'。加入播放器的歌曲列表的播放顺序逻辑，可选值为 'loop'（循环播放），'list'（列表播放，该列表播放到最后一首或第一首后则停止播放），'single'（单曲播放），'random'（单曲随机），'list-random'（列表随机，与random的区别是保证已随机过的列表中歌曲均播放一次后，再对列表随机重置）。</td> </tr> <tr> <td>mute</td> <td>默认值: false。是否静音。</td> </tr> <tr> <td>volume</td> <td>默认值: 80。播放音量，取值范围0 - 100。</td> </tr> <tr> <td>engine</td> <td>初始化Engine，根据传入的engines来指定具体使用FlashCore还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）： <pre> engines: [{<br> <span class="ts"></span>constructor: 'FlashCore',<br> <span class="ts"></span>args: { // 初始化FlashCore的参数<br> <span class="ts2"></span>swf: '/swf/fmp.swf' // 对应的swf文件路径<br> <span class="ts"></span>}<br> }, {<br> <span class="ts"></span>constructor: 'AudioCore'<br> }] </pre> </td> </tr></table></td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="play">
+            <h1>play</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.play()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>若播放列表中有歌曲就开始播放。会派发 <code>player:play</code> 事件。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>startTime</td>
+                <td>Number</td>
+                <td>指定歌曲播放的起始位置，单位：毫秒。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="pause">
+            <h1>pause</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.pause()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>若player正在播放，则暂停播放 (这时，如果再执行play方法，则从暂停位置继续播放)。会派发 <code>player:pause</code> 事件。</p> </div>
+          <section id="stop">
+            <h1>stop</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.stop()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>停止播放，会将当前播放位置重置。即stop后执行play，将从音频头部重新播放。会派发 <code>player:stop</code> 事件。</p> </div>
+          <section id="replay">
+            <h1>replay</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.replay()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>stop() + play()的快捷方式。</p> </div>
+          <section id="prev">
+            <h1>prev</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.prev()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>播放前一首歌。会派发 <code>player:prev</code> 事件，事件参数：</p>
+
+<pre>cur // 调用prev时正在播放的歌曲</pre> </div>
+          <section id="next">
+            <h1>next</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.next()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>播放下一首歌。参数auto是布尔值，代表是否是因自动切歌而触发的（比如因为一首歌播放完会自动触发next方法，这时auto为true，其他主动调用auto应为undefined）。<br />会派发 <code>player:next</code> 事件，事件参数：</p>
+
+<pre>auto // 是否为自动切歌
+cur  // 调用next时正在播放的歌曲</pre> </div>
+          <section id="getCur">
+            <h1>getCur</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getCur()</span> -><span>String</span>
+            </p>
+          </section>
+          <div class="description"><p>获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。<br />如果之前没有主动执行过setCur，则认为播放列表的第一首歌是当前歌曲。</p> </div>
+          <section id="setCur">
+            <h1>setCur</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.setCur()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>设置当前歌曲。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>sid</td>
+                <td>String</td>
+                <td>可以是音频文件url，也可以是音频文件id（如果是文件id，则要自己重写_fetch方法，决定如何根据id获得相应音频的实际地址）。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="curPos">
+            <h1>curPos</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.curPos()</span> -><span>Number</span>
+            </p>
+          </section>
+          <div class="description"><p>当前播进度（单位秒）。</p> </div>
+          <section id="duration">
+            <h1>duration</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.duration()</span> -><span>Number</span>
+            </p>
+          </section>
+          <div class="description"><p>单曲总时长（单位秒）。</p> </div>
+          <section id="add">
+            <h1>add</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.add()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>将音频资源添加到播放列表</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>sid</td>
+                <td>String,Array</td>
+                <td>要添加的单曲资源或标识，为数组则代表批量添加。会派发 <code>player:add</code> 事件。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="remove">
+            <h1>remove</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.remove()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>从播放列表中移除指定资源，若移除资源后列表为空则触发reset。会派发 <code>player:remove</code> 事件。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>sid</td>
+                <td>String,Array</td>
+                <td>要移除的资源标识（与add方法参数相对应）。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="reset">
+            <h1>reset</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.reset()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>播放列表和内核资源重置。会派发 <code>player:reset</code> 事件。<br />如有特别需要可以自行扩展，比如通过监听 <code>player:reset</code> 来重置相关业务逻辑的标志位或事件等。</p> </div>
+          <section id="getState">
+            <h1>getState</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getState()</span> -><span>String</span>
+            </p>
+          </section>
+          <div class="description"><p>获取播放内核当前状态。所有可能状态值参见 <code>cfg.coffee</code> 中的 <code>engine.STATES</code> 声明。</p> </div>
+          <section id="setUrl">
+            <h1>setUrl</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.setUrl()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>设置当前播放资源的url。一般而言，这个方法是私有方法，供_fetch等内部方法中调用，客户端无需关心。<br />但出于调试和灵活性的考虑，依然之暴露为公共方法。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>url</td>
+                <td>String</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="getUrl">
+            <h1>getUrl</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getUrl()</span> -><span>String</span>
+            </p>
+          </section>
+          <div class="description"><p>获取当前播放资源的url。</p> </div>
+          <section id="setVolume">
+            <h1>setVolume</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.setVolume()</span>
+            </p>
+          </section>
+          <div class="description"><p>设置播放器音量。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>volume</td>
+                <td>Number</td>
+                <td>合法范围：0 - 100，0是静音。注意volume与mute不会相互影响，即便setVolume(0)，getMute()的结果依然维持不变。反之亦然。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="getVolume">
+            <h1>getVolume</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getVolume()</span> -><span>Number</span>
+            </p>
+          </section>
+          <div class="description"><p>获取播放器音量。返回值范围：0 - 100</p> </div>
+          <section id="setMute">
+            <h1>setMute</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.setMute()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>设置是否静音。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>mute</td>
+                <td>Boolean</td>
+                <td>true为静音，flase为不静音。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="getMute">
+            <h1>getMute</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getMute()</span> -><span>Boolean</span>
+            </p>
+          </section>
+          <div class="description"><p>获取静音状态。</p> </div>
+          <section id="canPlayType">
+            <h1>canPlayType</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.canPlayType()</span> -><span>Boolean</span>
+            </p>
+          </section>
+          <div class="description"><p>检验内核是否支持播放指定的音频格式。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>type</td>
+                <td>String</td>
+                <td>标识音频格式（或音频文件后缀）的字符串，如'mp3', 'aac'等。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="getSongsNum">
+            <h1>getSongsNum</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getSongsNum()</span> -><span>Number</span>
+            </p>
+          </section>
+          <div class="description"><p>播放列表中的歌曲总数。这一个快捷方法，如有更多需求，可自行获取播放列表：player.playlist.list。</p> </div>
+          <section id="setMode">
+            <h1>setMode</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.setMode()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>设置列表播放的模式。</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>mode</td>
+                <td>String</td>
+                <td>可选值参见前文对初始化Player方法的options参数描述。</td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="getMode">
+            <h1>getMode</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getMode()</span> -><span>String</span>
+            </p>
+          </section>
+          <div class="description"><p>获取列表播放的模式。</p> </div>
+        </div>
+      </div>
+    </section>
+    <footer class="bs-footer">
+      <div class="container">
+        <p><code>muplayer</code>: <a href="https://github.com/Baidu-Music-FE/muplayer">https://github.com/Baidu-Music-FE/muplayer</a></p>
+        <p>Copyright (c) 2014 music-fe@baidu.com <a href="http://weibo.com/musicfe">@musicfe</a></p>
+      </div>
+    </footer>
+    <script src="/bower_components/jquery/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower_components/prism/prism.js"></script>
+    <script src="/bower_components/prefixfree/prefixfree.min.js"></script>
+    <script>
+      $(function() {
+        // IE10 viewport hack for Surface/desktop Windows 8 bug
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+          var msViewportStyle = document.createElement('style');
+          msViewportStyle.appendChild(
+            document.createTextNode('@-ms-viewport{width:auto!important}')
+          );
+          document.getElementsByTagName('head')[0].appendChild(msViewportStyle);
+        }
+        
+        var $win = $(window),
+            $body = $(document.body),
+            $sideBar = $('.bs-sidebar'),
+            navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
+            
+        $body.scrollspy({
+            target: '.bs-sidebar',
+            offset: navHeight
+        });
+        
+          $win.on('load', function() {
+            $body.scrollspy('refresh');
+          });
+          
+          setTimeout(function() {
+            $sideBar.affix({
+              offset: {
+                top: function() {
+                  var offsetTop = $sideBar.offset().top;
+                  return (this.top = offsetTop - navHeight);
+                },
+                bottom: function() {
+                  return (this.bottom = $('.bs-footer').outerHeight(true));
+                }
+              }
+            });
+          }, 100);
+          
+          $sideBar.on('click', 'a[href^=#]', function() {
+            var id = $(this).attr('href').substr(1),
+              top = $('#'+ id).offset().top - navHeight + 10;
+              
+            $('html, body').animate({
+              scrollTop: top
+            }, 300);
+            
+            return false;
+          });
+      });
+    </script>
+  </body>
+</html>

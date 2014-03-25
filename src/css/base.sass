@@ -1,0 +1,95 @@
+@import compass
+
+$imgPath: '../img/'
+
+=size($h, $w)
+    height: $h
+    width: $w
+
+=square($size)
+    +size($size, $size)
+
+=line-height($h)
+    height: $h
+    line-height: $h
+
+=icon($icon, $height, $width, $suffix: png)
+    $height: $height / 2
+    $width: $width / 2
+    +inline-block
+    +size($height, $width)
+    background: url($imgPath + $icon + '.' + $suffix) no-repeat
+    +background-size($width, $height)
+    overflow: hidden
+
+$white: #fff
+$black: #333
+$grey: #666
+$red: #c7254e
+$orange: #ff6501
+$blue: #5bc0de
+$darkBlue: darken($blue, 15%)
+$whiteBlue: mix($white, $blue, 75%)
+$lightBlueBg: mix($white, $blue, 90%)
+
+$border: 1px solid #ddd
+
+.ts
+    margin-left: 2em
+.ts2
+    margin-left: 4em
+.mr5
+    margin-right: 5px !important
+
+.sub-params
+    th, td
+        &:first-child
+            border-left: none
+
+body
+    position: relative
+    padding-top: 50px
+
+#header
+    background: $blue
+    border-color: $darkBlue
+    .navbar-collapse, .navbar-form
+        border-color: $darkBlue
+    .navbar-toggle
+        border-color: $darkBlue
+        &:hover, &:focus
+            background-color: $darkBlue
+        &.collapsed
+            .icon-bar
+                background: $white
+    .navbar-brand
+        +link-colors($white, $white, $white, $white, $white)
+        font-weight: bold
+    .navbar-nav
+        > li > a
+            +link-colors($whiteBlue, $whiteBlue, $whiteBlue, $whiteBlue, $whiteBlue)
+            background: inherit
+        > .active > a
+            +link-colors($white, $white, $white, $white, $white)
+            background: $darkBlue
+    .container
+        position: relative
+    .github
+        +inline-block
+        position: absolute
+        top: 50px
+        right: 15px
+        background: $red
+        color: $white
+        border-top: none
+        padding: 10px 15px
+        i
+            +icon('github', 32px, 32px)
+            margin-right: 10px
+
+.bs-footer
+    padding-top: 40px
+    padding-bottom: 30px
+    margin-top: 100px
+    color: $grey
+    border-top: 1px solid #e5e5e5

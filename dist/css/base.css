@@ -1,0 +1,128 @@
+.ts {
+  margin-left: 2em;
+}
+
+.ts2 {
+  margin-left: 4em;
+}
+
+.mr5 {
+  margin-right: 5px !important;
+}
+
+.sub-params th:first-child, .sub-params td:first-child {
+  border-left: none;
+}
+
+body {
+  position: relative;
+  padding-top: 50px;
+}
+
+#header {
+  background: #5bc0de;
+  border-color: #28a1c5;
+}
+#header .navbar-collapse, #header .navbar-form {
+  border-color: #28a1c5;
+}
+#header .navbar-toggle {
+  border-color: #28a1c5;
+}
+#header .navbar-toggle:hover, #header .navbar-toggle:focus {
+  background-color: #28a1c5;
+}
+#header .navbar-toggle.collapsed .icon-bar {
+  background: white;
+}
+#header .navbar-brand {
+  color: white;
+  font-weight: bold;
+}
+#header .navbar-brand:visited {
+  color: white;
+}
+#header .navbar-brand:focus {
+  color: white;
+}
+#header .navbar-brand:hover {
+  color: white;
+}
+#header .navbar-brand:active {
+  color: white;
+}
+#header .navbar-nav > li > a {
+  color: #d6eff6;
+  background: inherit;
+}
+#header .navbar-nav > li > a:visited {
+  color: #d6eff6;
+}
+#header .navbar-nav > li > a:focus {
+  color: #d6eff6;
+}
+#header .navbar-nav > li > a:hover {
+  color: #d6eff6;
+}
+#header .navbar-nav > li > a:active {
+  color: #d6eff6;
+}
+#header .navbar-nav > .active > a {
+  color: white;
+  background: #28a1c5;
+}
+#header .navbar-nav > .active > a:visited {
+  color: white;
+}
+#header .navbar-nav > .active > a:focus {
+  color: white;
+}
+#header .navbar-nav > .active > a:hover {
+  color: white;
+}
+#header .navbar-nav > .active > a:active {
+  color: white;
+}
+#header .container {
+  position: relative;
+}
+#header .github {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  position: absolute;
+  top: 50px;
+  right: 15px;
+  background: #c7254e;
+  color: white;
+  border-top: none;
+  padding: 10px 15px;
+}
+#header .github i {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 16px;
+  width: 16px;
+  background: url("../img/github.png") no-repeat;
+  -webkit-background-size: 16px, 16px;
+  -moz-background-size: 16px, 16px;
+  -o-background-size: 16px, 16px;
+  background-size: 16px, 16px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.bs-footer {
+  padding-top: 40px;
+  padding-bottom: 30px;
+  margin-top: 100px;
+  color: #666666;
+  border-top: 1px solid #e5e5e5;
+}

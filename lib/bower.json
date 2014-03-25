@@ -1,0 +1,25 @@
+{
+  "name": "muplayer",
+  "version": "0.1.0",
+  "authors": [
+    "kiwi <kiwi.sedna@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.0",
+    "jquery": "~1.10.2",
+    "requirejs": "~2.1.8",
+    "jquery-ui": "~1.10.3",
+    "prefixfree": "*",
+    "prism": "gh-pages",
+    "qunit": "~1.13.0"
+  }
+}
