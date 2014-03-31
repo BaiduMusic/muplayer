@@ -927,17 +927,17 @@ var __hasProp = {}.hasOwnProperty,
     return root._mu.AudioCore = factory(_mu.cfg, _mu.utils, _mu.EngineCore, _mu.Modernizr);
   }
 })(this, function(cfg, utils, EngineCore, Modernizr) {
-  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, emptyMP3, win, _ref;
-  _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
+  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, win, _ref;
   win = window;
-  emptyMP3 = cfg.emptyMP3;
+  _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
   AudioCore = (function(_super) {
     __extends(AudioCore, _super);
 
     AudioCore.defaults = {
       confidence: 'maybe',
       preload: false,
-      autoplay: false
+      autoplay: false,
+      emptyMP3: cfg.emptyMP3
     };
 
     AudioCore.prototype._supportedTypes = [];
@@ -967,6 +967,7 @@ var __hasProp = {}.hasOwnProperty,
       audio = new Audio();
       audio.preload = opts.preload;
       audio.autoplay = opts.autoplay;
+      audio.loop = false;
       audio.on = function(type, listener) {
         audio.addEventListener(type, listener, false);
         return audio;
@@ -979,7 +980,7 @@ var __hasProp = {}.hasOwnProperty,
       this._needCanPlay(['play', 'setCurrentPosition']);
       this._initEvents();
       playEmpty = function() {
-        _this.setUrl(emptyMP3).play();
+        _this.setUrl(opts.emptyMP3).play();
         return win.removeEventListener('touchstart', playEmpty, false);
       };
       win.addEventListener('touchstart', playEmpty, false);
@@ -998,7 +999,7 @@ var __hasProp = {}.hasOwnProperty,
         _this = this;
       trigger = this.trigger;
       this.trigger = function(type, listener) {
-        if (_this.getUrl() !== emptyMP3) {
+        if (_this.getUrl() !== _this.opts.emptyMP3) {
           return trigger.call(_this, type, listener);
         }
       };
@@ -1056,7 +1057,12 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.stop = function() {
-      return this.setCurrentPosition(0).pause();
+      try {
+        this.audio.currentTime = 0;
+      } catch (_error) {
+
+      }
+      return this.pause();
     };
 
     AudioCore.prototype.setUrl = function(url) {
