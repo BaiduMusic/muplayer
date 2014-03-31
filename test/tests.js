@@ -57,11 +57,11 @@
 
   p = new _mu.Player;
 
-  mp3Path = '/mp3/';
+  mp3Path = '../dist/mp3/';
 
   module('player', {
     setup: function() {
-      return p.add([mp3Path + '1.mp3', mp3Path + '2.mp3']);
+      return p.add([mp3Path + 'rain.mp3', mp3Path + 'walking.mp3']);
     },
     teardown: function() {
       return p.off().reset();
@@ -73,7 +73,7 @@
       ok(true);
       return start();
     });
-    return p.play(true);
+    return p.play();
   });
 
 }).call(this);

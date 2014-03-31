@@ -1,3 +1,296 @@
+//     Zepto.js
+//     (c) 2010-2014 Thomas Fuchs
+//     Zepto.js may be freely distributed under the MIT license.
+
+;(function($){
+  // Create a collection of callbacks to be fired in a sequence, with configurable behaviour
+  // Option flags:
+  //   - once: Callbacks fired at most one time.
+  //   - memory: Remember the most recent context and arguments
+  //   - stopOnFalse: Cease iterating over callback list
+  //   - unique: Permit adding at most one instance of the same callback
+  $.Callbacks = function(options) {
+    options = $.extend({}, options)
+
+    var memory, // Last fire value (for non-forgettable lists)
+        fired,  // Flag to know if list was already fired
+        firing, // Flag to know if list is currently firing
+        firingStart, // First callback to fire (used internally by add and fireWith)
+        firingLength, // End of the loop when firing
+        firingIndex, // Index of currently firing callback (modified by remove if needed)
+        list = [], // Actual callback list
+        stack = !options.once && [], // Stack of fire calls for repeatable lists
+        fire = function(data) {
+          memory = options.memory && data
+          fired = true
+          firingIndex = firingStart || 0
+          firingStart = 0
+          firingLength = list.length
+          firing = true
+          for ( ; list && firingIndex < firingLength ; ++firingIndex ) {
+            if (list[firingIndex].apply(data[0], data[1]) === false && options.stopOnFalse) {
+              memory = false
+              break
+            }
+          }
+          firing = false
+          if (list) {
+            if (stack) stack.length && fire(stack.shift())
+            else if (memory) list.length = 0
+            else Callbacks.disable()
+          }
+        },
+
+        Callbacks = {
+          add: function() {
+            if (list) {
+              var start = list.length,
+                  add = function(args) {
+                    $.each(args, function(_, arg){
+                      if (typeof arg === "function") {
+                        if (!options.unique || !Callbacks.has(arg)) list.push(arg)
+                      }
+                      else if (arg && arg.length && typeof arg !== 'string') add(arg)
+                    })
+                  }
+              add(arguments)
+              if (firing) firingLength = list.length
+              else if (memory) {
+                firingStart = start
+                fire(memory)
+              }
+            }
+            return this
+          },
+          remove: function() {
+            if (list) {
+              $.each(arguments, function(_, arg){
+                var index
+                while ((index = $.inArray(arg, list, index)) > -1) {
+                  list.splice(index, 1)
+                  // Handle firing indexes
+                  if (firing) {
+                    if (index <= firingLength) --firingLength
+                    if (index <= firingIndex) --firingIndex
+                  }
+                }
+              })
+            }
+            return this
+          },
+          has: function(fn) {
+            return !!(list && (fn ? $.inArray(fn, list) > -1 : list.length))
+          },
+          empty: function() {
+            firingLength = list.length = 0
+            return this
+          },
+          disable: function() {
+            list = stack = memory = undefined
+            return this
+          },
+          disabled: function() {
+            return !list
+          },
+          lock: function() {
+            stack = undefined;
+            if (!memory) Callbacks.disable()
+            return this
+          },
+          locked: function() {
+            return !stack
+          },
+          fireWith: function(context, args) {
+            if (list && (!fired || stack)) {
+              args = args || []
+              args = [context, args.slice ? args.slice() : args]
+              if (firing) stack.push(args)
+              else fire(args)
+            }
+            return this
+          },
+          fire: function() {
+            return Callbacks.fireWith(this, arguments)
+          },
+          fired: function() {
+            return !!fired
+          }
+        }
+
+    return Callbacks
+  }
+})(Zepto)
+
+//     Zepto.js
+//     (c) 2010-2014 Thomas Fuchs
+//     Zepto.js may be freely distributed under the MIT license.
+//
+//     Some code (c) 2005, 2013 jQuery Foundation, Inc. and other contributors
+
+;(function($){
+  var slice = Array.prototype.slice
+
+  function Deferred(func) {
+    var tuples = [
+          // action, add listener, listener list, final state
+          [ "resolve", "done", $.Callbacks({once:1, memory:1}), "resolved" ],
+          [ "reject", "fail", $.Callbacks({once:1, memory:1}), "rejected" ],
+          [ "notify", "progress", $.Callbacks({memory:1}) ]
+        ],
+        state = "pending",
+        promise = {
+          state: function() {
+            return state
+          },
+          always: function() {
+            deferred.done(arguments).fail(arguments)
+            return this
+          },
+          then: function(/* fnDone [, fnFailed [, fnProgress]] */) {
+            var fns = arguments
+            return Deferred(function(defer){
+              $.each(tuples, function(i, tuple){
+                var fn = $.isFunction(fns[i]) && fns[i]
+                deferred[tuple[1]](function(){
+                  var returned = fn && fn.apply(this, arguments)
+                  if (returned && $.isFunction(returned.promise)) {
+                    returned.promise()
+                      .done(defer.resolve)
+                      .fail(defer.reject)
+                      .progress(defer.notify)
+                  } else {
+                    var context = this === promise ? defer.promise() : this,
+                        values = fn ? [returned] : arguments
+                    defer[tuple[0] + "With"](context, values)
+                  }
+                })
+              })
+              fns = null
+            }).promise()
+          },
+
+          promise: function(obj) {
+            return obj != null ? $.extend( obj, promise ) : promise
+          }
+        },
+        deferred = {}
+
+    $.each(tuples, function(i, tuple){
+      var list = tuple[2],
+          stateString = tuple[3]
+
+      promise[tuple[1]] = list.add
+
+      if (stateString) {
+        list.add(function(){
+          state = stateString
+        }, tuples[i^1][2].disable, tuples[2][2].lock)
+      }
+
+      deferred[tuple[0]] = function(){
+        deferred[tuple[0] + "With"](this === deferred ? promise : this, arguments)
+        return this
+      }
+      deferred[tuple[0] + "With"] = list.fireWith
+    })
+
+    promise.promise(deferred)
+    if (func) func.call(deferred, deferred)
+    return deferred
+  }
+
+  $.when = function(sub) {
+    var resolveValues = slice.call(arguments),
+        len = resolveValues.length,
+        i = 0,
+        remain = len !== 1 || (sub && $.isFunction(sub.promise)) ? len : 0,
+        deferred = remain === 1 ? sub : Deferred(),
+        progressValues, progressContexts, resolveContexts,
+        updateFn = function(i, ctx, val){
+          return function(value){
+            ctx[i] = this
+            val[i] = arguments.length > 1 ? slice.call(arguments) : value
+            if (val === progressValues) {
+              deferred.notifyWith(ctx, val)
+            } else if (!(--remain)) {
+              deferred.resolveWith(ctx, val)
+            }
+          }
+        }
+
+    if (len > 1) {
+      progressValues = new Array(len)
+      progressContexts = new Array(len)
+      resolveContexts = new Array(len)
+      for ( ; i < len; ++i ) {
+        if (resolveValues[i] && $.isFunction(resolveValues[i].promise)) {
+          resolveValues[i].promise()
+            .done(updateFn(i, resolveContexts, resolveValues))
+            .fail(deferred.reject)
+            .progress(updateFn(i, progressContexts, progressValues))
+        } else {
+          --remain
+        }
+      }
+    }
+    if (!remain) deferred.resolveWith(resolveContexts, resolveValues)
+    return deferred.promise()
+  }
+
+  $.Deferred = Deferred
+})(Zepto)
+
+;(function($) {
+    var ObjProto = Object.prototype,
+        toString = ObjProto.toString;
+
+    $.isString = function(obj) {
+        return toString.call(obj) === '[object String]';
+    }
+
+    $.isNumeric = function(obj) {
+        return toString.call(obj) === '[object Number]';
+    }
+
+    // 参考: https://github.com/dexteryy/OzJS/blob/master/oz.js
+    $.getScript = function(url, op) {
+        var doc = document,
+            s = doc.createElement('script');
+            s.async = 'async';
+
+        if (!op) {
+            op = {};
+        } else if (isFunction(op)) {
+            op = {
+                callback: op
+            };
+        }
+
+        if (op.charset) {
+            s.charset = op.charset;
+        }
+
+        s.src = url;
+
+        var h = doc.getElementsByTagName('head')[0];
+
+        s.onload = s.onreadystatechange = function(__, isAbort) {
+            if (isAbort || !s.readyState || /loaded|complete/.test(s.readyState)) {
+                s.onload = s.onreadystatechange = null;
+                if (h && s.parentNode) {
+                    h.removeChild(s);
+                }
+                s = undefined;
+                if (!isAbort && op.callback) {
+                    op.callback();
+                }
+            }
+        };
+
+        h.insertBefore(s, h.firstChild);
+    }
+})(Zepto);
+
 /* @license
  * Baidu Music Player: 1.0.0
  * -------------------------
@@ -1129,691 +1422,6 @@ var __hasProp = {}.hasOwnProperty,
   return AudioCore;
 });
 
-/*
- * Timer.js: A periodic timer for Node.js and the browser.
- *
- * Copyright (c) 2012 Arthur Klepchukov, Jarvis Badgley, Florian Schäfer
- * Licensed under the BSD license (BSD_LICENSE.txt)
- *
- * Version: 0.0.1
- *
- */
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
-        define('muplayer/lib/Timer',factory);
-    } else {
-        root._mu.Timer = factory();
-    }
-})(this, function () {
-    function timeStringToMilliseconds(timeString) {
-        if (typeof timeString === 'string') {
-
-            if (isNaN(parseInt(timeString, 10))) {
-                timeString = '1' + timeString;
-            }
-
-            var match = timeString
-                .replace(/[^a-z0-9\.]/g, '')
-                .match(/(?:(\d+(?:\.\d+)?)(?:days?|d))?(?:(\d+(?:\.\d+)?)(?:hours?|hrs?|h))?(?:(\d+(?:\.\d+)?)(?:minutes?|mins?|m\b))?(?:(\d+(?:\.\d+)?)(?:seconds?|secs?|s))?(?:(\d+(?:\.\d+)?)(?:milliseconds?|ms))?/);
-
-            if (match[0]) {
-                return parseFloat(match[1] || 0) * 86400000 +  // days
-                       parseFloat(match[2] || 0) * 3600000 +   // hours
-                       parseFloat(match[3] || 0) * 60000 +     // minutes
-                       parseFloat(match[4] || 0) * 1000 +      // seconds
-                       parseInt(match[5] || 0, 10);            // milliseconds
-            }
-
-            if (!isNaN(parseInt(timeString, 10))) {
-                return parseInt(timeString, 10);
-            }
-        }
-
-        if (typeof timeString === 'number') {
-            return timeString;
-        }
-
-        return 0;
-    }
-
-    function millisecondsToTicks(milliseconds, resolution) {
-        return parseInt(milliseconds / resolution, 10) || 1;
-    }
-
-    function Timer(resolution) {
-        if (this instanceof Timer === false) {
-            return new Timer(resolution);
-        }
-
-        this._notifications = [];
-        this._resolution = timeStringToMilliseconds(resolution) || 1000;
-        this._running = false;
-        this._ticks = 0;
-        this._timer = null;
-        this._drift = 0;
-    }
-
-    Timer.prototype = {
-        start: function () {
-            var self = this;
-            if (!this._running) {
-                this._running = !this._running;
-                setTimeout(function loopsyloop() {
-                    self._ticks++;
-                    for (var i = 0, l = self._notifications.length; i < l; i++) {
-                        if (self._notifications[i] && self._ticks % self._notifications[i].ticks === 0) {
-                            self._notifications[i].callback.call(self._notifications[i], { ticks: self._ticks, resolution: self._resolution });
-                        }
-                    }
-                    if (self._running) {
-                        self._timer = setTimeout(loopsyloop, self._resolution + self._drift);
-                        self._drift = 0;
-                    }
-                }, this._resolution);
-            }
-            return this;
-        },
-        stop: function () {
-            if (this._running) {
-                this._running = !this._running;
-                clearTimeout(this._timer);
-            }
-            return this;
-        },
-        reset: function () {
-            this.stop();
-            this._ticks = 0;
-            return this;
-        },
-        clear: function () {
-            this.reset();
-            this._notifications = [];
-            return this;
-        },
-        ticks: function () {
-            return this._ticks;
-        },
-        resolution: function () {
-            return this._resolution;
-        },
-        running: function () {
-            return this._running;
-        },
-        bind: function (when, callback) {
-            if (when && callback) {
-                var ticks = millisecondsToTicks(timeStringToMilliseconds(when), this._resolution);
-                this._notifications.push({
-                    ticks: ticks,
-                    callback: callback
-                });
-            }
-            return this;
-        },
-        unbind: function (callback) {
-            if (!callback) {
-                this._notifications = [];
-            } else {
-                for (var i = 0, l = this._notifications.length; i < l; i++) {
-                    if (this._notifications[i] && this._notifications[i].callback === callback) {
-                        this._notifications.splice(i, 1);
-                    }
-                }
-            }
-            return this;
-        },
-        drift: function (timeDrift) {
-            this._drift = timeDrift;
-            return this;
-        }
-    };
-
-    Timer.prototype.every = Timer.prototype.bind;
-    Timer.prototype.after = function (when, callback) {
-        var self = this;
-        Timer.prototype.bind.call(self, when, function fn () {
-            Timer.prototype.unbind.call(self, fn);
-            callback.apply(this, arguments);
-        });
-        return this;
-    };
-
-    return Timer;
-});
-
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
-        define('muplayer/lib/jquery.swfobject',factory);
-    } else {
-        factory();
-    }
-})(this, function () {
-    // jQuery SWFObject v1.1.1 MIT/GPL @jon_neal
-    // http://jquery.thewikies.com/swfobject
-    (function($, flash, Plugin) {
-        var OBJECT = 'object',
-            ENCODE = true;
-
-        function _compareArrayIntegers(a, b) {
-            var x = (a[0] || 0) - (b[0] || 0);
-
-            return x > 0 || (
-                !x &&
-                a.length > 0 &&
-                _compareArrayIntegers(a.slice(1), b.slice(1))
-            );
-        }
-
-        function _objectToArguments(obj) {
-            if (typeof obj != OBJECT) {
-                return obj;
-            }
-
-            var arr = [],
-                str = '';
-
-            for (var i in obj) {
-                if (typeof obj[i] == OBJECT) {
-                    str = _objectToArguments(obj[i]);
-                }
-                else {
-                    str = [i, (ENCODE) ? encodeURI(obj[i]) : obj[i]].join('=');
-                }
-
-                arr.push(str);
-            }
-
-            return arr.join('&');
-        }
-
-        function _objectFromObject(obj) {
-            var arr = [];
-
-            for (var i in obj) {
-                if (obj[i]) {
-                    arr.push([i, '="', obj[i], '"'].join(''));
-                }
-            }
-
-            return arr.join(' ');
-        }
-
-        function _paramsFromObject(obj) {
-            var arr = [];
-
-            for (var i in obj) {
-                arr.push([
-                    '<param name="', i,
-                    '" value="', _objectToArguments(obj[i]), '" />'
-                ].join(''));
-            }
-
-            return arr.join('');
-        }
-
-        try {
-            var flashVersion = Plugin.description || (function () {
-                return (
-                    new Plugin('ShockwaveFlash.ShockwaveFlash')
-                ).GetVariable('$version');
-            }())
-        }
-        catch (e) {
-            flashVersion = 'Unavailable';
-        }
-
-        var flashVersionMatchVersionNumbers = flashVersion.match(/\d+/g) || [0];
-
-        $[flash] = {
-            available: flashVersionMatchVersionNumbers[0] > 0,
-
-            activeX: Plugin && !Plugin.name,
-
-            version: {
-                original: flashVersion,
-                array: flashVersionMatchVersionNumbers,
-                string: flashVersionMatchVersionNumbers.join('.'),
-                major: parseInt(flashVersionMatchVersionNumbers[0], 10) || 0,
-                minor: parseInt(flashVersionMatchVersionNumbers[1], 10) || 0,
-                release: parseInt(flashVersionMatchVersionNumbers[2], 10) || 0
-            },
-
-            hasVersion: function (version) {
-                var versionArray = (/string|number/.test(typeof version))
-                    ? version.toString().split('.')
-                    : (/object/.test(typeof version))
-                        ? [version.major, version.minor]
-                        : version || [0, 0];
-
-                return _compareArrayIntegers(
-                    flashVersionMatchVersionNumbers,
-                    versionArray
-                );
-            },
-
-            encodeParams: true,
-
-            expressInstall: 'expressInstall.swf',
-            expressInstallIsActive: false,
-
-            create: function (obj) {
-                var instance = this;
-
-                if (
-                    !obj.swf ||
-                    instance.expressInstallIsActive ||
-                    (!instance.available && !obj.hasVersionFail)
-                ) {
-                    return false;
-                }
-
-                if (!instance.hasVersion(obj.hasVersion || 1)) {
-                    instance.expressInstallIsActive = true;
-
-                    if (typeof obj.hasVersionFail == 'function') {
-                        if (!obj.hasVersionFail.apply(obj)) {
-                            return false;
-                        }
-                    }
-
-                    obj = {
-                        swf: obj.expressInstall || instance.expressInstall,
-                        height: 137,
-                        width: 214,
-                        flashvars: {
-                            MMredirectURL: location.href,
-                            MMplayerType: (instance.activeX)
-                                ? 'ActiveX' : 'PlugIn',
-                            MMdoctitle: document.title.slice(0, 47) +
-                                ' - Flash Player Installation'
-                        }
-                    };
-                }
-
-                attrs = {
-                    data: obj.swf,
-                    type: 'application/x-shockwave-flash',
-                    id: obj.id || 'flash_' + Math.floor(Math.random() * 999999999),
-                    width: obj.width || 320,
-                    height: obj.height || 180,
-                    style: obj.style || ''
-                };
-
-                ENCODE = typeof obj.useEncode !== 'undefined' ? obj.useEncode : instance.encodeParams;
-
-                obj.movie = obj.swf;
-                obj.wmode = obj.wmode || 'opaque';
-
-                delete obj.fallback;
-                delete obj.hasVersion;
-                delete obj.hasVersionFail;
-                delete obj.height;
-                delete obj.id;
-                delete obj.swf;
-                delete obj.useEncode;
-                delete obj.width;
-
-                var flashContainer = document.createElement('div');
-
-                flashContainer.innerHTML = [
-                    '<object ', _objectFromObject(attrs), '>',
-                    _paramsFromObject(obj),
-                    '</object>'
-                ].join('');
-
-                return flashContainer.firstChild;
-            }
-        };
-
-        $.fn[flash] = function (options) {
-            var $this = this.find(OBJECT).andSelf().filter(OBJECT);
-
-            if (/string|object/.test(typeof options)) {
-                this.each(
-                    function () {
-                        var $this = $(this),
-                            flashObject;
-
-                        options = (typeof options == OBJECT) ? options : {
-                            swf: options
-                        };
-
-                        options.fallback = this;
-
-                        flashObject = $[flash].create(options);
-
-                        if (flashObject) {
-                            $this.children().remove();
-
-                            $this.html(flashObject);
-                        }
-                    }
-                );
-            }
-
-            if (typeof options == 'function') {
-                $this.each(
-                    function () {
-                        var instance = this,
-                        jsInteractionTimeoutMs = 'jsInteractionTimeoutMs';
-
-                        instance[jsInteractionTimeoutMs] =
-                            instance[jsInteractionTimeoutMs] || 0;
-
-                        if (instance[jsInteractionTimeoutMs] < 660) {
-                            if (instance.clientWidth || instance.clientHeight) {
-                                options.call(instance);
-                            }
-                            else {
-                                setTimeout(
-                                    function () {
-                                        $(instance)[flash](options);
-                                    },
-                                    instance[jsInteractionTimeoutMs] + 66
-                                );
-                            }
-                        }
-                    }
-                );
-            }
-
-            return $this;
-        };
-    }(
-        jQuery,
-        'flash',
-        navigator.plugins['Shockwave Flash'] || window.ActiveXObject
-    ));
-});
-
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __slice = [].slice;
-
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    return module.exports = factory();
-  } else if (typeof define === 'function' && define.amd) {
-    return define('muplayer/core/engines/flashCore',['muplayer/core/cfg', 'muplayer/core/utils', 'muplayer/lib/Timer', 'muplayer/core/engines/engineCore', 'muplayer/lib/jquery.swfobject'], factory);
-  } else {
-    return root._mu.FlashCore = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.EngineCore);
-  }
-})(this, function(cfg, utils, Timer, EngineCore) {
-  var ERRCODE, EVENTS, FlashCore, STATES, STATESCODE, TYPES, timerResolution, _ref;
-  _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
-  timerResolution = cfg.timerResolution;
-  STATESCODE = {
-    '-2': STATES.INIT,
-    '-1': STATES.READY,
-    '0': STATES.STOP,
-    '1': STATES.PLAY,
-    '2': STATES.PAUSE,
-    '3': STATES.END,
-    '4': STATES.BUFFERING,
-    '5': STATES.PREBUFFER,
-    '6': STATES.ERROR
-  };
-  FlashCore = (function(_super) {
-    __extends(FlashCore, _super);
-
-    FlashCore.defaults = {
-      swf: '../dist/swf/fmp.swf',
-      instanceName: 'muplayer',
-      flashVer: '9.0.0'
-    };
-
-    FlashCore.prototype._supportedTypes = ['mp3'];
-
-    FlashCore.prototype.engineType = TYPES.FLASH;
-
-    function FlashCore(options) {
-      var id, instanceName, opts;
-      this.opts = opts = $.extend(FlashCore.defaults, options);
-      this._loaded = false;
-      this._queue = [];
-      this._needFlashReady(['play', 'pause', 'stop', 'setCurrentPosition', '_setUrl', '_setVolume', '_setMute']);
-      this._unexceptionGet(['getCurrentPosition', 'getLoadedPercent', 'getTotalTime']);
-      utils.namespace('engines')[opts.instanceName] = this;
-      instanceName = '_mu.engines.' + opts.instanceName;
-      id = 'muplayer_flashcore_' + setTimeout((function() {}), 0);
-      this.flash = $.flash.create({
-        swf: opts.swf,
-        id: id,
-        height: 1,
-        width: 1,
-        allowscriptaccess: 'always',
-        wmode: 'transparent',
-        expressInstaller: opts.expressInstaller || cfg.expressInstaller,
-        flashvars: {
-          _instanceName: instanceName,
-          _buffertime: 2000
-        }
-      });
-      opts.$el.append(this.flash);
-      this._initEvents();
-    }
-
-    FlashCore.prototype._test = function(trigger) {
-      var opts;
-      opts = this.opts;
-      if (!$.flash.hasVersion(opts.flashVer)) {
-        return false;
-      }
-      trigger && this.trigger(EVENTS.INITFAIL, this.engineType);
-      return true;
-    };
-
-    FlashCore.prototype._initEvents = function() {
-      var triggerPosition, triggerProgress,
-        _this = this;
-      this.progressTimer = new Timer(timerResolution);
-      this.positionTimer = new Timer(timerResolution);
-      triggerProgress = function() {
-        var per;
-        per = _this.getLoadedPercent();
-        _this.trigger(EVENTS.PROGRESS, per);
-        if (per === 1) {
-          return _this.progressTimer.stop();
-        }
-      };
-      triggerPosition = function() {
-        return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
-      };
-      this.progressTimer.every('200 ms', triggerProgress);
-      this.positionTimer.every('200 ms', triggerPosition);
-      return this.on(EVENTS.STATECHANGE, function(e) {
-        var st;
-        st = e.newState;
-        switch (st) {
-          case STATES.PREBUFFER:
-          case STATES.PLAY:
-            _this.progressTimer.start();
-            break;
-          case STATES.PAUSE:
-          case STATES.STOP:
-            _this.progressTimer.stop();
-            break;
-          case STATES.READY:
-          case STATES.END:
-            _this.progressTimer.reset();
-        }
-        switch (st) {
-          case STATES.PLAY:
-            return _this.positionTimer.start();
-          case STATES.PAUSE:
-          case STATES.STOP:
-            _this.positionTimer.stop();
-            return triggerPosition();
-          case STATES.READY:
-          case STATES.END:
-            return _this.positionTimer.reset();
-        }
-      });
-    };
-
-    FlashCore.prototype._needFlashReady = function(fnames) {
-      var name, _i, _len, _results,
-        _this = this;
-      _results = [];
-      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
-        name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], function() {
-          var args, fn;
-          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-          if (_this._loaded) {
-            fn.apply(_this, args);
-          } else {
-            _this._pushQueue(fn, args);
-          }
-          return _this;
-        }));
-      }
-      return _results;
-    };
-
-    FlashCore.prototype._unexceptionGet = function(fnames) {
-      var name, _i, _len, _results,
-        _this = this;
-      _results = [];
-      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
-        name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], function() {
-          var args, fn;
-          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-          try {
-            return fn.apply(_this, args);
-          } catch (_error) {
-            return 0;
-          }
-        }));
-      }
-      return _results;
-    };
-
-    FlashCore.prototype._pushQueue = function(fn, args) {
-      return this._queue.push([fn, args]);
-    };
-
-    FlashCore.prototype._fireQueue = function() {
-      var args, fn, l, _ref1, _results;
-      l = this._queue.length;
-      _results = [];
-      while (l--) {
-        _ref1 = this._queue.shift(), fn = _ref1[0], args = _ref1[1];
-        _results.push(fn.apply(this, args));
-      }
-      return _results;
-    };
-
-    FlashCore.prototype.play = function() {
-      this.flash.f_play();
-      return this;
-    };
-
-    FlashCore.prototype.pause = function() {
-      this.flash.f_pause();
-      return this;
-    };
-
-    FlashCore.prototype.stop = function() {
-      this.flash.f_stop();
-      return this;
-    };
-
-    FlashCore.prototype._setUrl = function(url) {
-      return this.flash.f_load(url);
-    };
-
-    FlashCore.prototype.setUrl = function(url) {
-      var _this = this;
-      this._setUrl(url);
-      (function() {
-        var check, checker;
-        checker = null;
-        check = function(e) {
-          if (e.newState === STATES.PLAY && e.oldState === STATES.PREBUFFER) {
-            return checker = setTimeout(function() {
-              _this.off(EVENTS.STATECHANGE, check);
-              if (_this.getCurrentPosition() < 100) {
-                _this.setState(STATES.ERROR);
-                return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
-              }
-            }, 2000);
-          } else {
-            return clearTimeout(checker);
-          }
-        };
-        return _this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
-      })();
-      return FlashCore.__super__.setUrl.call(this, url);
-    };
-
-    FlashCore.prototype.getState = function(code) {
-      return STATESCODE[code] || this._status;
-    };
-
-    FlashCore.prototype._setVolume = function(volume) {
-      return this.flash.setData('volume', volume);
-    };
-
-    FlashCore.prototype.setVolume = function(volume) {
-      if (!((0 <= volume && volume <= 100))) {
-        this;
-      }
-      this._setVolume(volume);
-      return FlashCore.__super__.setVolume.call(this, volume);
-    };
-
-    FlashCore.prototype._setMute = function(mute) {
-      return this.flash.setData('mute', mute);
-    };
-
-    FlashCore.prototype.setMute = function(mute) {
-      mute = !!mute;
-      this._setMute(mute);
-      return FlashCore.__super__.setMute.call(this, mute);
-    };
-
-    FlashCore.prototype.setCurrentPosition = function(ms) {
-      this.flash.f_play(ms);
-      return this;
-    };
-
-    FlashCore.prototype.getCurrentPosition = function() {
-      return this.flash.getData('currentPosition');
-    };
-
-    FlashCore.prototype.getLoadedPercent = function() {
-      return this.flash.getData('loadedPct');
-    };
-
-    FlashCore.prototype.getTotalTime = function() {
-      return this.flash.getData('length');
-    };
-
-    FlashCore.prototype._swfOnLoad = function() {
-      var _this = this;
-      this.setState(STATES.READY);
-      this.trigger(EVENTS.INIT, this.engineType);
-      this._loaded = true;
-      return setTimeout(function() {
-        return _this._fireQueue();
-      }, 0);
-    };
-
-    FlashCore.prototype._swfOnStateChange = function(code) {
-      return this.setState(this.getState(code));
-    };
-
-    return FlashCore;
-
-  })(EngineCore);
-  return FlashCore;
-});
-
 (function(root, factory) {
   if (typeof exports === 'object') {
     return module.exports = factory();
@@ -1824,7 +1432,6 @@ var __hasProp = {}.hasOwnProperty,
             , 'muplayer/lib/events'
             , 'muplayer/core/engines/engineCore'
             , 'muplayer/core/engines/audioCore'
-                        , 'muplayer/core/engines/flashCore'
                     ], factory);
   } else {
     return root._mu.Engine = factory(
@@ -1833,7 +1440,6 @@ var __hasProp = {}.hasOwnProperty,
             , _mu.Events
             , _mu.EngineCore
             , _mu.AudioCore
-                        , _mu.FlashCore
                     );
   }
 })(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashCore) {
@@ -1846,9 +1452,6 @@ var __hasProp = {}.hasOwnProperty,
       type: 'mp3',
       el: '<div id="muplayer_container_' + (+new Date()) + '" style="width: 1px; height: 1px; overflow: hidden"></div>',
       engines: [
-                                {
-                    constructor: FlashCore
-                },
                                 {
                     constructor: AudioCore
                 }
