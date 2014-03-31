@@ -1,8 +1,6 @@
 do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
-    {TYPES, EVENTS, STATES, ERRCODE} = cfg.engine
-
     win = window
-    emptyMP3 = cfg.emptyMP3
+    {TYPES, EVENTS, STATES, ERRCODE} = cfg.engine
 
     class AudioCore extends EngineCore
         @defaults:
@@ -11,6 +9,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             confidence: 'maybe'
             preload: false
             autoplay: false
+            emptyMP3: cfg.emptyMP3
         _supportedTypes: []
         engineType: TYPES.AUDIO
 
@@ -31,6 +30,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             audio = new Audio()
             audio.preload = opts.preload
             audio.autoplay = opts.autoplay
+            audio.loop = false
             # event listener封装, 支持链式调用。
             audio.on = (type, listener) =>
                 audio.addEventListener(type, listener, false)
@@ -47,7 +47,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             playEmpty = () =>
-                @setUrl(emptyMP3).play()
+                @setUrl(opts.emptyMP3).play()
                 win.removeEventListener('touchstart', playEmpty, false)
             win.addEventListener('touchstart', playEmpty, false)
 
@@ -60,7 +60,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
         _initEvents: () ->
             trigger = @trigger
             @trigger = (type, listener) =>
-                trigger.call(@, type, listener) if @getUrl() isnt emptyMP3
+                trigger.call(@, type, listener) if @getUrl() isnt @opts.emptyMP3
 
             @audio.on('loadstart', () =>
                 @setState(STATES.PREBUFFER)
@@ -107,7 +107,13 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             @
 
         stop: () ->
-            @setCurrentPosition(0).pause()
+            # FIXED: https://github.com/Baidu-Music-FE/muplayer/issues/2
+            # 不能用setCurrentPosition(0)，似乎是因为_needCanPlay包装器使
+            # 该方法成为了非同步方法, 导致执行顺序和预期不符。
+            try
+                @audio.currentTime = 0
+            catch
+            @pause()
 
         setUrl: (url = '') ->
             @audio.src = url

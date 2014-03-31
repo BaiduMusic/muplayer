@@ -72,6 +72,7 @@ do (root = this, factory = (utils, Events) ->
                 when 'list'
                     if i = 0
                         @cur = list[0]
+                        # false作为返回值以终止循环播放，详见player的next方法
                         return false
                 when 'list-random'
                     i = @_listRandomIndex--
