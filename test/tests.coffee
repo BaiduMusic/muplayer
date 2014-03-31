@@ -41,13 +41,13 @@ test 'wrap', ->
 # player
 ###
 p = new _mu.Player
-mp3Path = '/mp3/'
+mp3Path = '../dist/mp3/'
 
 module 'player',
     setup: () ->
         p.add([
-            mp3Path + '1.mp3'
-            mp3Path + '2.mp3'
+            mp3Path + 'rain.mp3'
+            mp3Path + 'walking.mp3'
         ])
     teardown: () ->
         p.off().reset()
@@ -56,4 +56,4 @@ asyncTest 'play', 1, ->
     p.on 'play', () ->
         ok(true)
         start()
-    p.play(true)
+    p.play()

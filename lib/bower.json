@@ -1,6 +1,6 @@
 {
   "name": "muplayer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "authors": [
     "kiwi <kiwi.sedna@gmail.com>"
   ],
@@ -20,6 +20,7 @@
     "jquery-ui": "~1.10.3",
     "prefixfree": "*",
     "prism": "gh-pages",
-    "qunit": "~1.13.0"
+    "qunit": "~1.13.0",
+    "zepto": "~1.1.3"
   }
 }
