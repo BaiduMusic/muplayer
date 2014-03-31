@@ -62,7 +62,19 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             @trigger = (type, listener) =>
                 trigger.call(@, type, listener) if @getUrl() isnt @opts.emptyMP3
 
+            buffer = (per) =>
+                @setState(STATES.BUFFERING)
+                @trigger(EVENTS.PROGRESS, per or @getLoadedPercent())
+
+            progressTimer = null
             @audio.on('loadstart', () =>
+                audio = @audio
+                # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
+                # “万能的”计时器轮询计算加载进度
+                progressTimer = setInterval(() ->
+                    return clearInterval(progressTimer) if audio.readyState > 1
+                    buffer()
+                , 50)
                 @setState(STATES.PREBUFFER)
             ).on('playing', () =>
                 @setState(STATES.PLAY)
@@ -77,10 +89,12 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
                 @setState(@getCurrentPosition() and STATES.BUFFERING or STATES.PREBUFFER)
             ).on('timeupdate', () =>
                 @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
-            ).on('progress', () =>
-                # TODO: 还需要progress事件, 暂时因为IOS及Chrome下会因歌曲缓存导致progress不被触发而未被添加。
-                # 后续应参考audiojs的方式解决:
-                # https://github.com/kolber/audiojs/blob/44b1359a9f486c93ff5bd15e225449bc436ff6b0/audiojs/audio.js#L501
+            ).on('progress', (e) ->
+                clearInterval(progressTimer)
+                # firefox 3.6 implements e.loaded/total (bytes)
+                loaded = e.loaded or 0
+                total = e.total or 1
+                buffer(loaded and (loaded / total).toFixed(2) * 1)
             )
 
         _needCanPlay: (fnames) ->
