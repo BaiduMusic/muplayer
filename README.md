@@ -1,6 +1,7 @@
 # muplayer概述
 
 **muplayer** 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及 Flash 音频技术，实现了*跨平台（PC & Web App）、浏览器兼容 (ie6~9、firefox、chrome、safari etc) 及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
+如需更多项目介绍、API及Demo，可直接访问我们[muplayer的官方文档站](http://labs.music.baidu.com/demo/muplayer/doc/index.html)。
 
 
 ## 源码目录
@@ -18,7 +19,7 @@ muplayer/
 ```
 
 
-## 安装及Demo
+## 签出源码并运行本地Demo
 签出代码并安装必要依赖需执行：
 
 ```shell
@@ -32,11 +33,11 @@ cd muplayer/lib
 grunt server
 ```
 
-之后，便可以访问并查看 [本地文档及Demo](http://localhost:7777/)。
+之后，便可以访问并查看 [本地文档及Demo](http://localhost:7777/)了。
 
 
 ## API详解
-参见：[muplayer API](api.html)
+参见：[muplayer API](http://labs.music.baidu.com/demo/muplayer/doc/api.html)
 
 ## 事件说明
 在播放内核的实现中，事件的派发非常重要，这是解耦内核与UI交互的最佳方式 (客户端可自行监听需要的事件并做出相应的UI响应)。除上述部分API方法会派发诸如player:play，player:add等操作相关的事件外，下面还讲对播放状态相关的事件做一说明。
