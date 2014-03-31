@@ -30,7 +30,7 @@
     </section>
     <section class="container bs-docs-container">
       <section id="Main"><h1 id="muplayer-">muplayer概述</h1>
-<p><strong>muplayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及 Flash 音频技术，实现了<em>跨平台（PC &amp; Web App）、浏览器兼容 (ie6~9、firefox、chrome、safari etc) 及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
+<p><strong>muplayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及 Flash 音频技术，实现了<em>跨平台（PC &amp; Web App）、浏览器兼容 (ie6~9、firefox、chrome、safari etc) 及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。<br>如需更多项目介绍、API及Demo，可直接访问我们<a href="http://labs.music.baidu.com/demo/muplayer/doc/index.html">muplayer的官方文档站</a>。</p>
 <h2 id="-">源码目录</h2>
 <pre><code class="lang-text">muplayer/
   +src/             (源码)
@@ -42,15 +42,15 @@
   +doc/             (本地Demo及API文档)
   +test/            (qunit test)
   +dist/            (grunt编译后生成的最终引用文件)</code></pre>
-<h2 id="-demo">安装及Demo</h2>
+<h2 id="-demo">签出源码并运行本地Demo</h2>
 <p>签出代码并安装必要依赖需执行：</p>
 <pre><code class="lang-shell">curl https://raw.githubusercontent.com/Baidu-Music-FE/muplayer/lib/install.sh | sh</code></pre>
 <p>之后进入lib/目录并运行 <code>grunt server [-p your port]</code>，可在 <code>localhost</code> 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口 (默认是7777)：</p>
 <pre><code class="lang-shell">cd muplayer/lib
 grunt server</code></pre>
-<p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a>。</p>
+<p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a>了。</p>
 <h2 id="api-">API详解</h2>
-<p>参见：<a href="api.html">muplayer API</a></p>
+<p>参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">muplayer API</a></p>
 <h2 id="-">事件说明</h2>
 <p>在播放内核的实现中，事件的派发非常重要，这是解耦内核与UI交互的最佳方式 (客户端可自行监听需要的事件并做出相应的UI响应)。除上述部分API方法会派发诸如player:play，player:add等操作相关的事件外，下面还讲对播放状态相关的事件做一说明。<br>所有事件常量见 <code>cfg.coffee</code> 中的声明。默认对外派发的事件遵循精简且与HTML5 Auido规范统一的原则，player实例对外派发的事件点有三个：</p>
 <ol>
