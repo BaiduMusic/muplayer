@@ -995,7 +995,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._initEvents = function() {
-      var trigger,
+      var buffer, progressTimer, trigger,
         _this = this;
       trigger = this.trigger;
       this.trigger = function(type, listener) {
@@ -1003,7 +1003,20 @@ var __hasProp = {}.hasOwnProperty,
           return trigger.call(_this, type, listener);
         }
       };
+      buffer = function(per) {
+        _this.setState(STATES.BUFFERING);
+        return _this.trigger(EVENTS.PROGRESS, per || _this.getLoadedPercent());
+      };
+      progressTimer = null;
       return this.audio.on('loadstart', function() {
+        var audio;
+        audio = _this.audio;
+        progressTimer = setInterval(function() {
+          if (audio.readyState > 1) {
+            return clearInterval(progressTimer);
+          }
+          return buffer();
+        }, 50);
         return _this.setState(STATES.PREBUFFER);
       }).on('playing', function() {
         return _this.setState(STATES.PLAY);
@@ -1018,7 +1031,13 @@ var __hasProp = {}.hasOwnProperty,
         return _this.setState(_this.getCurrentPosition() && STATES.BUFFERING || STATES.PREBUFFER);
       }).on('timeupdate', function() {
         return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
-      }).on('progress', function() {});
+      }).on('progress', function(e) {
+        var loaded, total;
+        clearInterval(progressTimer);
+        loaded = e.loaded || 0;
+        total = e.total || 1;
+        return buffer(loaded && (loaded / total).toFixed(2) * 1);
+      });
     };
 
     AudioCore.prototype._needCanPlay = function(fnames) {
