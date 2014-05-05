@@ -5,7 +5,7 @@ if [ $1 ]; then
     dir=$1
 fi
 
-git clone ssh://git@bd.ysmood.org:8022/music-fe/muplayer.git $dir
+git clone https://github.com/Baidu-Music-FE/muplayer.git $dir
 
 cd $dir/lib
 
