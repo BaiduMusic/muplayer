@@ -17,7 +17,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
     class FlashCore extends EngineCore
         @defaults:
             swf: '../dist/swf/fmp.swf'
-            instanceName: 'muplayer'
+            instanceName: 'FlashCore'
             flashVer: '9.0.0'
         _supportedTypes: ['mp3']
         engineType: TYPES.FLASH
@@ -51,7 +51,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 expressInstaller: opts.expressInstaller or cfg.expressInstaller
                 flashvars:
                     _instanceName: instanceName
-                    _buffertime: 2000
+                    _buffertime: 5000
             opts.$el.append(@flash)
             @_initEvents()
 
