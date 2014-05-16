@@ -1,5 +1,5 @@
 ##
-# EngineCore是FlashCore, AudioCore等播放内核的基类
+# EngineCore是FlashMP3Core, AudioCore等播放内核的基类
 ##
 do (root = this, factory = (cfg, utils, Events) ->
     {EVENTS, STATES} = cfg.engine

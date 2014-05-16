@@ -27,7 +27,7 @@
     expressInstaller: '../dist/swf/expressInstall.swf',
     engine: {
       TYPES: {
-        FLASH: 'FlashCore',
+        FLASH_MP3: 'FlashMP3Core',
         AUDIO: 'AudioCore'
       },
       EVENTS: {
@@ -1560,12 +1560,12 @@ var __hasProp = {}.hasOwnProperty,
   if (typeof exports === 'object') {
     return module.exports = factory();
   } else if (typeof define === 'function' && define.amd) {
-    return define('muplayer/core/engines/flashCore',['muplayer/core/cfg', 'muplayer/core/utils', 'muplayer/lib/Timer', 'muplayer/core/engines/engineCore', 'muplayer/lib/jquery.swfobject'], factory);
+    return define('muplayer/core/engines/flashMP3Core',['muplayer/core/cfg', 'muplayer/core/utils', 'muplayer/lib/Timer', 'muplayer/core/engines/engineCore', 'muplayer/lib/jquery.swfobject'], factory);
   } else {
-    return root._mu.FlashCore = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.EngineCore);
+    return root._mu.FlashMP3Core = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.EngineCore);
   }
 })(this, function(cfg, utils, Timer, EngineCore) {
-  var ERRCODE, EVENTS, FlashCore, STATES, STATESCODE, TYPES, timerResolution, _ref;
+  var ERRCODE, EVENTS, FlashMP3Core, STATES, STATESCODE, TYPES, timerResolution, _ref;
   _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
   timerResolution = cfg.timerResolution;
   STATESCODE = {
@@ -1577,22 +1577,22 @@ var __hasProp = {}.hasOwnProperty,
     '5': STATES.STOP,
     '6': STATES.END
   };
-  FlashCore = (function(_super) {
-    __extends(FlashCore, _super);
+  FlashMP3Core = (function(_super) {
+    __extends(FlashMP3Core, _super);
 
-    FlashCore.defaults = {
+    FlashMP3Core.defaults = {
       swf: '../dist/swf/muplayer_mp3.swf',
       instanceName: 'MP3Core',
       flashVer: '9.0.0'
     };
 
-    FlashCore.prototype._supportedTypes = ['mp3'];
+    FlashMP3Core.prototype._supportedTypes = ['mp3'];
 
-    FlashCore.prototype.engineType = TYPES.FLASH;
+    FlashMP3Core.prototype.engineType = TYPES.FLASH_MP3;
 
-    function FlashCore(options) {
+    function FlashMP3Core(options) {
       var id, instanceName, opts;
-      this.opts = opts = $.extend(FlashCore.defaults, options);
+      this.opts = opts = $.extend(FlashMP3Core.defaults, options);
       this._loaded = false;
       this._queue = [];
       this._needFlashReady(['play', 'pause', 'stop', 'setCurrentPosition', '_setUrl', '_setVolume', '_setMute']);
@@ -1617,7 +1617,7 @@ var __hasProp = {}.hasOwnProperty,
       this._initEvents();
     }
 
-    FlashCore.prototype._test = function(trigger) {
+    FlashMP3Core.prototype._test = function(trigger) {
       var opts;
       opts = this.opts;
       if (!$.flash.hasVersion(opts.flashVer)) {
@@ -1627,7 +1627,7 @@ var __hasProp = {}.hasOwnProperty,
       return true;
     };
 
-    FlashCore.prototype._initEvents = function() {
+    FlashMP3Core.prototype._initEvents = function() {
       var triggerPosition, triggerProgress,
         _this = this;
       this.progressTimer = new Timer(timerResolution);
@@ -1673,7 +1673,7 @@ var __hasProp = {}.hasOwnProperty,
       });
     };
 
-    FlashCore.prototype._needFlashReady = function(fnames) {
+    FlashMP3Core.prototype._needFlashReady = function(fnames) {
       var name, _i, _len, _results,
         _this = this;
       _results = [];
@@ -1693,7 +1693,7 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashCore.prototype._unexceptionGet = function(fnames) {
+    FlashMP3Core.prototype._unexceptionGet = function(fnames) {
       var name, _i, _len, _results,
         _this = this;
       _results = [];
@@ -1712,11 +1712,11 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashCore.prototype._pushQueue = function(fn, args) {
+    FlashMP3Core.prototype._pushQueue = function(fn, args) {
       return this._queue.push([fn, args]);
     };
 
-    FlashCore.prototype._fireQueue = function() {
+    FlashMP3Core.prototype._fireQueue = function() {
       var args, fn, l, _ref1, _results;
       l = this._queue.length;
       _results = [];
@@ -1727,26 +1727,26 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashCore.prototype.play = function() {
+    FlashMP3Core.prototype.play = function() {
       this.flash.play();
       return this;
     };
 
-    FlashCore.prototype.pause = function() {
+    FlashMP3Core.prototype.pause = function() {
       this.flash.pause();
       return this;
     };
 
-    FlashCore.prototype.stop = function() {
+    FlashMP3Core.prototype.stop = function() {
       this.flash.stop();
       return this;
     };
 
-    FlashCore.prototype._setUrl = function(url) {
+    FlashMP3Core.prototype._setUrl = function(url) {
       return this.flash.load(url);
     };
 
-    FlashCore.prototype.setUrl = function(url) {
+    FlashMP3Core.prototype.setUrl = function(url) {
       var _this = this;
       this._setUrl(url);
       (function() {
@@ -1767,53 +1767,53 @@ var __hasProp = {}.hasOwnProperty,
         };
         return _this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
       })();
-      return FlashCore.__super__.setUrl.call(this, url);
+      return FlashMP3Core.__super__.setUrl.call(this, url);
     };
 
-    FlashCore.prototype.getState = function(code) {
+    FlashMP3Core.prototype.getState = function(code) {
       return STATESCODE[code] || this._status;
     };
 
-    FlashCore.prototype._setVolume = function(volume) {
+    FlashMP3Core.prototype._setVolume = function(volume) {
       return this.flash.setData('volume', volume);
     };
 
-    FlashCore.prototype.setVolume = function(volume) {
+    FlashMP3Core.prototype.setVolume = function(volume) {
       if (!((0 <= volume && volume <= 100))) {
         this;
       }
       this._setVolume(volume);
-      return FlashCore.__super__.setVolume.call(this, volume);
+      return FlashMP3Core.__super__.setVolume.call(this, volume);
     };
 
-    FlashCore.prototype._setMute = function(mute) {
+    FlashMP3Core.prototype._setMute = function(mute) {
       return this.flash.setData('mute', mute);
     };
 
-    FlashCore.prototype.setMute = function(mute) {
+    FlashMP3Core.prototype.setMute = function(mute) {
       mute = !!mute;
       this._setMute(mute);
-      return FlashCore.__super__.setMute.call(this, mute);
+      return FlashMP3Core.__super__.setMute.call(this, mute);
     };
 
-    FlashCore.prototype.setCurrentPosition = function(ms) {
+    FlashMP3Core.prototype.setCurrentPosition = function(ms) {
       this.flash.play(ms);
       return this;
     };
 
-    FlashCore.prototype.getCurrentPosition = function() {
+    FlashMP3Core.prototype.getCurrentPosition = function() {
       return this.flash.getData('position');
     };
 
-    FlashCore.prototype.getLoadedPercent = function() {
+    FlashMP3Core.prototype.getLoadedPercent = function() {
       return this.flash.getData('loadedPct');
     };
 
-    FlashCore.prototype.getTotalTime = function() {
+    FlashMP3Core.prototype.getTotalTime = function() {
       return this.flash.getData('length');
     };
 
-    FlashCore.prototype._swfOnLoad = function() {
+    FlashMP3Core.prototype._swfOnLoad = function() {
       var _this = this;
       this._loaded = true;
       return setTimeout(function() {
@@ -1821,18 +1821,18 @@ var __hasProp = {}.hasOwnProperty,
       }, 0);
     };
 
-    FlashCore.prototype._swfOnStateChange = function(code) {
+    FlashMP3Core.prototype._swfOnStateChange = function(code) {
       return this.setState(this.getState(code));
     };
 
-    FlashCore.prototype._swfOnErr = function(e) {
+    FlashMP3Core.prototype._swfOnErr = function(e) {
       return typeof console !== "undefined" && console !== null ? console.error(e) : void 0;
     };
 
-    return FlashCore;
+    return FlashMP3Core;
 
   })(EngineCore);
-  return FlashCore;
+  return FlashMP3Core;
 });
 
 (function(root, factory) {
@@ -1845,7 +1845,7 @@ var __hasProp = {}.hasOwnProperty,
             , 'muplayer/lib/events'
             , 'muplayer/core/engines/engineCore'
             , 'muplayer/core/engines/audioCore'
-                        , 'muplayer/core/engines/flashCore'
+                        , 'muplayer/core/engines/flashMP3Core'
                     ], factory);
   } else {
     return root._mu.Engine = factory(
@@ -1854,10 +1854,10 @@ var __hasProp = {}.hasOwnProperty,
             , _mu.Events
             , _mu.EngineCore
             , _mu.AudioCore
-                        , _mu.FlashCore
+                        , _mu.FlashMP3Core
                     );
   }
-})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashCore) {
+})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) {
   var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
@@ -1868,7 +1868,7 @@ var __hasProp = {}.hasOwnProperty,
       el: '<div id="muplayer_container_' + (+new Date()) + '" style="width: 1px; height: 1px; overflow: hidden"></div>',
       engines: [
                                 {
-                    constructor: FlashCore
+                    constructor: FlashMP3Core
                 },
                                 {
                     constructor: AudioCore
@@ -2114,12 +2114,12 @@ var __hasProp = {}.hasOwnProperty,
      *  </tr>
      *  <tr>
      *    <td>engine</td>
-     *    <td>初始化Engine，根据传入的engines来指定具体使用FlashCore还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
+     *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
      *    engines: [{<br>
-     *    <span class="ts"></span>constructor: 'FlashCore',<br>
-     *    <span class="ts"></span>args: { // 初始化FlashCore的参数<br>
-     *    <span class="ts2"></span>swf: '../dist/swf/fmp.swf' // 对应的swf文件路径<br>
+     *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
+     *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
+     *    <span class="ts2"></span>swf: '../dist/swf/muplayer_mp3.swf' // 对应的swf文件路径<br>
      *    <span class="ts"></span>}<br>
      *    }, {<br>
      *    <span class="ts"></span>constructor: 'AudioCore'<br>

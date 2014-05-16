@@ -14,7 +14,7 @@ do (root = this, factory = () ->
         expressInstaller: '../dist/swf/expressInstall.swf'
         engine:
             TYPES:
-                FLASH: 'FlashCore'
+                FLASH_MP3: 'FlashMP3Core'
                 AUDIO: 'AudioCore'
             EVENTS:
                 STATECHANGE: 'engine:statechange'       # 播放状态改变事件(STATES)

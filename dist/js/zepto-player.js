@@ -320,7 +320,7 @@
     expressInstaller: '../dist/swf/expressInstall.swf',
     engine: {
       TYPES: {
-        FLASH: 'FlashCore',
+        FLASH_MP3: 'FlashMP3Core',
         AUDIO: 'AudioCore'
       },
       EVENTS: {
@@ -1465,7 +1465,7 @@ var __hasProp = {}.hasOwnProperty,
             , _mu.AudioCore
                     );
   }
-})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashCore) {
+})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) {
   var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
@@ -1719,12 +1719,12 @@ var __hasProp = {}.hasOwnProperty,
      *  </tr>
      *  <tr>
      *    <td>engine</td>
-     *    <td>初始化Engine，根据传入的engines来指定具体使用FlashCore还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
+     *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
      *    engines: [{<br>
-     *    <span class="ts"></span>constructor: 'FlashCore',<br>
-     *    <span class="ts"></span>args: { // 初始化FlashCore的参数<br>
-     *    <span class="ts2"></span>swf: '../dist/swf/fmp.swf' // 对应的swf文件路径<br>
+     *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
+     *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
+     *    <span class="ts2"></span>swf: '../dist/swf/muplayer_mp3.swf' // 对应的swf文件路径<br>
      *    <span class="ts"></span>}<br>
      *    }, {<br>
      *    <span class="ts"></span>constructor: 'AudioCore'<br>
