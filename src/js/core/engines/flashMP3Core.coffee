@@ -12,16 +12,16 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
         '5': STATES.STOP
         '6': STATES.END
 
-    class FlashCore extends EngineCore
+    class FlashMP3Core extends EngineCore
         @defaults:
             swf: '../dist/swf/muplayer_mp3.swf'
             instanceName: 'MP3Core'
             flashVer: '9.0.0'
         _supportedTypes: ['mp3']
-        engineType: TYPES.FLASH
+        engineType: TYPES.FLASH_MP3
 
         constructor: (options) ->
-            @opts = opts = $.extend(FlashCore.defaults, options)
+            @opts = opts = $.extend(FlashMP3Core.defaults, options)
             @_loaded = false
             @_queue = []
 
@@ -210,7 +210,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
         _swfOnErr: (e) ->
             console?.error(e)
 
-    FlashCore
+    FlashMP3Core
 ) ->
     if typeof exports is 'object'
         module.exports = factory()
@@ -223,7 +223,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             'muplayer/lib/jquery.swfobject'
         ], factory)
     else
-        root._mu.FlashCore = factory(
+        root._mu.FlashMP3Core = factory(
             _mu.cfg
             _mu.utils
             _mu.Timer

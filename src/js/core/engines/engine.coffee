@@ -1,4 +1,4 @@
-do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashCore) ->
+do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) ->
     {EVENTS, STATES} = cfg.engine
     timerResolution = cfg.timerResolution
     extReg = /\.(.+)(\?|$)/
@@ -12,7 +12,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashCore
             engines: `[
                 //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
                 {
-                    constructor: FlashCore
+                    constructor: FlashMP3Core
                 },
                 //>>excludeEnd("FlashCoreExclude");
                 {
@@ -182,7 +182,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashCore
             , 'muplayer/core/engines/engineCore'
             , 'muplayer/core/engines/audioCore'
             //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
-            , 'muplayer/core/engines/flashCore'
+            , 'muplayer/core/engines/flashMP3Core'
             //>>excludeEnd("FlashCoreExclude");
         ], factory)`
     else
@@ -193,6 +193,6 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashCore
             , _mu.EngineCore
             , _mu.AudioCore
             //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
-            , _mu.FlashCore
+            , _mu.FlashMP3Core
             //>>excludeEnd("FlashCoreExclude");
         )`
