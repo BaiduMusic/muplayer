@@ -53,7 +53,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
 
         _test: (trigger) ->
             return false if Modernizr.audio is false or @_supportedTypes.length is 0
-            trigger and @trigger(EVENTS.INITFAIL, @engineType)
+            trigger and @trigger(EVENTS.INIT_FAIL, @engineType)
             true
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
@@ -77,13 +77,13 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
                 , 50)
                 @setState(STATES.PREBUFFER)
             ).on('playing', () =>
-                @setState(STATES.PLAY)
+                @setState(STATES.PLAYING)
             ).on('pause', () =>
                 @setState(@getCurrentPosition() and STATES.PAUSE or STATES.STOP)
             ).on('ended', () =>
                 @setState(STATES.END)
             ).on('error', () =>
-                @setState(STATES.ERR)
+                @setState(STATES.END)
                 @trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK)
             ).on('waiting', () =>
                 @setState(@getCurrentPosition() and STATES.BUFFERING or STATES.PREBUFFER)

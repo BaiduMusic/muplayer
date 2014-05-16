@@ -4,20 +4,18 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
 
     # fmp.swf中约定的状态返回码。
     STATESCODE =
-        '-2': STATES.INIT
-        '-1': STATES.READY
-        '0': STATES.STOP
-        '1': STATES.PLAY
-        '2': STATES.PAUSE
-        '3': STATES.END
-        '4': STATES.BUFFERING
-        '5': STATES.PREBUFFER
-        '6': STATES.ERROR
+        '-1': STATES.NOT_INIT
+        '1': STATES.PREBUFFER
+        '2': STATES.BUFFERING
+        '3': STATES.PLAYING
+        '4': STATES.PAUSE
+        '5': STATES.STOP
+        '6': STATES.END
 
     class FlashCore extends EngineCore
         @defaults:
-            swf: '../dist/swf/fmp.swf'
-            instanceName: 'FlashCore'
+            swf: '../dist/swf/muplayer_mp3.swf'
+            instanceName: 'MP3Core'
             flashVer: '9.0.0'
         _supportedTypes: ['mp3']
         engineType: TYPES.FLASH
@@ -86,21 +84,21 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 # switch中会更灵活, 即便逻辑基本一致也不要混在一起,
                 # 后续好扩展。
                 switch st
-                    when STATES.PREBUFFER, STATES.PLAY
+                    when STATES.PREBUFFER, STATES.PLAYING
                         @progressTimer.start()
                     when STATES.PAUSE, STATES.STOP
                         @progressTimer.stop()
-                    when STATES.READY, STATES.END
+                    when STATES.END
                         @progressTimer.reset()
 
                 switch st
-                    when STATES.PLAY
+                    when STATES.PLAYING
                         @positionTimer.start()
                     when STATES.PAUSE, STATES.STOP
                         @positionTimer.stop()
                         # 防止轮询延迟, 暂停时主动trigger, 保证进度准确。
                         triggerPosition()
-                    when STATES.READY, STATES.END
+                    when STATES.END
                         @positionTimer.reset()
 
         # 需要依赖flash加载后执行的方法包装器。
@@ -133,19 +131,19 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 fn.apply(@, args)
 
         play: () ->
-            @flash.f_play()
+            @flash.play()
             @
 
         pause: () ->
-            @flash.f_pause()
+            @flash.pause()
             @
 
         stop: () ->
-            @flash.f_stop()
+            @flash.stop()
             @
 
         _setUrl: (url) ->
-            @flash.f_load(url)
+            @flash.load(url)
 
         setUrl: (url) ->
             @_setUrl(url)
@@ -158,7 +156,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                         checker = setTimeout(() =>
                             @off(EVENTS.STATECHANGE, check)
                             if @getCurrentPosition() < 100
-                                @setState(STATES.ERROR)
+                                @setState(STATES.END)
                                 @trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED)
                         , 2000)
                     else
@@ -186,11 +184,11 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             super(mute)
 
         setCurrentPosition: (ms) ->
-            @flash.f_play(ms)
+            @flash.play(ms)
             @
 
         getCurrentPosition: () ->
-            @flash.getData('currentPosition')
+            @flash.getData('position')
 
         getLoadedPercent: () ->
             @flash.getData('loadedPct')
@@ -200,8 +198,6 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
 
         # _swf前缀的都是AS的回调方法。
         _swfOnLoad: () ->
-            @setState(STATES.READY)
-            @trigger(EVENTS.INIT, @engineType)
             @_loaded = true
             # 加延时为0的setTimeout是为了防止_fireQueue时阻塞页面动画等效果。
             setTimeout(() =>
@@ -210,6 +206,9 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
 
         _swfOnStateChange: (code) ->
             @setState(@getState(code))
+
+        _swfOnErr: (e) ->
+            console?.error(e)
 
     FlashCore
 ) ->

@@ -36,18 +36,16 @@
         PROGRESS: 'engine:progress',
         ERROR: 'engine:error',
         INIT: 'engine:init',
-        INITFAIL: 'engine:initfail'
+        INIT_FAIL: 'engine:init_fail'
       },
       STATES: {
-        INIT: 'init',
-        READY: 'ready',
-        STOP: 'stop',
-        PLAY: 'play',
-        PAUSE: 'pause',
-        END: 'end',
-        BUFFERING: 'buffering',
-        PREBUFFER: 'pre-buffer',
-        ERROR: 'error'
+        NOT_INIT: 'player:not_init',
+        PREBUFFER: 'player:prebuffer',
+        BUFFERING: 'player:buffering',
+        PLAYING: 'player:playing',
+        PAUSE: 'player:pause',
+        STOP: 'player:stop',
+        END: 'player:end'
       },
       ERRCODE: {
         MEDIA_ERR_ABORTED: '1',
@@ -633,7 +631,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.reset = function() {
       this.stop();
       this.setUrl();
-      this.setState(STATES.READY);
+      this.setState(STATES.END);
       return this;
     };
 
@@ -662,17 +660,17 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     EngineCore.prototype.setState = function(st) {
-      if (__indexOf.call(availableStates, st) >= 0 && st !== this._status) {
-        this._status = st;
+      if (__indexOf.call(availableStates, st) >= 0 && st !== this._state) {
+        this._state = st;
         return this.trigger(EVENTS.STATECHANGE, {
-          oldState: this._status,
+          oldState: this._state,
           newState: st
         });
       }
     };
 
     EngineCore.prototype.getState = function() {
-      return this._status;
+      return this._state;
     };
 
     EngineCore.prototype.setVolume = function(volume) {
@@ -990,7 +988,7 @@ var __hasProp = {}.hasOwnProperty,
       if (Modernizr.audio === false || this._supportedTypes.length === 0) {
         return false;
       }
-      trigger && this.trigger(EVENTS.INITFAIL, this.engineType);
+      trigger && this.trigger(EVENTS.INIT_FAIL, this.engineType);
       return true;
     };
 
@@ -1019,13 +1017,13 @@ var __hasProp = {}.hasOwnProperty,
         }, 50);
         return _this.setState(STATES.PREBUFFER);
       }).on('playing', function() {
-        return _this.setState(STATES.PLAY);
+        return _this.setState(STATES.PLAYING);
       }).on('pause', function() {
         return _this.setState(_this.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
       }).on('ended', function() {
         return _this.setState(STATES.END);
       }).on('error', function() {
-        _this.setState(STATES.ERR);
+        _this.setState(STATES.END);
         return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK);
       }).on('waiting', function() {
         return _this.setState(_this.getCurrentPosition() && STATES.BUFFERING || STATES.PREBUFFER);
@@ -1571,22 +1569,20 @@ var __hasProp = {}.hasOwnProperty,
   _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
   timerResolution = cfg.timerResolution;
   STATESCODE = {
-    '-2': STATES.INIT,
-    '-1': STATES.READY,
-    '0': STATES.STOP,
-    '1': STATES.PLAY,
-    '2': STATES.PAUSE,
-    '3': STATES.END,
-    '4': STATES.BUFFERING,
-    '5': STATES.PREBUFFER,
-    '6': STATES.ERROR
+    '-1': STATES.NOT_INIT,
+    '1': STATES.PREBUFFER,
+    '2': STATES.BUFFERING,
+    '3': STATES.PLAYING,
+    '4': STATES.PAUSE,
+    '5': STATES.STOP,
+    '6': STATES.END
   };
   FlashCore = (function(_super) {
     __extends(FlashCore, _super);
 
     FlashCore.defaults = {
-      swf: '../dist/swf/fmp.swf',
-      instanceName: 'FlashCore',
+      swf: '../dist/swf/muplayer_mp3.swf',
+      instanceName: 'MP3Core',
       flashVer: '9.0.0'
     };
 
@@ -1654,25 +1650,23 @@ var __hasProp = {}.hasOwnProperty,
         st = e.newState;
         switch (st) {
           case STATES.PREBUFFER:
-          case STATES.PLAY:
+          case STATES.PLAYING:
             _this.progressTimer.start();
             break;
           case STATES.PAUSE:
           case STATES.STOP:
             _this.progressTimer.stop();
             break;
-          case STATES.READY:
           case STATES.END:
             _this.progressTimer.reset();
         }
         switch (st) {
-          case STATES.PLAY:
+          case STATES.PLAYING:
             return _this.positionTimer.start();
           case STATES.PAUSE:
           case STATES.STOP:
             _this.positionTimer.stop();
             return triggerPosition();
-          case STATES.READY:
           case STATES.END:
             return _this.positionTimer.reset();
         }
@@ -1734,22 +1728,22 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype.play = function() {
-      this.flash.f_play();
+      this.flash.play();
       return this;
     };
 
     FlashCore.prototype.pause = function() {
-      this.flash.f_pause();
+      this.flash.pause();
       return this;
     };
 
     FlashCore.prototype.stop = function() {
-      this.flash.f_stop();
+      this.flash.stop();
       return this;
     };
 
     FlashCore.prototype._setUrl = function(url) {
-      return this.flash.f_load(url);
+      return this.flash.load(url);
     };
 
     FlashCore.prototype.setUrl = function(url) {
@@ -1763,7 +1757,7 @@ var __hasProp = {}.hasOwnProperty,
             return checker = setTimeout(function() {
               _this.off(EVENTS.STATECHANGE, check);
               if (_this.getCurrentPosition() < 100) {
-                _this.setState(STATES.ERROR);
+                _this.setState(STATES.END);
                 return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
               }
             }, 2000);
@@ -1803,12 +1797,12 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype.setCurrentPosition = function(ms) {
-      this.flash.f_play(ms);
+      this.flash.play(ms);
       return this;
     };
 
     FlashCore.prototype.getCurrentPosition = function() {
-      return this.flash.getData('currentPosition');
+      return this.flash.getData('position');
     };
 
     FlashCore.prototype.getLoadedPercent = function() {
@@ -1821,8 +1815,6 @@ var __hasProp = {}.hasOwnProperty,
 
     FlashCore.prototype._swfOnLoad = function() {
       var _this = this;
-      this.setState(STATES.READY);
-      this.trigger(EVENTS.INIT, this.engineType);
       this._loaded = true;
       return setTimeout(function() {
         return _this._fireQueue();
@@ -1831,6 +1823,10 @@ var __hasProp = {}.hasOwnProperty,
 
     FlashCore.prototype._swfOnStateChange = function(code) {
       return this.setState(this.getState(code));
+    };
+
+    FlashCore.prototype._swfOnErr = function(e) {
+      return typeof console !== "undefined" && console !== null ? console.error(e) : void 0;
     };
 
     return FlashCore;
