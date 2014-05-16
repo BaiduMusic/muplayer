@@ -329,18 +329,16 @@
         PROGRESS: 'engine:progress',
         ERROR: 'engine:error',
         INIT: 'engine:init',
-        INITFAIL: 'engine:initfail'
+        INIT_FAIL: 'engine:init_fail'
       },
       STATES: {
-        INIT: 'init',
-        READY: 'ready',
-        STOP: 'stop',
-        PLAY: 'play',
-        PAUSE: 'pause',
-        END: 'end',
-        BUFFERING: 'buffering',
-        PREBUFFER: 'pre-buffer',
-        ERROR: 'error'
+        NOT_INIT: 'player:not_init',
+        PREBUFFER: 'player:prebuffer',
+        BUFFERING: 'player:buffering',
+        PLAYING: 'player:playing',
+        PAUSE: 'player:pause',
+        STOP: 'player:stop',
+        END: 'player:end'
       },
       ERRCODE: {
         MEDIA_ERR_ABORTED: '1',
@@ -926,7 +924,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.reset = function() {
       this.stop();
       this.setUrl();
-      this.setState(STATES.READY);
+      this.setState(STATES.END);
       return this;
     };
 
@@ -955,17 +953,17 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     EngineCore.prototype.setState = function(st) {
-      if (__indexOf.call(availableStates, st) >= 0 && st !== this._status) {
-        this._status = st;
+      if (__indexOf.call(availableStates, st) >= 0 && st !== this._state) {
+        this._state = st;
         return this.trigger(EVENTS.STATECHANGE, {
-          oldState: this._status,
+          oldState: this._state,
           newState: st
         });
       }
     };
 
     EngineCore.prototype.getState = function() {
-      return this._status;
+      return this._state;
     };
 
     EngineCore.prototype.setVolume = function(volume) {
@@ -1283,7 +1281,7 @@ var __hasProp = {}.hasOwnProperty,
       if (Modernizr.audio === false || this._supportedTypes.length === 0) {
         return false;
       }
-      trigger && this.trigger(EVENTS.INITFAIL, this.engineType);
+      trigger && this.trigger(EVENTS.INIT_FAIL, this.engineType);
       return true;
     };
 
@@ -1312,13 +1310,13 @@ var __hasProp = {}.hasOwnProperty,
         }, 50);
         return _this.setState(STATES.PREBUFFER);
       }).on('playing', function() {
-        return _this.setState(STATES.PLAY);
+        return _this.setState(STATES.PLAYING);
       }).on('pause', function() {
         return _this.setState(_this.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
       }).on('ended', function() {
         return _this.setState(STATES.END);
       }).on('error', function() {
-        _this.setState(STATES.ERR);
+        _this.setState(STATES.END);
         return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK);
       }).on('waiting', function() {
         return _this.setState(_this.getCurrentPosition() && STATES.BUFFERING || STATES.PREBUFFER);

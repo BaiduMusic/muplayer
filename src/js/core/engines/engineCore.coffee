@@ -17,7 +17,7 @@ do (root = this, factory = (cfg, utils, Events) ->
         reset: () ->
             @stop()
             @setUrl()
-            @setState(STATES.READY)
+            @setState(STATES.END)
             @
 
         play: () ->
@@ -37,15 +37,15 @@ do (root = this, factory = (cfg, utils, Events) ->
             @_url
 
         setState: (st) ->
-            if st in availableStates and st isnt @_status
-                @_status = st
+            if st in availableStates and st isnt @_state
+                @_state = st
                 @trigger(EVENTS.STATECHANGE,
-                    oldState: @_status
+                    oldState: @_state
                     newState: st
                 )
 
         getState: () ->
-            @_status
+            @_state
 
         setVolume: (volume) ->
             @_volume = volume

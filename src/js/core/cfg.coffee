@@ -22,17 +22,15 @@ do (root = this, factory = () ->
                 PROGRESS: 'engine:progress'             # 加载时加载进度改变事件
                 ERROR: 'engine:error'                   # 播放过程中出错时的事件
                 INIT: 'engine:init'                     # 播放器初始化成功时的事件
-                INITFAIL: 'engine:initfail'             # 播放器初始化失败时的事件
+                INIT_FAIL: 'engine:init_fail'           # 播放器初始化失败时的事件
             STATES:
-                INIT: 'init'                            # 等待初始化完成
-                READY: 'ready'                          # 初始化成功(DOM已加载)
-                STOP: 'stop'
-                PLAY: 'play'
-                PAUSE: 'pause'
-                END: 'end'
-                BUFFERING: 'buffering'
-                PREBUFFER: 'pre-buffer'
-                ERROR: 'error'
+                NOT_INIT: 'player:not_init'
+                PREBUFFER: 'player:prebuffer'
+                BUFFERING: 'player:buffering'
+                PLAYING: 'player:playing'
+                PAUSE: 'player:pause'
+                STOP: 'player:stop'
+                END: 'player:end'
             # 内核错误码, 参考HTML5 Audio错误状态:
             # http://dev.w3.org/html5/spec-author-view/video.html#error-codes
             ERRCODE:
