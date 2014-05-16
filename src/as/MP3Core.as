@@ -59,7 +59,7 @@ package {
         // 默认值为1000毫秒。
         private var bufferTime:Number = 5000;
 
-        public function AudioTest() {
+        public function MP3Core() {
             this.addEventListener(Event.ENTER_FRAME, checkStage);
         }
 
