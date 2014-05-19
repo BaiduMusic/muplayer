@@ -38,9 +38,10 @@ do (root = this, factory = (cfg, utils, Events) ->
 
         setState: (st) ->
             if st in availableStates and st isnt @_state
+                oldState = @_state
                 @_state = st
                 @trigger(EVENTS.STATECHANGE,
-                    oldState: @_state
+                    oldState: oldState
                     newState: st
                 )
 

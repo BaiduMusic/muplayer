@@ -39,13 +39,13 @@
         INIT_FAIL: 'engine:init_fail'
       },
       STATES: {
-        NOT_INIT: 'player:not_init',
-        PREBUFFER: 'player:prebuffer',
-        BUFFERING: 'player:buffering',
-        PLAYING: 'player:playing',
-        PAUSE: 'player:pause',
-        STOP: 'player:stop',
-        END: 'player:end'
+        NOT_INIT: 'not_init',
+        PREBUFFER: 'prebuffer',
+        BUFFERING: 'buffering',
+        PLAYING: 'playing',
+        PAUSE: 'pause',
+        STOP: 'stop',
+        END: 'ended'
       },
       ERRCODE: {
         MEDIA_ERR_ABORTED: '1',
@@ -660,10 +660,12 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     EngineCore.prototype.setState = function(st) {
+      var oldState;
       if (__indexOf.call(availableStates, st) >= 0 && st !== this._state) {
+        oldState = this._state;
         this._state = st;
         return this.trigger(EVENTS.STATECHANGE, {
-          oldState: this._state,
+          oldState: oldState,
           newState: st
         });
       }
@@ -1771,7 +1773,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashMP3Core.prototype.getState = function(code) {
-      return STATESCODE[code] || this._status;
+      return STATESCODE[code] || this._state;
     };
 
     FlashMP3Core.prototype._setVolume = function(volume) {
@@ -2146,8 +2148,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype._initEngine = function(engine) {
       var _this = this;
-      this.engine = engine;
-      return engine.on(EVENTS.STATECHANGE, function(e) {
+      return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
         st = e.newState;
         _this.trigger(st);

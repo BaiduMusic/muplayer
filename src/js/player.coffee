@@ -64,11 +64,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             @setVolume(opts.volume)
 
         _initEngine: (engine) ->
-            @engine = engine
-
-            # 事件参考: http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#mediaevents
-            # 原则上派发的事件应保持和HTML5 Audio规范一致。
-            engine.on(EVENTS.STATECHANGE, (e) =>
+            @engine = engine.on(EVENTS.STATECHANGE, (e) =>
                 st = e.newState
                 @trigger(st)
                 if st is STATES.END

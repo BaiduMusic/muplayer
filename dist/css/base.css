@@ -1,3 +1,13 @@
+.mod {
+  margin-bottom: 50px;
+}
+.mod .hd {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
 .ts {
   margin-left: 2em;
 }
@@ -17,6 +27,12 @@
 body {
   position: relative;
   padding-top: 50px;
+}
+
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 #header {
@@ -150,7 +166,6 @@ body {
 }
 
 .jumbotron .advantages {
-  list-style: none;
   padding: 20px 0 0 50px;
   margin: 35px 0 0 0;
   border-top: 2px dashed #5bc0de;

@@ -39,38 +39,52 @@
     </section>
 
     <section id="content" class="container">
-        <h2>快速上手</h2>
-        <script src="https://gist.github.com/hustKiwi/9682427.js"></script>
-
-        <div id="demo" class="panel panel-default highlight">
-            <div class="panel-heading">
-                <h3 class="panel-title">简单的播放器示例</h3>
-            </div>
-            <div class="panel-body">
-                <div class="player-widget">
-                    <div class="opts">
-                        <span class="prev">
-                            <i class="glyphicon glyphicon-step-backward"></i>
-                        </span>
-                        <span class="ctrl">
-                            <i class="glyphicon glyphicon-play"></i>
-                        </span>
-                        <span class="next">
-                            <i class="glyphicon glyphicon-step-forward"></i>
-                        </span>
-                        <span class="mode"><i class="glyphicon glyphicon-repeat"></i></span>
-                    </div>
-                    <div class="volume">
-                        <i class="glyphicon glyphicon-volume-down"></i><span class="bar"></span>
-                    </div>
-                    <a class="avatar" href="javascript:;">
-                        <img alt="" src="../dist/img/default.jpg">
-                    </a>
-                    <div class="progress-bar"></div>
-                </div>
+        <div class="mod">
+            <div class="hd">快速上手</div>
+            <div class="bd">
+                <script src="https://gist.github.com/hustKiwi/9682427.js"></script>
             </div>
         </div>
-        <script src="https://gist.github.com/hustKiwi/9682160.js"></script>
+
+        <div class="mod">
+            <div class="hd">播放列表及交互</div>
+            <div class="bd">
+                <ul id="songs-demo">
+                    <li>雨声<span class="play-btn" data-link="../dist/mp3/rain.mp3"></span></li>
+                    <li>走路声<span class="play-btn" data-link="../dist/mp3/walking.mp3"></span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mod">
+            <div class="hd">带UI的简易播放器</div>
+            <div class="bd">
+                <div id="player-demo">
+                    <div class="player-widget">
+                        <div class="opts">
+                            <span class="prev">
+                                <i class="glyphicon glyphicon-step-backward"></i>
+                            </span>
+                            <span class="ctrl">
+                                <i class="glyphicon glyphicon-play"></i>
+                            </span>
+                            <span class="next">
+                                <i class="glyphicon glyphicon-step-forward"></i>
+                            </span>
+                            <span class="mode"><i class="glyphicon glyphicon-repeat"></i></span>
+                        </div>
+                        <div class="volume">
+                            <i class="glyphicon glyphicon-volume-down"></i><span class="bar"></span>
+                        </div>
+                        <a class="avatar" href="javascript:;">
+                            <img alt="" src="../dist/img/default.jpg">
+                        </a>
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+                <script src="https://gist.github.com/hustKiwi/9682160.js"></script>
+            </div>
+        </div>
     </section>
 
     <script src="../lib/bower_components/jquery/jquery.min.js"></script>
@@ -87,19 +101,53 @@
             }
         });
 
+        // 播放列表demo
         require([
             'muplayer/player'
         ], function(Player) {
             // 获得Player对象的实例
-            window._muplayer = player = new Player();
+            var player = new Player({
+                    mode: 'list'
+                }),
+                $songs = $('#songs-demo'),
+                reset = function() {
+                    $songs.find('.play-btn').removeClass('playing pause');
+                    $songs.find('.time').remove();
+                },
+                findCurrBtn = function() {
+                    return $songs.find('[data-link="' + player.getCur() + '"]');
+                },
+                $time = $('<span class="time"></span>');
 
-            // 将待播放歌曲的加入播放列表
-            player.add([
-                '../dist/mp3/rain.mp3',
-                '../dist/mp3/walking.mp3'
-            ]);
+            $songs.on('click', '.play-btn', function() {
+                if ($(this).hasClass('playing')) {
+                    player.pause();
+                } else {
+                    var link = $(this).data('link');
+                    //player.reset().add(link).play();
+                    player.add(link).play();
+                }
+            });
 
-            var $player = $('.player-widget'),
+            player.on('playing pause', function() {
+                reset();
+                findCurrBtn().addClass(player.getState()).after($time);
+            }).on('ended', function() {
+                player.stop();
+                reset();
+            }).on('timeupdate', function() {
+                $time.text(player.curPos(true) + ' / ' + player.duration(true));
+            });
+        });
+
+        // 播放器demo
+        /*
+        require([
+            'muplayer/player'
+        ], function(Player) {
+            // 获得Player对象的实例
+            var player = new Player(),
+                $player = $('.player-widget'),
                 $opts = $player.find('.opts'),
                 $ctrlBtn = $opts.find('.ctrl'),
                 $ctrlIcon = $ctrlBtn.find('i'),
@@ -122,7 +170,10 @@
             $ctrlBtn.click(function() {
                 if ($ctrlIcon.hasClass('glyphicon-play')) {
                     $ctrlIcon.removeClass('glyphicon-play').addClass('glyphicon-pause');
-                    player.play();
+                    player.reset().add([
+                        '../dist/mp3/rain.mp3',
+                        '../dist/mp3/walking.mp3'
+                    ]).play();
                 } else if ($ctrlIcon.hasClass('glyphicon-pause')) {
                     $ctrlIcon.removeClass('glyphicon-pause').addClass('glyphicon-play');
                     player.pause();
@@ -211,6 +262,7 @@
                 }
             });
         });
+        */
     });
     </script>
     <footer class="bs-footer">

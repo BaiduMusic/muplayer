@@ -1,3 +1,13 @@
+.mod {
+  margin-bottom: 50px;
+}
+.mod .hd {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
 .ts {
   margin-left: 2em;
 }
@@ -17,6 +27,12 @@
 body {
   position: relative;
   padding-top: 50px;
+}
+
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 #header {
@@ -150,7 +166,6 @@ body {
 }
 
 .jumbotron .advantages {
-  list-style: none;
   padding: 20px 0 0 50px;
   margin: 35px 0 0 0;
   border-top: 2px dashed #5bc0de;
@@ -168,10 +183,16 @@ body {
   border-top: 1px solid #e5e5e5;
 }
 
-#demo {
-  margin-top: 50px;
+#player-demo {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  margin-bottom: 20px;
 }
-#demo .panel-body {
+#player-demo .panel-body {
   text-align: center;
 }
 
@@ -256,6 +277,7 @@ body {
   border-radius: 50%;
   height: 35px;
   width: 35px;
+  text-align: center;
   line-height: 35px;
   border: 2px solid white;
 }
@@ -315,32 +337,38 @@ body {
   cursor: default;
 }
 
-.panel-default.highlight {
-  border: none;
+#songs-demo {
+  width: 320px;
 }
-.panel-default.highlight .panel-heading {
-  border: 1px solid #dddddd;
-  border-bottom: none;
+#songs-demo li {
+  height: 35px;
+  line-height: 35px;
+  border-bottom: 1px solid #eeeeee;
+  padding: 0 20px;
 }
-.panel-default.highlight .panel-body {
-  border: 1px solid #dddddd;
-  border-top: none;
+#songs-demo .play-btn {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 12px;
+  width: 12px;
+  background: url("../img/play.png") no-repeat;
+  -webkit-background-size: 12px, 12px;
+  -moz-background-size: 12px, 12px;
+  -o-background-size: 12px, 12px;
+  background-size: 12px, 12px;
+  overflow: hidden;
+  margin-left: 20px;
+  cursor: pointer;
 }
-.panel-default.highlight .panel-footer {
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-bottom-left-radius: 0;
-  border-bottom-left-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  -webkit-border-bottom-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top: none;
-  padding: 0;
+#songs-demo .play-btn.playing {
+  background-image: url("../img/pause.png");
 }
-.panel-default.highlight .gist-file {
-  -moz-border-radius-topleft: 0;
-  -webkit-border-top-left-radius: 0;
-  border-top-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -webkit-border-top-right-radius: 0;
-  border-top-right-radius: 0;
+#songs-demo .time {
+  font-size: 12px;
+  color: #999999;
+  margin-left: 15px;
 }
