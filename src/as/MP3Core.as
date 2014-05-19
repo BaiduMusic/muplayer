@@ -47,7 +47,7 @@ package {
         private var length:uint;                // 音频总长度(ms)
         private var position:uint;              // 当前播放进度(ms)
         private var positionPct:Number;         // 播放进度百分比[0-1]
-        private var pausePosition:uint;         // 暂停时的播放进度(ms)
+        private var pausePosition:Number;       // 暂停时的播放进度(ms)
         private var loadedPct:Number;           // 载入进度百分比[0-1]
         private var bytesTotal:uint;            // 外部文件总字节
         private var bytesLoaded:uint;           // 已载入字节
@@ -225,8 +225,12 @@ package {
 
         public function reset():void {
             // 及时做内存回收
-            s = null;
-            s = new Sound();
+            if (s) {
+                s.removeEventListener(IOErrorEvent.IO_ERROR, handleErr);
+                s.removeEventListener(Event.COMPLETE, onLoadComplete);
+                s.removeEventListener(ProgressEvent.PROGRESS, onProgress);
+                s = null;
+            }
             url = '';
             length = 0;
             position = 0;
@@ -237,17 +241,16 @@ package {
         }
 
         public function load(url:String):void {
-            if (state == S_PLAYING) {
-                stop();
-            }
+            stop();
+
             try {
-                s.close();
+                s && s.close();
             } catch (err:IOError) {
                 // Occurs if the file is either yet to be opened or has finished downloading.
+            } finally {
+                reset();
             }
-            reset();
 
-            s = null;
             s = new Sound();
             s.addEventListener(IOErrorEvent.IO_ERROR, handleErr);
             s.addEventListener(Event.COMPLETE, onLoadComplete);
@@ -261,7 +264,7 @@ package {
             s.load(req, context);
         }
 
-        public function play(p:int = 0):void {
+        public function play(p:Number = 0):void {
             if (state != S_PLAYING) {
                 if (!p && state == S_PAUSE) {
                     p = pausePosition;
@@ -270,7 +273,7 @@ package {
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
                 setState(S_PLAYING);
 
-                playerTimer = new Timer(TIMER_INTERVAL);
+                playerTimer = new Timer(TIMER_INTERVAL)
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
             }
@@ -280,10 +283,17 @@ package {
             stop(sc.position);
         }
 
-        public function stop(p:uint = 0):void {
+        public function stop(p:Number = 0):void {
             pausePosition = p;
-            sc.stop();
-            playerTimer.stop();
+            // 判断sc是否存在是因为sc在play方法调用时才被延迟初始化
+            if (sc) {
+                sc.stop();
+            }
+            if (playerTimer) {
+                playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
+                playerTimer.stop();
+                playerTimer = null;
+            }
             setState(p && S_PAUSE || S_STOP);
         }
     }
