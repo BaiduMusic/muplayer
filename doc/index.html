@@ -27,11 +27,20 @@
       <div class="container">
         <h1>muplayer『百度音频内核』</h1>
         <p> —— 百度音乐跨平台、轻量级音频播放解决方案。</p>
+        <ul class="advantages">
+          <li><i class="glyphicon glyphicon-ok"></i>多端（PC & WebApp）通用，统一的API调用方式</li>
+          <li><i class="glyphicon glyphicon-ok"></i>
+            <HTML5>Audio与Flash内核的平滑切换（支持IE 6在内的所有常见浏览器）</HTML5>
+          </li>
+          <li><i class="glyphicon glyphicon-ok"></i>完善的文档及相对灵活简单的API设计</li>
+          <li><i class="glyphicon glyphicon-ok"></i>针对WebApp端的优化打包，节省加载资源</li>
+          <li><i class="glyphicon glyphicon-ok"></i>百度多条产品线的实际应用，稳定可靠</li>
+        </ul>
       </div>
     </section>
     <section class="container bs-docs-container">
-      <section id="Main"><h1 id="muplayer-">muplayer概述</h1>
-<p><strong>muplayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及 Flash 音频技术，实现了<em>跨平台（PC &amp; Web App）、浏览器兼容 (ie6~9、firefox、chrome、safari etc) 及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。<br>如需更多项目介绍、API及Demo，可直接访问我们<a href="http://labs.music.baidu.com/demo/muplayer/doc/index.html">muplayer的官方文档站</a>。</p>
+      <section id="Main"><h2 id="muplayer-">muplayer概述</h2>
+<p><strong>muplayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
 <h2 id="-">源码目录</h2>
 <pre><code class="lang-text">muplayer/
   +src/             (源码)
@@ -46,10 +55,10 @@
 <h2 id="-demo">签出源码并运行本地Demo</h2>
 <p>签出代码并安装必要依赖需执行：</p>
 <pre><code class="lang-shell">curl https://raw.githubusercontent.com/Baidu-Music-FE/muplayer/lib/install.sh | sh</code></pre>
-<p>之后进入lib/目录并运行 <code>grunt server [-p your port]</code>，可在 <code>localhost</code> 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口 (默认是7777)：</p>
+<p>之后进入lib/目录并运行 <code>grunt server [-p your port]</code>，可在 <code>localhost</code> 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口（默认是7777）：</p>
 <pre><code class="lang-shell">cd muplayer/lib
 grunt server</code></pre>
-<p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a>了。</p>
+<p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a> 了。</p>
 <h2 id="api-">API详解</h2>
 <p>参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">muplayer API</a></p>
 <h2 id="-">事件说明</h2>
