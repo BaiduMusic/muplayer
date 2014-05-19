@@ -1,7 +1,5 @@
-# muplayer概述
-
-**muplayer** 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及 Flash 音频技术，实现了*跨平台（PC & Web App）、浏览器兼容 (ie6~9、firefox、chrome、safari etc) 及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
-如需更多项目介绍、API及Demo，可直接访问我们[muplayer的官方文档站](http://labs.music.baidu.com/demo/muplayer/doc/index.html)。
+## muplayer概述
+**muplayer** 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
 
 
 ## 源码目录
@@ -26,14 +24,14 @@ muplayer/
 curl https://raw.githubusercontent.com/Baidu-Music-FE/muplayer/lib/install.sh | sh
 ```
 
-之后进入lib/目录并运行 `grunt server [-p your port]`，可在 `localhost` 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口 (默认是7777)：
+之后进入lib/目录并运行 `grunt server [-p your port]`，可在 `localhost` 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口（默认是7777）：
 
 ```shell
 cd muplayer/lib
 grunt server
 ```
 
-之后，便可以访问并查看 [本地文档及Demo](http://localhost:7777/)了。
+之后，便可以访问并查看 [本地文档及Demo](http://localhost:7777/) 了。
 
 
 ## API详解

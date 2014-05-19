@@ -86,6 +86,23 @@ html
       .container
         h1 muplayer『百度音频内核』
         p  —— 百度音乐跨平台、轻量级音频播放解决方案。
+        if currentName == 'Main'
+            ul.advantages
+                li
+                  i.glyphicon.glyphicon-ok
+                  多端（PC & WebApp）通用，统一的API调用方式
+                li
+                  i.glyphicon.glyphicon-ok
+                  HTML5 Audio与Flash内核的平滑切换（支持IE 6在内的所有常见浏览器）
+                li
+                  i.glyphicon.glyphicon-ok
+                  完善的文档及相对灵活简单的API设计
+                li
+                  i.glyphicon.glyphicon-ok
+                  针对WebApp端的优化打包，节省加载资源
+                li
+                  i.glyphicon.glyphicon-ok
+                  百度多条产品线的实际应用，稳定可靠
 
     section.container.bs-docs-container
       if symbols.length

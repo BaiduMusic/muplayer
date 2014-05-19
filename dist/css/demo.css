@@ -149,6 +149,17 @@ body {
   margin-right: 10px;
 }
 
+.jumbotron .advantages {
+  list-style: none;
+  padding: 20px 0 0 50px;
+  margin: 35px 0 0 0;
+  border-top: 2px dashed #5bc0de;
+}
+.jumbotron .advantages .glyphicon-ok {
+  color: #5bc0de;
+  margin-right: 20px;
+}
+
 .bs-footer {
   padding-top: 40px;
   padding-bottom: 30px;
