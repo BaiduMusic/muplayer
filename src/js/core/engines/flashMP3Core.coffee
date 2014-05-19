@@ -165,7 +165,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             super(url)
 
         getState: (code) ->
-            STATESCODE[code] or @_status
+            STATESCODE[code] or @_state
 
         _setVolume: (volume) ->
             @flash.setData('volume', volume)

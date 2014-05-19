@@ -3,8 +3,9 @@
 $playerWidth: 320px
 $playBtnHeight: 35px
 
-#demo
-    margin-top: 50px
+#player-demo
+    +inline-block
+    margin-bottom: 20px
     .panel-body
         text-align: center
 
@@ -48,6 +49,7 @@ $playBtnHeight: 35px
             +inline-block
             +border-radius(50%)
             +square($playBtnHeight)
+            text-align: center
             line-height: $playBtnHeight
             border: 2px solid $white
             &:hover
@@ -95,17 +97,19 @@ $playBtnHeight: 35px
             .ui-slider-handle
                 cursor: default
 
-.panel-default.highlight
-    border: none
-    .panel-heading
-        border: $border
-        border-bottom: none
-    .panel-body
-        border: $border
-        border-top: none
-    .panel-footer
-        +border-bottom-radius(0)
-        border-top: none
-        padding: 0
-    .gist-file
-        +border-top-radius(0)
+#songs-demo
+    width: 320px
+    li
+        +line-height(35px)
+        border-bottom: 1px solid #eee
+        padding: 0 20px
+    .play-btn
+        +icon('play', 24px, 24px)
+        margin-left: 20px
+        cursor: pointer
+        &.playing
+            background-image: url($imgPath + 'pause.png')
+    .time
+        font-size: 12px
+        color: $lightGrey
+        margin-left: 15px

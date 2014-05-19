@@ -28,6 +28,7 @@ $imgPath: '../img/'
 $white: #fff
 $black: #333
 $grey: #666
+$lightGrey: #999
 $red: #c7254e
 $orange: #ff6501
 $blue: #5bc0de
@@ -36,6 +37,14 @@ $whiteBlue: mix($white, $blue, 75%)
 $lightBlueBg: mix($white, $blue, 90%)
 
 $border: 1px solid #ddd
+
+.mod
+    margin-bottom: 50px
+    .hd
+        font-size: 24px
+        font-weight: bold
+        margin-bottom: 20px
+        line-height: 1
 
 .ts
     margin-left: 2em
@@ -52,6 +61,11 @@ $border: 1px solid #ddd
 body
     position: relative
     padding-top: 50px
+
+ul, li
+    list-style: none
+    padding: 0
+    margin: 0
 
 #header
     background: $blue
@@ -102,7 +116,6 @@ body
 
 .jumbotron
     .advantages
-        list-style: none
         padding: 20px 0 0 50px
         margin: 35px 0 0 0
         border-top: 2px dashed $blue

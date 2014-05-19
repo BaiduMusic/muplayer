@@ -23,14 +23,19 @@ do (root = this, factory = () ->
                 ERROR: 'engine:error'                   # 播放过程中出错时的事件
                 INIT: 'engine:init'                     # 播放器初始化成功时的事件
                 INIT_FAIL: 'engine:init_fail'           # 播放器初始化失败时的事件
+
+            # 状态影响EVENTS.STATECHANGE派发的事件，原则上派发的事件应保持和HTML5 Audio规范一致。
+            # 但也有些biao'z标注播放器状态的特殊事件，如NOT_INIT等。
+            # HTML5 Audio相关事件可参考: http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#mediaevents
             STATES:
-                NOT_INIT: 'player:not_init'
-                PREBUFFER: 'player:prebuffer'
-                BUFFERING: 'player:buffering'
-                PLAYING: 'player:playing'
-                PAUSE: 'player:pause'
-                STOP: 'player:stop'
-                END: 'player:end'
+                NOT_INIT: 'not_init'
+                PREBUFFER: 'prebuffer'
+                BUFFERING: 'buffering'
+                PLAYING: 'playing'
+                PAUSE: 'pause'
+                STOP: 'stop'
+                END: 'ended'
+
             # 内核错误码, 参考HTML5 Audio错误状态:
             # http://dev.w3.org/html5/spec-author-view/video.html#error-codes
             ERRCODE:
