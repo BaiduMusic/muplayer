@@ -122,7 +122,7 @@ package {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
             stop();
-            setState(S_END)
+            setState(S_END);
         }
 
         private function onPlayTimer(e:TimerEvent = null) {
@@ -260,7 +260,7 @@ package {
                 context:SoundLoaderContext = new SoundLoaderContext(bufferTime, true);
 
             this.url = url;
-            setState(S_PREBUFFER)
+            setState(S_PREBUFFER);
             s.load(req, context);
         }
 
@@ -273,7 +273,7 @@ package {
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
                 setState(S_PLAYING);
 
-                playerTimer = new Timer(TIMER_INTERVAL)
+                playerTimer = new Timer(TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
             }
