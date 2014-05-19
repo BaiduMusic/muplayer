@@ -51,37 +51,67 @@ body {
 #header .navbar-brand:active {
   color: white;
 }
-#header .navbar-nav > li > a {
-  color: #d6eff6;
-  background: inherit;
+#header .navbar-nav {
+  height: 50px;
 }
-#header .navbar-nav > li > a:visited {
+#header .navbar-nav a {
+  height: 50px;
+  line-height: 50px;
+  color: #d6eff6;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0 15px;
+  background: transparent;
+}
+#header .navbar-nav a:visited {
   color: #d6eff6;
 }
-#header .navbar-nav > li > a:focus {
+#header .navbar-nav a:focus {
   color: #d6eff6;
 }
-#header .navbar-nav > li > a:hover {
+#header .navbar-nav a:hover {
   color: #d6eff6;
 }
-#header .navbar-nav > li > a:active {
+#header .navbar-nav a:active {
   color: #d6eff6;
 }
-#header .navbar-nav > .active > a {
+#header .navbar-nav a:hover {
+  height: 51px;
+  line-height: 51px;
+  color: white;
+  border-bottom: 3px solid #c7254e;
+}
+#header .navbar-nav a:hover:visited {
+  color: white;
+}
+#header .navbar-nav a:hover:focus {
+  color: white;
+}
+#header .navbar-nav a:hover:hover {
+  color: white;
+}
+#header .navbar-nav a:hover:active {
+  color: white;
+}
+#header .navbar-nav .active a {
   color: white;
   background: #28a1c5;
 }
-#header .navbar-nav > .active > a:visited {
+#header .navbar-nav .active a:visited {
   color: white;
 }
-#header .navbar-nav > .active > a:focus {
+#header .navbar-nav .active a:focus {
   color: white;
 }
-#header .navbar-nav > .active > a:hover {
+#header .navbar-nav .active a:hover {
   color: white;
 }
-#header .navbar-nav > .active > a:active {
+#header .navbar-nav .active a:active {
   color: white;
+}
+#header .navbar-nav .active a:hover {
+  border-bottom: none;
 }
 #header .container {
   position: relative;
