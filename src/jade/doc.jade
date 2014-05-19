@@ -47,7 +47,7 @@ html
   head
     meta(name="viewport", content="width=device-width, initial-scale=1.0", charset="utf-8")
     title= title
-
+    link(rel="icon", type="image/x-icon", href="favicon.ico")
     link(rel="stylesheet", href="../lib/bower_components/bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="../lib/bower_components/prism/themes/prism.css")
     link(rel="stylesheet", href="../dist/css/api.css")
@@ -66,18 +66,18 @@ html
           ul.nav.navbar-nav
             if currentName == 'Main'
                 li.active
-                  a(href="#") Home
+                  a(href="#") 首页
             else
                 li
-                    a(href="index.html") Home
+                    a(href="index.html") 首页
             li
-              a(href="demo.html") Demo
+              a(href="demo.html") 示例
             if currentName != 'Main'
               li.active
-                a(href="#") API
+                a(href="#") API文档
             else
                 li
-                  a(href="api.html") API
+                  a(href="api.html") API文档
       a(class="github", target="_blank", href="https://github.com/Baidu-Music-FE/muplayer")
         i
         | View On GitHub
@@ -85,7 +85,7 @@ html
     section.jumbotron
       .container
         h1 muplayer『百度音频内核』
-        p  —— 跨平台、轻量级音频播放解决方案。
+        p  —— 百度音乐跨平台、轻量级音频播放解决方案。
 
     section.container.bs-docs-container
       if symbols.length
@@ -115,51 +115,42 @@ html
     script(src="../lib/bower_components/prefixfree/prefixfree.min.js")
     script
         $(function() {
-          // IE10 viewport hack for Surface/desktop Windows 8 bug
-          if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-            var msViewportStyle = document.createElement('style');
-            msViewportStyle.appendChild(
-              document.createTextNode('@-ms-viewport{width:auto!important}')
-            );
-            document.getElementsByTagName('head')[0].appendChild(msViewportStyle);
-          }
-
-          var $win = $(window),
-              $body = $(document.body),
-              $sideBar = $('.bs-sidebar'),
-              navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
+            var $win = $(window),
+                $body = $(document.body),
+                $sideBar = $('.bs-sidebar'),
+                navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
 
             $body.scrollspy({
-              target: '.bs-sidebar',
-              offset: navHeight
+                target: '.bs-sidebar',
+                offset: navHeight
             });
 
             $win.on('load', function() {
-              $body.scrollspy('refresh');
+                $body.scrollspy('refresh');
             });
 
             setTimeout(function() {
-              $sideBar.affix({
-                offset: {
-                  top: function() {
-                    var offsetTop = $sideBar.offset().top;
-                    return (this.top = offsetTop - navHeight);
-                  },
-                  bottom: function() {
-                    return (this.bottom = $('.bs-footer').outerHeight(true));
-                  }
-                }
-              });
+                $sideBar.affix({
+                    offset: {
+                        top: function() {
+                            var offsetTop = $sideBar.offset().top;
+                            return (this.top = offsetTop - navHeight);
+                        },
+                        bottom: function() {
+                            return (this.bottom = $('.bs-footer').outerHeight(true));
+                        }
+                    }
+                });
             }, 100);
 
             $sideBar.on('click', 'a[href^=#]', function() {
-              var id = $(this).attr('href').substr(1),
-                top = $('#'+ id).offset().top - navHeight + 10;
+                var id = $(this).attr('href').substr(1),
+                    top = $('#'+ id).offset().top - navHeight + 10;
 
-              $('html, body').animate({
-                scrollTop: top
-              }, 300);
+                $('html, body').animate({
+                    scrollTop: top
+                }, 300);
 
-              return false;
+                return false;
             });
         });

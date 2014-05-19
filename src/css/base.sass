@@ -22,6 +22,9 @@ $imgPath: '../img/'
     +background-size($width, $height)
     overflow: hidden
 
+=link-color($color)
+    +link-colors($color, $color, $color, $color, $color)
+
 $white: #fff
 $black: #333
 $grey: #666
@@ -63,15 +66,25 @@ body
             .icon-bar
                 background: $white
     .navbar-brand
-        +link-colors($white, $white, $white, $white, $white)
+        +link-color($white)
         font-weight: bold
     .navbar-nav
-        > li > a
-            +link-colors($whiteBlue, $whiteBlue, $whiteBlue, $whiteBlue, $whiteBlue)
-            background: inherit
-        > .active > a
-            +link-colors($white, $white, $white, $white, $white)
+        height: 50px
+        a
+            +line-height(50px)
+            +link-color($whiteBlue)
+            +box-sizing(border-box)
+            padding: 0 15px
+            background: transparent
+            &:hover
+                +line-height(51px)
+                +link-color($white)
+                border-bottom: 3px solid $red
+        .active a
+            +link-color($white)
             background: $darkBlue
+            &:hover
+                border-bottom: none
     .container
         position: relative
     .github
