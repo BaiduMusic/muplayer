@@ -187,3 +187,149 @@ ul, li {
   color: #666666;
   border-top: 1px solid #e5e5e5;
 }
+
+body {
+  padding-top: 0;
+}
+
+.bar, #player-demo .volume .bar, #player-demo .progress-bar {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 2px;
+  width: 100px;
+  cursor: pointer;
+  background: white;
+  position: relative;
+}
+.bar .ui-slider-range, #player-demo .volume .bar .ui-slider-range, #player-demo .progress-bar .ui-slider-range {
+  height: 2px;
+  background: #ff6501;
+}
+.bar .ui-slider-handle, #player-demo .volume .bar .ui-slider-handle, #player-demo .progress-bar .ui-slider-handle {
+  height: 5px;
+  width: 5px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  position: absolute;
+  background: #ff6501;
+  top: -1.5px;
+}
+
+#player-demo {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  *zoom: 1;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 1px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 1px;
+  box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 1px;
+  margin-bottom: 20px;
+  width: 320px;
+  background: #5bc0de;
+  position: relative;
+  padding-bottom: 3px;
+}
+#player-demo:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#player-demo .glyphicon {
+  color: white;
+}
+#player-demo .glyphicon:hover {
+  color: #d6eff6;
+}
+#player-demo .opts {
+  padding-left: 12px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -17.5px;
+}
+#player-demo .opts > span {
+  cursor: pointer;
+}
+#player-demo .opts .ctrl {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  text-align: center;
+  border: 2px solid white;
+}
+#player-demo .opts .ctrl:hover {
+  background: #28a1c5;
+}
+#player-demo .opts .ctrl:hover i {
+  color: white;
+}
+#player-demo .opts .ctrl i {
+  font-size: 17px;
+  line-height: 29px;
+}
+#player-demo .opts .mode {
+  margin-left: 12px;
+}
+#player-demo .opts .mode i {
+  width: 1.2em;
+}
+#player-demo .volume {
+  position: absolute;
+  left: 140px;
+  top: 50%;
+  margin-top: -10px;
+}
+#player-demo .volume i {
+  width: 1.2em;
+  text-align: left;
+  color: #ff6501;
+  cursor: pointer;
+}
+#player-demo .volume i:hover {
+  color: #ff6501;
+}
+#player-demo .volume.mute .bar, #player-demo .volume.mute .progress-bar {
+  background: #d6eff6;
+}
+#player-demo .avatar, #player-demo .avatar img {
+  display: inline;
+  float: right;
+  height: 50px;
+  width: 50px;
+}
+#player-demo .progress-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: white;
+}
+#player-demo .progress-bar, #player-demo .progress-bar .ui-slider-range {
+  height: 3px;
+}
+#player-demo .progress-bar.ui-state-disabled {
+  cursor: default;
+}
+#player-demo .progress-bar.ui-state-disabled .ui-slider-handle {
+  cursor: default;
+}

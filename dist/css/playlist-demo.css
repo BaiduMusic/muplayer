@@ -187,3 +187,44 @@ ul, li {
   color: #666666;
   border-top: 1px solid #e5e5e5;
 }
+
+body {
+  padding-top: 0;
+}
+
+#playlist-demo {
+  width: 320px;
+  margin-bottom: 20px;
+}
+#playlist-demo li {
+  height: 35px;
+  line-height: 35px;
+  border-bottom: 1px solid #eeeeee;
+  padding: 0 20px;
+}
+#playlist-demo .play-btn {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 12px;
+  width: 12px;
+  background: url("../img/play.png") no-repeat;
+  -webkit-background-size: 12px, 12px;
+  -moz-background-size: 12px, 12px;
+  -o-background-size: 12px, 12px;
+  background-size: 12px, 12px;
+  overflow: hidden;
+  margin-left: 20px;
+  cursor: pointer;
+}
+#playlist-demo .play-btn.playing {
+  background-image: url("../img/pause.png");
+}
+#playlist-demo .time {
+  font-size: 12px;
+  color: #999999;
+  margin-left: 15px;
+}

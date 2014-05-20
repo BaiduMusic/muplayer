@@ -29,6 +29,11 @@ body {
   padding-top: 50px;
 }
 
+iframe {
+  border: none;
+  width: 100%;
+}
+
 ul, li {
   list-style: none;
   padding: 0;
