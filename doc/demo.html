@@ -59,8 +59,10 @@
 
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script>
-        $('iframe').load(function() {
-            $(this).height($(this).contents().height());
+        $(function() {
+            $('iframe').load(function() {
+                $(this).height($(this).contents().height());
+            });
         });
     </script>
 
