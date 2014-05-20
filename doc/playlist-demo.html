@@ -15,36 +15,36 @@
 <script src="bower_components/jquery/jquery.min.js"></script>
 <script src="dist/js/player.js"></script>
 <script>
-    // 通过全局变量的方式初始化
-    var player = new _mu.Player({
-            mode: 'list'
-        }),
-        $pl = $('#playlist-demo'),
-        reset = function() {
-            $pl.find('> li').removeClass('playing pause')
-                .find('.time').remove();
-        },
-        findCurrItem = function() {
-            return $pl.find('[data-link="' + player.getCur() + '"]');
-        },
-        $time = $('<span class="time"></span>');
+// 通过全局变量的方式初始化
+var player = new _mu.Player({
+        mode: 'list'
+    }),
+    $pl = $('#playlist-demo'),
+    reset = function() {
+        $pl.find('> li').removeClass('playing pause')
+            .find('.time').remove();
+    },
+    findCurrItem = function() {
+        return $pl.find('[data-link="' + player.getCur() + '"]');
+    },
+    $time = $('<span class="time"></span>');
 
-    $pl.on('click', '> li', function() {
-        if ($(this).hasClass('playing')) {
-            player.pause();
-        } else {
-            var link = $(this).data('link');
-            player.reset().add(link).play();
-        }
-    });
+$pl.on('click', '> li', function() {
+    if ($(this).hasClass('playing')) {
+        player.pause();
+    } else {
+        var link = $(this).data('link');
+        player.reset().add(link).play();
+    }
+});
 
-    player.on('playing pause', function() {
-        reset();
-        findCurrItem().addClass(player.getState()).append($time);
-    }).on('ended', function() {
-        player.stop();
-        reset();
-    }).on('timeupdate', function() {
-        $time.text(player.curPos(true) + ' / ' + player.duration(true));
-    });
+player.on('playing pause', function() {
+    reset();
+    findCurrItem().addClass(player.getState()).append($time);
+}).on('ended', function() {
+    player.stop();
+    reset();
+}).on('timeupdate', function() {
+    $time.text(player.curPos(true) + ' / ' + player.duration(true));
+});
 </script>
