@@ -170,6 +170,13 @@ ul, li {
   margin-right: 10px;
 }
 
+.jumbotron h1 em {
+  color: #c7254e;
+  font-style: normal;
+}
+.jumbotron h1 span {
+  color: #5bc0de;
+}
 .jumbotron .advantages {
   padding: 20px 0 0 50px;
   margin: 35px 0 0 0;
