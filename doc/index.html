@@ -39,8 +39,8 @@
       </div>
     </section>
     <section class="container bs-docs-container">
-      <section id="Main"><h2 id="muplayer-">muplayer概述</h2>
-<p><strong>muplayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
+      <section id="Main"><h2 id="-">概述</h2>
+<p><strong>MuPlayer</strong> 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
 <h2 id="-">源码目录</h2>
 <pre><code class="lang-text">muplayer/
   +src/             (源码)
@@ -60,7 +60,7 @@
 grunt server</code></pre>
 <p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a> 了。</p>
 <h2 id="api-">API详解</h2>
-<p>参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">muplayer API</a></p>
+<p>参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">MuPlayer API</a></p>
 <h2 id="-">事件说明</h2>
 <p>在播放内核的实现中，事件的派发非常重要，这是解耦内核与UI交互的最佳方式 (客户端可自行监听需要的事件并做出相应的UI响应)。除上述部分API方法会派发诸如player:play，player:add等操作相关的事件外，下面还讲对播放状态相关的事件做一说明。<br>所有事件常量见 <code>cfg.coffee</code> 中的声明。默认对外派发的事件遵循精简且与HTML5 Auido规范统一的原则，player实例对外派发的事件点有三个：</p>
 <ol>
@@ -69,7 +69,7 @@ grunt server</code></pre>
 <li><code>EVENTS.PROGRESS</code> 时，会派发progress事件。<br>若以上均无法满足需求(在我们内部的产品中，还未曾遇到)，可以进一步监听player.engine的相应事件。</li>
 </ol>
 <h2 id="license">License</h2>
-<p><strong>muplayer</strong> is released under the MIT License.<br>Copyright (c) 2014 Baidu Music</p>
+<p><strong>MuPlayer</strong> is released under the MIT License.<br>Copyright (c) 2014 Baidu Music</p>
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
 <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
 <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>

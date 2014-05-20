@@ -1,5 +1,5 @@
-## muplayer概述
-**muplayer** 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
+## 概述
+**MuPlayer** 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
 
 
 ## 源码目录
@@ -35,7 +35,7 @@ grunt server
 
 
 ## API详解
-参见：[muplayer API](http://labs.music.baidu.com/demo/muplayer/doc/api.html)
+参见：[MuPlayer API](http://labs.music.baidu.com/demo/muplayer/doc/api.html)
 
 ## 事件说明
 在播放内核的实现中，事件的派发非常重要，这是解耦内核与UI交互的最佳方式 (客户端可自行监听需要的事件并做出相应的UI响应)。除上述部分API方法会派发诸如player:play，player:add等操作相关的事件外，下面还讲对播放状态相关的事件做一说明。
@@ -47,7 +47,7 @@ grunt server
 
 
 ## License
-**muplayer** is released under the MIT License.
+**MuPlayer** is released under the MIT License.
 Copyright (c) 2014 Baidu Music
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
