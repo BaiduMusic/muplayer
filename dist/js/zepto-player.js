@@ -1475,7 +1475,7 @@ var __hasProp = {}.hasOwnProperty,
   Engine = (function() {
     Engine.defaults = {
       type: 'mp3',
-      el: '<div id="muplayer_container_' + (+new Date()) + '" style="width: 1px; height: 1px; overflow: hidden"></div>',
+      el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>',
       engines: [
                                 {
                     constructor: AudioCore
@@ -1489,10 +1489,11 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, engine, i, opts, _i, _len, _ref1;
+      var $el, args, constructor, el, engine, i, opts, _i, _len, _ref1;
       opts = this.opts;
       this.engines = [];
-      $el = $(opts.el).appendTo('body');
+      el = opts.el.replace(/{{DATETIME}}/g, +new Date());
+      $el = $(el).appendTo('body');
       _ref1 = opts.engines;
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         engine = _ref1[i];

@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="../lib/bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="../dist/css/playlist-demo.css">
+
+<div class="mod">
+    <div class="hd">播放列表及交互</div>
+    <div class="bd">
+        <ul id="playlist-demo">
+            <li>雨声<span class="play-btn" data-link="../dist/mp3/rain.mp3"></span></li>
+            <li>走路声<span class="play-btn" data-link="../dist/mp3/walking.mp3"></span></li>
+        </ul>
+        <script src="https://gist.github.com/hustKiwi/d4cb4eab9402ff56e28f.js"></script>
+    </div>
+</div>
+
+<script src="../lib/bower_components/jquery/jquery.min.js"></script>
+<script src="../dist/js/player.js"></script>
+<script>
+    // 通过全局变量的方式初始化
+    var player = new _mu.Player({
+            mode: 'list'
+        }),
+        $pl = $('#playlist-demo'),
+        reset = function() {
+            $pl.find('.play-btn').removeClass('playing pause');
+            $pl.find('.time').remove();
+        },
+        findCurrBtn = function() {
+            return $pl.find('[data-link="' + player.getCur() + '"]');
+        },
+        $time = $('<span class="time"></span>');
+
+    $pl.on('click', '.play-btn', function() {
+        if ($(this).hasClass('playing')) {
+            player.pause();
+        } else {
+            var link = $(this).data('link');
+            player.reset().add(link).play();
+        }
+    });
+
+    player.on('playing pause', function() {
+        reset();
+        findCurrBtn().addClass(player.getState()).after($time);
+    }).on('ended', function() {
+        player.stop();
+        reset();
+    }).on('timeupdate', function() {
+        $time.text(player.curPos(true) + ' / ' + player.duration(true));
+    });
+</script>

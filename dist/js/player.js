@@ -1750,25 +1750,27 @@ var __hasProp = {}.hasOwnProperty,
 
     FlashMP3Core.prototype.setUrl = function(url) {
       var _this = this;
-      this._setUrl(url);
-      (function() {
-        var check, checker;
-        checker = null;
-        check = function(e) {
-          if (e.newState === STATES.PLAY && e.oldState === STATES.PREBUFFER) {
-            return checker = setTimeout(function() {
-              _this.off(EVENTS.STATECHANGE, check);
-              if (_this.getCurrentPosition() < 100) {
-                _this.setState(STATES.END);
-                return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
-              }
-            }, 2000);
-          } else {
-            return clearTimeout(checker);
-          }
-        };
-        return _this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
-      })();
+      if (url) {
+        this._setUrl(url);
+        (function() {
+          var check, checker;
+          checker = null;
+          check = function(e) {
+            if (e.newState === STATES.PLAY && e.oldState === STATES.PREBUFFER) {
+              return checker = setTimeout(function() {
+                _this.off(EVENTS.STATECHANGE, check);
+                if (_this.getCurrentPosition() < 100) {
+                  _this.setState(STATES.END);
+                  return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
+                }
+              }, 2000);
+            } else {
+              return clearTimeout(checker);
+            }
+          };
+          return _this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
+        })();
+      }
       return FlashMP3Core.__super__.setUrl.call(this, url);
     };
 
@@ -1867,7 +1869,7 @@ var __hasProp = {}.hasOwnProperty,
   Engine = (function() {
     Engine.defaults = {
       type: 'mp3',
-      el: '<div id="muplayer_container_' + (+new Date()) + '" style="width: 1px; height: 1px; overflow: hidden"></div>',
+      el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>',
       engines: [
                                 {
                     constructor: FlashMP3Core
@@ -1884,10 +1886,11 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, engine, i, opts, _i, _len, _ref1;
+      var $el, args, constructor, el, engine, i, opts, _i, _len, _ref1;
       opts = this.opts;
       this.engines = [];
-      $el = $(opts.el).appendTo('body');
+      el = opts.el.replace(/{{DATETIME}}/g, +new Date());
+      $el = $(el).appendTo('body');
       _ref1 = opts.engines;
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         engine = _ref1[i];

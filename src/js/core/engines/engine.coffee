@@ -8,7 +8,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             type: 'mp3'
             # 隐藏容器, 用于容纳swf和audio等标签
             # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
-            el: '<div id="muplayer_container_' + (+new Date()) + '" style="width: 1px; height: 1px; overflow: hidden"></div>'
+            el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>'
             engines: `[
                 //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
                 {
@@ -28,7 +28,8 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             opts = @opts
             @engines = []
 
-            $el = $(opts.el).appendTo('body')
+            el = opts.el.replace(/{{DATETIME}}/g, +new Date())
+            $el = $(el).appendTo('body')
 
             for engine, i in opts.engines
                 constructor = engine.constructor
