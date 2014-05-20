@@ -1,5 +1,5 @@
 ## 概述
-**MuPlayer** 是百度音乐FE Team开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
+**MuPlayer** 是百度[音乐前端](http://weibo.com/musicfe)团队开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
 
 
 ## 源码目录
