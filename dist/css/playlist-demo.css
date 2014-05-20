@@ -202,14 +202,24 @@ body {
 #playlist-demo {
   width: 320px;
   margin-bottom: 20px;
+  border: 1px solid #5bc0de;
 }
 #playlist-demo li {
   height: 35px;
   line-height: 35px;
   border-bottom: 1px solid #eeeeee;
   padding: 0 20px;
+  cursor: pointer;
 }
-#playlist-demo .play-btn {
+#playlist-demo li:hover {
+  background: #f4f4f4;
+}
+#playlist-demo li .time {
+  font-size: 12px;
+  color: #999999;
+  margin-left: 15px;
+}
+#playlist-demo li .play-btn {
   display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
@@ -224,14 +234,8 @@ body {
   -o-background-size: 12px, 12px;
   background-size: 12px, 12px;
   overflow: hidden;
-  margin-left: 20px;
-  cursor: pointer;
+  margin-right: 20px;
 }
-#playlist-demo .play-btn.playing {
+#playlist-demo li.playing .play-btn {
   background-image: url("../img/pause.png");
-}
-#playlist-demo .time {
-  font-size: 12px;
-  color: #999999;
-  margin-left: 15px;
 }

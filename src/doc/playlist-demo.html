@@ -5,8 +5,8 @@
     <div class="hd">播放列表及交互</div>
     <div class="bd">
         <ul id="playlist-demo">
-            <li>雨声<span class="play-btn" data-link="dist/mp3/rain.mp3"></span></li>
-            <li>走路声<span class="play-btn" data-link="dist/mp3/walking.mp3"></span></li>
+            <li data-link="dist/mp3/rain.mp3"><i class="play-btn"></i>雨声</li>
+            <li data-link="dist/mp3/walking.mp3"><i class="play-btn"></i>走路声</li>
         </ul>
         <script src="https://gist.github.com/hustKiwi/d4cb4eab9402ff56e28f.js"></script>
     </div>
@@ -21,15 +21,15 @@
         }),
         $pl = $('#playlist-demo'),
         reset = function() {
-            $pl.find('.play-btn').removeClass('playing pause');
-            $pl.find('.time').remove();
+            $pl.find('> li').removeClass('playing pause')
+                .find('.time').remove();
         },
-        findCurrBtn = function() {
+        findCurrItem = function() {
             return $pl.find('[data-link="' + player.getCur() + '"]');
         },
         $time = $('<span class="time"></span>');
 
-    $pl.on('click', '.play-btn', function() {
+    $pl.on('click', '> li', function() {
         if ($(this).hasClass('playing')) {
             player.pause();
         } else {
@@ -40,7 +40,7 @@
 
     player.on('playing pause', function() {
         reset();
-        findCurrBtn().addClass(player.getState()).after($time);
+        findCurrItem().addClass(player.getState()).append($time);
     }).on('ended', function() {
         player.stop();
         reset();
