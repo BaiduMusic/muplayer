@@ -6,17 +6,21 @@ body
 #playlist-demo
     width: 320px
     margin-bottom: 20px
+    border: 1px solid $blue
     li
         +line-height(35px)
         border-bottom: 1px solid #eee
         padding: 0 20px
-    .play-btn
-        +icon('play', 24px, 24px)
-        margin-left: 20px
         cursor: pointer
+        &:hover
+            background: #f4f4f4
+        .time
+            font-size: 12px
+            color: $lightGrey
+            margin-left: 15px
+        .play-btn
+            +icon('play', 24px, 24px)
+            margin-right: 20px
         &.playing
-            background-image: url($imgPath + 'pause.png')
-    .time
-        font-size: 12px
-        color: $lightGrey
-        margin-left: 15px
+            .play-btn
+                background-image: url($imgPath + 'pause.png')
