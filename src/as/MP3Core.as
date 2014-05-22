@@ -80,11 +80,11 @@ package {
             }
         }
 
-        public function callJS(fn:String, data = undefined) {
+        public function callJS(fn:String, data:Object = undefined):void {
             ExternalInterface.call(JS_INSTANCE + fn, data);
         }
 
-        private function log(msg):void {
+        private function log(msg:String):void {
             ExternalInterface.call('console.log', 'fmp: ' + msg);
         }
 
@@ -125,7 +125,7 @@ package {
             setState(S_END);
         }
 
-        private function onPlayTimer(e:TimerEvent = null) {
+        private function onPlayTimer(e:TimerEvent = null):void {
             position = sc.position;
             positionPct = Math.round(100 * position / length) / 100;
         }
@@ -204,15 +204,15 @@ package {
             return bytesLoaded;
         }
 
-        public function getData(k:String) {
-            var fn = 'get' + k.substr(0, 1).toUpperCase() + k.slice(1);
+        public function getData(k:String):* {
+            var fn:String = 'get' + k.substr(0, 1).toUpperCase() + k.slice(1);
             if (this[fn]) {
                 return this[fn]();
             }
         }
 
-        public function setData(k:String, v) {
-            var fn = 'set' + k.substr(0, 1).toUpperCase() + k.slice(1);
+        public function setData(k:String, v:*):* {
+            var fn:String = 'set' + k.substr(0, 1).toUpperCase() + k.slice(1);
             if (this[fn]) {
                 return this[fn](v);
             }
