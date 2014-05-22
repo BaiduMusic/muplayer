@@ -11,6 +11,8 @@ package {
     import flash.system.Security;
     import flash.utils.Timer;
 
+    import Utils;
+
     public class MP3Core extends Sprite {
         // 播放状态
         private const S_NOT_INIT:int = -1;
@@ -60,7 +62,7 @@ package {
         private var bufferTime:Number = 5000;
 
         public function MP3Core() {
-            this.addEventListener(Event.ENTER_FRAME, checkStage);
+            Utils.checkStage(this, 'init');
         }
 
         public function init():void {
@@ -80,19 +82,8 @@ package {
             }
         }
 
-        public function callJS(fn:String, data:Object = undefined):void {
-            ExternalInterface.call(JS_INSTANCE + fn, data);
-        }
-
-        private function log(msg:String):void {
-            ExternalInterface.call('console.log', 'fmp: ' + msg);
-        }
-
-        private function checkStage(e:Event = null):void {
-            if (stage.stageWidth > 0) {
-                this.removeEventListener(Event.ENTER_FRAME, checkStage);
-                init();
-            }
+        private function callJS(fn:String, data:Object = undefined):void {
+            Utils.callJS(JS_INSTANCE + fn, data);
         }
 
         private function loadFlashVars(p:Object):void {
