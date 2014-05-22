@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "grunt": "*",
-    "grunt-mxmlc": "*",
     "grunt-shell": "~0.6.4",
     "commander": "~2.1.0",
     "grunt-contrib-connect": "~0.7.1",
