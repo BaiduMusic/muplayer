@@ -13,16 +13,16 @@ package {
 
     public class MP3Core extends Sprite {
         // 播放状态
-        const S_NOT_INIT:int = -1;
-        const S_PREBUFFER:int = 1;
-        const S_BUFFERING:int = 2;
-        const S_PLAYING:int = 3;
-        const S_PAUSE:int = 4;
-        const S_STOP:int = 5;
-        const S_END:int = 6;
+        private const S_NOT_INIT:int = -1;
+        private const S_PREBUFFER:int = 1;
+        private const S_BUFFERING:int = 2;
+        private const S_PLAYING:int = 3;
+        private const S_PAUSE:int = 4;
+        private const S_STOP:int = 5;
+        private const S_END:int = 6;
 
         // 播放进度相关的计时器
-        const TIMER_INTERVAL:int = 200;
+        private const TIMER_INTERVAL:int = 200;
 
         private var STATES:Array = new Array(
             S_PREBUFFER, S_BUFFERING, S_PLAYING, S_PAUSE, S_STOP, S_END
