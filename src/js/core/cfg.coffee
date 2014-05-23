@@ -4,7 +4,7 @@ do (root = this, factory = () ->
     return $.extend({
         namespace: root._mu
         debug: false
-        version: '1.0.0'
+        version: '0.9.0'
 
         # XXX: timerResolution = 25ms是最小的计时粒度,
         # 这个不经测试调优就尽量不要改, 会影响部分统计数据和性能。
