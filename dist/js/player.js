@@ -21,7 +21,7 @@
   return $.extend({
     namespace: root._mu,
     debug: false,
-    version: '1.0.0',
+    version: '0.9.0',
     timerResolution: 25,
     emptyMP3: '../dist/mp3/empty.mp3',
     expressInstaller: '../dist/swf/expressInstall.swf',
