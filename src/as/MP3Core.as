@@ -12,23 +12,11 @@ package {
     import flash.utils.Timer;
 
     import Utils;
+    import State;
 
     public class MP3Core extends Sprite {
-        // 播放状态
-        private const S_NOT_INIT:int = -1;
-        private const S_PREBUFFER:int = 1;
-        private const S_BUFFERING:int = 2;
-        private const S_PLAYING:int = 3;
-        private const S_PAUSE:int = 4;
-        private const S_STOP:int = 5;
-        private const S_END:int = 6;
-
         // 播放进度相关的计时器
         private const TIMER_INTERVAL:int = 200;
-
-        private var STATES:Array = new Array(
-            S_PREBUFFER, S_BUFFERING, S_PLAYING, S_PAUSE, S_STOP, S_END
-        );
 
         private var s:Sound;
         private var sc:SoundChannel;
@@ -43,7 +31,7 @@ package {
 
         private var volume:int = 80;            // 音量(0-100)，默认80
         private var mute:Boolean = false;       // 静音状态，默认flase
-        private var state:int = S_NOT_INIT;     // 播放状态
+        private var state:int = State.NOT_INIT;     // 播放状态
         private var muteVolume:int;             // 静音时的音量
         private var url:String;                 // 外部文件地址
         private var length:uint;                // 音频总长度(ms)
@@ -96,7 +84,7 @@ package {
         }
 
         private function onProgress(e:ProgressEvent):void {
-            setState(S_BUFFERING);
+            setState(State.BUFFERING);
             if (!bytesTotal) {
                 bytesTotal = s.bytesTotal;
             }
@@ -113,7 +101,7 @@ package {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
             stop();
-            setState(S_END);
+            setState(State.END);
         }
 
         private function onPlayTimer(e:TimerEvent = null):void {
@@ -126,7 +114,7 @@ package {
         }
 
         public function setState(st:int):void {
-            if (state != st && STATES.indexOf(st) != -1) {
+            if (state != st && State.validate(st)) {
                 state = st;
                 callJS(SWF_ON_STATE_CHANGE, st);
             }
@@ -251,18 +239,18 @@ package {
                 context:SoundLoaderContext = new SoundLoaderContext(bufferTime, true);
 
             this.url = url;
-            setState(S_PREBUFFER);
+            setState(State.PREBUFFER);
             s.load(req, context);
         }
 
         public function play(p:Number = 0):void {
-            if (state != S_PLAYING) {
-                if (!p && state == S_PAUSE) {
+            if (state != State.PLAYING) {
+                if (!p && state == State.PAUSE) {
                     p = pausePosition;
                 }
                 sc = s.play(p, 0, stf);
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
-                setState(S_PLAYING);
+                setState(State.PLAYING);
 
                 playerTimer = new Timer(TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
@@ -285,7 +273,7 @@ package {
                 playerTimer.stop();
                 playerTimer = null;
             }
-            setState(p && S_PAUSE || S_STOP);
+            setState(p && State.PAUSE || State.STOP);
         }
     }
 }
