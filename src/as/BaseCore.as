@@ -2,8 +2,6 @@ package {
     import flash.display.Sprite;
     import flash.events.*;
     import flash.errors.IOError;
-    import flash.external.ExternalInterface;
-    import flash.media.SoundTransform;
     import flash.system.Security;
 
     import Consts;
@@ -11,8 +9,6 @@ package {
     import Utils;
 
     public class BaseCore extends Sprite implements IEngine {
-        private var stf:SoundTransform;
-
         // JS回调
         private var jsInstance:String = '';
 
@@ -45,17 +41,6 @@ package {
             Security.allowDomain('*');
             Security.allowInsecureDomain('*');
             loadFlashVars(loaderInfo.parameters);
-            if (ExternalInterface.available) {
-                reset();
-                stf = new SoundTransform(_volume / 100, 0);
-                ExternalInterface.addCallback('load', load);
-                ExternalInterface.addCallback('play', play);
-                ExternalInterface.addCallback('pause', pause);
-                ExternalInterface.addCallback('stop', stop);
-                ExternalInterface.addCallback('getData', getData);
-                ExternalInterface.addCallback('setData', setData);
-                callJS(Consts.SWF_ON_LOAD);
-            }
         }
 
         protected function callJS(fn:String, data:Object = undefined):void {
