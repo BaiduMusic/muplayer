@@ -4,10 +4,6 @@ package {
 
         function setState(st:int):void;
 
-        function getBufferTime():uint;
-
-        function setBufferTime(bt:uint):void;
-
         function getMute():Boolean;
 
         function setMute(m:Boolean):void;
@@ -21,6 +17,8 @@ package {
         function getLength():uint;
 
         function getPosition():uint;
+
+        function getBufferTime():uint;
 
         function getLoadedPct():Number;
 
