@@ -15,8 +15,6 @@ package {
     import State;
 
     public class MP3Core extends BaseCore {
-        private const TIMER_INTERVAL:int = 200;
-
         private var s:Sound;
         private var sc:SoundChannel;
         private var stf:SoundTransform;
@@ -122,7 +120,7 @@ package {
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
                 setState(State.PLAYING);
 
-                playerTimer = new Timer(TIMER_INTERVAL);
+                playerTimer = new Timer(Consts.TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
             }

@@ -31,10 +31,16 @@ package {
         // 在开始回放以及在网络中断后继续回放之前，Sound 对
         // 象将一直等待直至至少拥有这一数量的数据为止。
         // 默认值为1000毫秒。
-        private var bufferTime:uint = 5000;
+        private var _bufferTime:uint = 5000;
 
         public function BaseCore() {
-            Utils.checkStage(this, 'init');
+            function check(e:Event = null):void {
+                if (stage.stageWidth > 0) {
+                    removeEventListener(Event.ENTER_FRAME, check);
+                    init();
+                }
+            }
+            addEventListener(Event.ENTER_FRAME, check);
         }
 
         public function init():void {
@@ -49,7 +55,9 @@ package {
 
         protected function loadFlashVars(p:Object):void {
             jsInstance = p['_instanceName'];
-            setBufferTime(p['_buffertime'] || bufferTime);
+            if (p['_buffertime']) {
+                _bufferTime = p['_buffertime'];
+            }
         }
 
         protected function onPlayComplete(e:Event = null):void {}
@@ -85,11 +93,7 @@ package {
         }
 
         public function getBufferTime():uint {
-            return bufferTime;
-        }
-
-        public function setBufferTime(bt:uint):void {
-            bufferTime = bt;
+            return _bufferTime;
         }
 
         public function getMute():Boolean {
