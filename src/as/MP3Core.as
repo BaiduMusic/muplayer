@@ -1,5 +1,4 @@
 package {
-    import flash.display.Sprite;
     import flash.events.*;
     import flash.errors.IOError;
     import flash.external.ExternalInterface;
@@ -11,11 +10,11 @@ package {
     import flash.system.Security;
     import flash.utils.Timer;
 
+    import BaseCore;
     import Utils;
     import State;
 
-    public class MP3Core extends Sprite {
-        // 播放进度相关的计时器
+    public class MP3Core extends BaseCore {
         private const TIMER_INTERVAL:int = 200;
 
         private var s:Sound;
@@ -29,55 +28,18 @@ package {
         private var SWF_ON_ERR:String = '._swfOnErr';
         private var SWF_ON_STATE_CHANGE:String = '._swfOnStateChange';
 
-        private var volume:int = 80;            // 音量(0-100)，默认80
-        private var mute:Boolean = false;       // 静音状态，默认flase
+        private var volume:uint = 80;               // 音量(0-100)，默认80
+        private var mute:Boolean = false;           // 静音状态，默认flase
         private var state:int = State.NOT_INIT;     // 播放状态
-        private var muteVolume:int;             // 静音时的音量
-        private var url:String;                 // 外部文件地址
-        private var length:uint;                // 音频总长度(ms)
-        private var position:uint;              // 当前播放进度(ms)
-        private var positionPct:Number;         // 播放进度百分比[0-1]
-        private var pausePosition:Number;       // 暂停时的播放进度(ms)
-        private var loadedPct:Number;           // 载入进度百分比[0-1]
-        private var bytesTotal:uint;            // 外部文件总字节
-        private var bytesLoaded:uint;           // 已载入字节
-
-        // 最小缓冲时间(ms)
-        // MP3 数据保留在Sound对象缓冲区中的最小毫秒数。
-        // 在开始回放以及在网络中断后继续回放之前，Sound 对
-        // 象将一直等待直至至少拥有这一数量的数据为止。
-        // 默认值为1000毫秒。
-        private var bufferTime:Number = 5000;
-
-        public function MP3Core() {
-            Utils.checkStage(this, 'init');
-        }
-
-        public function init():void {
-            Security.allowDomain('*');
-            Security.allowInsecureDomain('*');
-            loadFlashVars(loaderInfo.parameters);
-            if (ExternalInterface.available) {
-                reset();
-                stf = new SoundTransform(volume / 100, 0);
-                ExternalInterface.addCallback('load', load);
-                ExternalInterface.addCallback('play', play);
-                ExternalInterface.addCallback('pause', pause);
-                ExternalInterface.addCallback('stop', stop);
-                ExternalInterface.addCallback('getData', getData);
-                ExternalInterface.addCallback('setData', setData);
-                callJS(SWF_ON_LOAD);
-            }
-        }
-
-        private function callJS(fn:String, data:Object = undefined):void {
-            Utils.callJS(JS_INSTANCE + fn, data);
-        }
-
-        private function loadFlashVars(p:Object):void {
-            JS_INSTANCE = p['_instanceName'];
-            setBufferTime(p['_buffertime'] || bufferTime);
-        }
+        private var muteVolume:uint;                // 静音时的音量
+        private var url:String;                     // 外部文件地址
+        private var length:uint;                    // 音频总长度(ms)
+        private var position:uint;                  // 当前播放进度(ms)
+        private var positionPct:Number;             // 播放进度百分比[0-1]
+        private var pausePosition:Number;           // 暂停时的播放进度(ms)
+        private var loadedPct:Number;               // 载入进度百分比[0-1]
+        private var bytesTotal:uint;                // 外部文件总字节
+        private var bytesLoaded:uint;               // 已载入字节
 
         private function onLoadComplete(e:Event):void {
             length = Math.ceil(s.length);
@@ -109,40 +71,7 @@ package {
             positionPct = Math.round(100 * position / length) / 100;
         }
 
-        public function getState():int {
-            return state;
-        }
-
-        public function setState(st:int):void {
-            if (state != st && State.validate(st)) {
-                state = st;
-                callJS(SWF_ON_STATE_CHANGE, st);
-            }
-        }
-
-        public function getBufferTime():Number {
-            return bufferTime;
-        }
-
-        public function setBufferTime(bt:Number):void {
-            bufferTime = bt;
-        }
-
-        public function setMute(m:Boolean):void {
-            if (m) {
-                muteVolume = volume;
-                setVolume(0);
-            } else {
-                setVolume(muteVolume);
-            }
-            mute = m;
-        }
-
-        public function getMute():Boolean {
-            return mute;
-        }
-
-        public function setVolume(v:int):void {
+        override public function setVolume(v:uint):void {
             if (v < 0 || v > 100) {
                 return;
             }
@@ -153,56 +82,12 @@ package {
             }
         }
 
-        public function getUrl():String {
-            return url;
-        }
-
-        public function getPosition():uint {
-            return position;
-        }
-
-        // positionPct和loadedPct都在JS层按需获取，不在
-        // AS层主动派发，这样简化逻辑，节省事件开销。
-        public function getPositionPct():Number {
-            return positionPct;
-        }
-
-        public function getLoadedPct():Number {
-            return loadedPct;
-        }
-
-        public function getLength():uint {
-            return length;
-        }
-
-        public function getBytesTotal():uint {
-            return bytesTotal;
-        }
-
-        public function getBytesLoaded():uint {
-            return bytesLoaded;
-        }
-
-        public function getData(k:String):* {
-            var fn:String = 'get' + k.substr(0, 1).toUpperCase() + k.slice(1);
-            if (this[fn]) {
-                return this[fn]();
-            }
-        }
-
-        public function setData(k:String, v:*):* {
-            var fn:String = 'set' + k.substr(0, 1).toUpperCase() + k.slice(1);
-            if (this[fn]) {
-                return this[fn](v);
-            }
-        }
-
         public function handleErr(e:IOErrorEvent):void {
             onPlayComplete();
             callJS(SWF_ON_ERR, e);
         }
 
-        public function reset():void {
+        override public function reset():void {
             // 及时做内存回收
             if (s) {
                 s.removeEventListener(IOErrorEvent.IO_ERROR, handleErr);
@@ -210,16 +95,10 @@ package {
                 s.removeEventListener(ProgressEvent.PROGRESS, onProgress);
                 s = null;
             }
-            url = '';
-            length = 0;
-            position = 0;
-            positionPct = 0;
-            loadedPct = 0;
-            bytesTotal = 0;
-            bytesLoaded = 0;
+            super.reset();
         }
 
-        public function load(url:String):void {
+        override public function load(url:String):void {
             stop();
 
             try {
@@ -236,14 +115,14 @@ package {
             s.addEventListener(ProgressEvent.PROGRESS, onProgress);
 
             var req:URLRequest = new URLRequest(url),
-                context:SoundLoaderContext = new SoundLoaderContext(bufferTime, true);
+                context:SoundLoaderContext = new SoundLoaderContext(getBufferTime(), true);
 
             this.url = url;
             setState(State.PREBUFFER);
             s.load(req, context);
         }
 
-        public function play(p:Number = 0):void {
+        override public function play(p:Number = 0):void {
             if (state != State.PLAYING) {
                 if (!p && state == State.PAUSE) {
                     p = pausePosition;
@@ -258,11 +137,11 @@ package {
             }
         }
 
-        public function pause():void {
+        override public function pause():void {
             stop(sc.position);
         }
 
-        public function stop(p:Number = 0):void {
+        override public function stop(p:Number = 0):void {
             pausePosition = p;
             // 判断sc是否存在是因为sc在play方法调用时才被延迟初始化
             if (sc) {
