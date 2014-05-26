@@ -6,37 +6,36 @@ package {
     import flash.media.SoundTransform;
     import flash.system.Security;
 
-    import Utils;
+    import Consts;
     import State;
+    import Utils;
 
     public class BaseCore extends Sprite implements IEngine {
         private var stf:SoundTransform;
 
         // JS回调
-        private var JS_INSTANCE:String = '';
-        private const SWF_ON_LOAD:String = '._swfOnLoad';
-        private const SWF_ON_ERR:String = '._swfOnErr';
-        private const SWF_ON_STATE_CHANGE:String = '._swfOnStateChange';
+        private var jsInstance:String = '';
 
-        private var volume:uint = 80;               // 音量(0-100)，默认80
-        private var mute:Boolean = false;           // 静音状态，默认flase
-        private var state:int = State.NOT_INIT;     // 播放状态
-        private var muteVolume:uint;                // 静音时的音量
-        private var url:String;                     // 外部文件地址
-        private var length:uint;                    // 音频总长度(ms)
-        private var position:uint;                  // 当前播放进度(ms)
-        private var loadedPct:Number;               // 载入进度百分比[0-1]
-        private var positionPct:Number;             // 播放进度百分比[0-1]
-        private var pausePosition:Number;           // 暂停时的播放进度(ms)
-        private var bytesTotal:uint;                // 外部文件总字节
-        private var bytesLoaded:uint;               // 已载入字节
+        // 实例属性
+        protected var _volume:uint = 80;               // 音量(0-100)，默认80
+        protected var _mute:Boolean = false;           // 静音状态，默认flase
+        protected var _state:int = State.NOT_INIT;     // 播放状态
+        protected var _muteVolume:uint;                // 静音时的音量
+        protected var _url:String;                     // 外部文件地址
+        protected var _length:uint;                    // 音频总长度(ms)
+        protected var _position:uint;                  // 当前播放进度(ms)
+        protected var _loadedPct:Number;               // 载入进度百分比[0-1]
+        protected var _positionPct:Number;             // 播放进度百分比[0-1]
+        protected var _pausePosition:Number;           // 暂停时的播放进度(ms)
+        protected var _bytesTotal:uint;                // 外部文件总字节
+        protected var _bytesLoaded:uint;               // 已载入字节
 
         // 最小缓冲时间(ms)
         // MP3 数据保留在Sound对象缓冲区中的最小毫秒数。
         // 在开始回放以及在网络中断后继续回放之前，Sound 对
         // 象将一直等待直至至少拥有这一数量的数据为止。
         // 默认值为1000毫秒。
-        private var bufferTime:Number = 5000;
+        private var bufferTime:uint = 5000;
 
         public function BaseCore() {
             Utils.checkStage(this, 'init');
@@ -48,24 +47,31 @@ package {
             loadFlashVars(loaderInfo.parameters);
             if (ExternalInterface.available) {
                 reset();
-                stf = new SoundTransform(volume / 100, 0);
+                stf = new SoundTransform(_volume / 100, 0);
                 ExternalInterface.addCallback('load', load);
                 ExternalInterface.addCallback('play', play);
                 ExternalInterface.addCallback('pause', pause);
                 ExternalInterface.addCallback('stop', stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
-                callJS(SWF_ON_LOAD);
+                callJS(Consts.SWF_ON_LOAD);
             }
         }
 
         protected function callJS(fn:String, data:Object = undefined):void {
-            Utils.callJS(JS_INSTANCE + fn, data);
+            Utils.callJS(jsInstance + fn, data);
         }
 
         protected function loadFlashVars(p:Object):void {
-            JS_INSTANCE = p['_instanceName'];
+            jsInstance = p['_instanceName'];
             setBufferTime(p['_buffertime'] || bufferTime);
+        }
+
+        protected function onPlayComplete(e:Event = null):void {}
+
+        public function handleErr(e:IOErrorEvent):void {
+            onPlayComplete();
+            callJS(Consts.SWF_ON_ERR, e);
         }
 
         public function getData(k:String):* {
@@ -83,83 +89,83 @@ package {
         }
 
         public function getState():int {
-            return state;
+            return _state;
         }
 
         public function setState(st:int):void {
-            if (state != st && State.validate(st)) {
-                state = st;
-                callJS(SWF_ON_STATE_CHANGE, st);
+            if (_state != st && State.validate(st)) {
+                _state = st;
+                callJS(Consts.SWF_ON_STATE_CHANGE, st);
             }
         }
 
-        public function getBufferTime():Number {
+        public function getBufferTime():uint {
             return bufferTime;
         }
 
-        public function setBufferTime(bt:Number):void {
+        public function setBufferTime(bt:uint):void {
             bufferTime = bt;
         }
 
         public function getMute():Boolean {
-            return mute;
+            return _mute;
         }
 
         public function setMute(m:Boolean):void {
             if (m) {
-                muteVolume = volume;
+                _muteVolume = _volume;
                 setVolume(0);
             } else {
-                setVolume(muteVolume);
+                setVolume(_muteVolume);
             }
-            mute = m;
+            _mute = m;
         }
 
         public function getVolume():uint {
-            return volume;
+            return _volume;
         }
 
         public function setVolume(v:uint):void {}
 
         public function getUrl():String {
-            return url;
+            return _url;
+        }
+
+        public function getLength():uint {
+            return _length;
         }
 
         public function getPosition():uint {
-            return position;
+            return _position;
+        }
+
+        public function getLoadedPct():Number {
+            return _loadedPct;
         }
 
         // positionPct和loadedPct都在JS层按需获取，不在
         // AS层主动派发，这样简化逻辑，节省事件开销。
         public function getPositionPct():Number {
-            return positionPct;
-        }
-
-        public function getLoadedPct():Number {
-            return loadedPct;
-        }
-
-        public function getLength():uint {
-            return length;
+            return _positionPct;
         }
 
         public function getBytesTotal():uint {
-            return bytesTotal;
+            return _bytesTotal;
         }
 
         public function getBytesLoaded():uint {
-            return bytesLoaded;
+            return _bytesLoaded;
         }
 
         public function reset():void {
-            url = '';
-            length = 0;
-            position = 0;
-            loadedPct = 0;
-            positionPct = 0;
-            pausePosition = 0;
-            bytesTotal = 0;
-            bytesLoaded = 0;
+            _url = '';
+            _length = 0;
+            _position = 0;
+            _loadedPct = 0;
+            _positionPct = 0;
+            _pausePosition = 0;
+            _bytesTotal = 0;
+            _bytesLoaded = 0;
         }
 
         public function load(url:String):void {}
