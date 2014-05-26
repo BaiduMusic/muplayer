@@ -1562,13 +1562,13 @@ var __hasProp = {}.hasOwnProperty,
   if (typeof exports === 'object') {
     return module.exports = factory();
   } else if (typeof define === 'function' && define.amd) {
-    return define('muplayer/core/engines/flashMP3Core',['muplayer/core/cfg', 'muplayer/core/utils', 'muplayer/lib/Timer', 'muplayer/core/engines/engineCore', 'muplayer/lib/jquery.swfobject'], factory);
+    return define('muplayer/core/engines/flashCore',['muplayer/core/cfg', 'muplayer/core/utils', 'muplayer/lib/Timer', 'muplayer/core/engines/engineCore', 'muplayer/lib/jquery.swfobject'], factory);
   } else {
-    return root._mu.FlashMP3Core = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.EngineCore);
+    return root._mu.FlashCore = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.EngineCore);
   }
 })(this, function(cfg, utils, Timer, EngineCore) {
-  var ERRCODE, EVENTS, FlashMP3Core, STATES, STATESCODE, TYPES, timerResolution, _ref;
-  _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
+  var ERRCODE, EVENTS, FlashCore, STATES, STATESCODE, timerResolution, _ref;
+  _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
   timerResolution = cfg.timerResolution;
   STATESCODE = {
     '-1': STATES.NOT_INIT,
@@ -1579,22 +1579,12 @@ var __hasProp = {}.hasOwnProperty,
     '5': STATES.STOP,
     '6': STATES.END
   };
-  FlashMP3Core = (function(_super) {
-    __extends(FlashMP3Core, _super);
+  FlashCore = (function(_super) {
+    __extends(FlashCore, _super);
 
-    FlashMP3Core.defaults = {
-      swf: '../dist/swf/muplayer_mp3.swf',
-      instanceName: 'MP3Core',
-      flashVer: '9.0.0'
-    };
-
-    FlashMP3Core.prototype._supportedTypes = ['mp3'];
-
-    FlashMP3Core.prototype.engineType = TYPES.FLASH_MP3;
-
-    function FlashMP3Core(options) {
+    function FlashCore(options) {
       var id, instanceName, opts;
-      this.opts = opts = $.extend(FlashMP3Core.defaults, options);
+      this.opts = opts = $.extend({}, this.defaults, options);
       this._loaded = false;
       this._queue = [];
       this._needFlashReady(['play', 'pause', 'stop', 'setCurrentPosition', '_setUrl', '_setVolume', '_setMute']);
@@ -1619,7 +1609,7 @@ var __hasProp = {}.hasOwnProperty,
       this._initEvents();
     }
 
-    FlashMP3Core.prototype._test = function(trigger) {
+    FlashCore.prototype._test = function(trigger) {
       var opts;
       opts = this.opts;
       if (!$.flash.hasVersion(opts.flashVer)) {
@@ -1629,7 +1619,7 @@ var __hasProp = {}.hasOwnProperty,
       return true;
     };
 
-    FlashMP3Core.prototype._initEvents = function() {
+    FlashCore.prototype._initEvents = function() {
       var triggerPosition, triggerProgress,
         _this = this;
       this.progressTimer = new Timer(timerResolution);
@@ -1675,7 +1665,7 @@ var __hasProp = {}.hasOwnProperty,
       });
     };
 
-    FlashMP3Core.prototype._needFlashReady = function(fnames) {
+    FlashCore.prototype._needFlashReady = function(fnames) {
       var name, _i, _len, _results,
         _this = this;
       _results = [];
@@ -1695,7 +1685,7 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashMP3Core.prototype._unexceptionGet = function(fnames) {
+    FlashCore.prototype._unexceptionGet = function(fnames) {
       var name, _i, _len, _results,
         _this = this;
       _results = [];
@@ -1714,11 +1704,11 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashMP3Core.prototype._pushQueue = function(fn, args) {
+    FlashCore.prototype._pushQueue = function(fn, args) {
       return this._queue.push([fn, args]);
     };
 
-    FlashMP3Core.prototype._fireQueue = function() {
+    FlashCore.prototype._fireQueue = function() {
       var args, fn, l, _ref1, _results;
       l = this._queue.length;
       _results = [];
@@ -1729,26 +1719,26 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashMP3Core.prototype.play = function() {
+    FlashCore.prototype.play = function() {
       this.flash.play();
       return this;
     };
 
-    FlashMP3Core.prototype.pause = function() {
+    FlashCore.prototype.pause = function() {
       this.flash.pause();
       return this;
     };
 
-    FlashMP3Core.prototype.stop = function() {
+    FlashCore.prototype.stop = function() {
       this.flash.stop();
       return this;
     };
 
-    FlashMP3Core.prototype._setUrl = function(url) {
+    FlashCore.prototype._setUrl = function(url) {
       return this.flash.load(url);
     };
 
-    FlashMP3Core.prototype.setUrl = function(url) {
+    FlashCore.prototype.setUrl = function(url) {
       var _this = this;
       if (url) {
         this._setUrl(url);
@@ -1771,53 +1761,53 @@ var __hasProp = {}.hasOwnProperty,
           return _this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
         })();
       }
-      return FlashMP3Core.__super__.setUrl.call(this, url);
+      return FlashCore.__super__.setUrl.call(this, url);
     };
 
-    FlashMP3Core.prototype.getState = function(code) {
+    FlashCore.prototype.getState = function(code) {
       return STATESCODE[code] || this._state;
     };
 
-    FlashMP3Core.prototype._setVolume = function(volume) {
+    FlashCore.prototype._setVolume = function(volume) {
       return this.flash.setData('volume', volume);
     };
 
-    FlashMP3Core.prototype.setVolume = function(volume) {
+    FlashCore.prototype.setVolume = function(volume) {
       if (!((0 <= volume && volume <= 100))) {
         this;
       }
       this._setVolume(volume);
-      return FlashMP3Core.__super__.setVolume.call(this, volume);
+      return FlashCore.__super__.setVolume.call(this, volume);
     };
 
-    FlashMP3Core.prototype._setMute = function(mute) {
+    FlashCore.prototype._setMute = function(mute) {
       return this.flash.setData('mute', mute);
     };
 
-    FlashMP3Core.prototype.setMute = function(mute) {
+    FlashCore.prototype.setMute = function(mute) {
       mute = !!mute;
       this._setMute(mute);
-      return FlashMP3Core.__super__.setMute.call(this, mute);
+      return FlashCore.__super__.setMute.call(this, mute);
     };
 
-    FlashMP3Core.prototype.setCurrentPosition = function(ms) {
+    FlashCore.prototype.setCurrentPosition = function(ms) {
       this.flash.play(ms);
       return this;
     };
 
-    FlashMP3Core.prototype.getCurrentPosition = function() {
+    FlashCore.prototype.getCurrentPosition = function() {
       return this.flash.getData('position');
     };
 
-    FlashMP3Core.prototype.getLoadedPercent = function() {
+    FlashCore.prototype.getLoadedPercent = function() {
       return this.flash.getData('loadedPct');
     };
 
-    FlashMP3Core.prototype.getTotalTime = function() {
+    FlashCore.prototype.getTotalTime = function() {
       return this.flash.getData('length');
     };
 
-    FlashMP3Core.prototype._swfOnLoad = function() {
+    FlashCore.prototype._swfOnLoad = function() {
       var _this = this;
       this._loaded = true;
       return setTimeout(function() {
@@ -1825,17 +1815,55 @@ var __hasProp = {}.hasOwnProperty,
       }, 0);
     };
 
-    FlashMP3Core.prototype._swfOnStateChange = function(code) {
+    FlashCore.prototype._swfOnStateChange = function(code) {
       return this.setState(this.getState(code));
     };
 
-    FlashMP3Core.prototype._swfOnErr = function(e) {
+    FlashCore.prototype._swfOnErr = function(e) {
       return typeof console !== "undefined" && console !== null ? console.error(e) : void 0;
     };
 
-    return FlashMP3Core;
+    return FlashCore;
 
   })(EngineCore);
+  return FlashCore;
+});
+
+var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    return module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    return define('muplayer/core/engines/flashMP3Core',['muplayer/core/cfg', 'muplayer/core/engines/flashCore'], factory);
+  } else {
+    return root._mu.FlashMP3Core = factory(_mu.cfg, _mu.FlashCore);
+  }
+})(this, function(cfg, FlashCore) {
+  var FlashMP3Core, TYPES, _ref;
+  TYPES = cfg.engine.TYPES;
+  FlashMP3Core = (function(_super) {
+    __extends(FlashMP3Core, _super);
+
+    function FlashMP3Core() {
+      _ref = FlashMP3Core.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    FlashMP3Core.prototype.defaults = {
+      swf: '../dist/swf/muplayer_mp3.swf',
+      instanceName: 'MP3Core',
+      flashVer: '9.0.0'
+    };
+
+    FlashMP3Core.prototype._supportedTypes = ['mp3'];
+
+    FlashMP3Core.prototype.engineType = TYPES.FLASH_MP3;
+
+    return FlashMP3Core;
+
+  })(FlashCore);
   return FlashMP3Core;
 });
 
