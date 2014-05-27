@@ -1,18 +1,21 @@
-do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) ->
+do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
     {EVENTS, STATES} = cfg.engine
     timerResolution = cfg.timerResolution
     extReg = /\.(.+)(\?|$)/
 
     class Engine
-        @defaults:
-            type: 'mp3'
-            # 隐藏容器, 用于容纳swf和audio等标签
-            # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
-            el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>'
+        # 隐藏容器, 用于容纳swf和audio等标签
+        # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
+        @el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>'
+
+        defaults:
             engines: `[
                 //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
                 {
                     constructor: FlashMP3Core
+                },
+                {
+                    constructor: FlashMP4Core
                 },
                 //>>excludeEnd("FlashCoreExclude");
                 {
@@ -21,17 +24,15 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             ]`
 
         constructor: (options) ->
-            @opts = $.extend(Engine.defaults, options)
+            @opts = $.extend({}, @defaults, options)
             @_initEngines()
 
         _initEngines: () ->
-            opts = @opts
             @engines = []
 
-            el = opts.el.replace(/{{DATETIME}}/g, +new Date())
-            $el = $(el).appendTo('body')
+            $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
 
-            for engine, i in opts.engines
+            for engine, i in @opts.engines
                 constructor = engine.constructor
                 args = engine.args or {}
                 args.$el = $el
@@ -96,7 +97,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
 
             # 如果没有匹配到则用默认类型适配
             if not match and not stop
-                @switchEngineByType(@opts.type, true)
+                @switchEngineByType(type, true)
 
         reset: () ->
             @curEngine.reset()
@@ -184,6 +185,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             , 'muplayer/core/engines/audioCore'
             //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
             , 'muplayer/core/engines/flashMP3Core'
+            , 'muplayer/core/engines/flashMP4Core'
             //>>excludeEnd("FlashCoreExclude");
         ], factory)`
     else
@@ -195,5 +197,6 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             , _mu.AudioCore
             //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
             , _mu.FlashMP3Core
+            , _mu.FlashMP4Core
             //>>excludeEnd("FlashCoreExclude");
         )`
