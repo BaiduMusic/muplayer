@@ -1893,7 +1893,7 @@ var __hasProp = {}.hasOwnProperty,
     FlashMP4Core.prototype.defaults = {
       swf: '../dist/swf/muplayer_mp4.swf',
       instanceName: 'MP4Core',
-      flashVer: '9.0.0'
+      flashVer: '9.0.115'
     };
 
     FlashMP4Core.prototype._supportedTypes = ['m4a'];
