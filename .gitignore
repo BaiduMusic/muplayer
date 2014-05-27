@@ -1,9 +1,9 @@
 # Customized
 *.swp
 *.swo
-lib/.sass-cache
-lib/node_modules
-lib/bower_components
+.sass-cache
+node_modules
+bower_components
 
 # Compiled source #
 ###################
