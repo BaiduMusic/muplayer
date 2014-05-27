@@ -4,6 +4,7 @@ package {
     import flash.media.SoundTransform;
     import flash.net.NetConnection;
     import flash.net.NetStream;
+    import flash.net.URLRequest;
 
     import BaseCore;
     import Consts;
@@ -99,14 +100,16 @@ package {
         }
 
         override public function play(p:Number = 0):void {
-            super.play(p);
             if (_state != State.PLAYING) {
                 try {
-                    ns.play(_url, p);
+                    var req:URLRequest = new URLRequest(_url);
+                    Utils.log(req.url);
+                    ns.play(req.url, p);
                 } catch (err:Error) {
                     handleErr(err);
                 }
             }
+            super.play(p);
         }
 
         override public function pause():void {
