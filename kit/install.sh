@@ -7,7 +7,7 @@ fi
 
 git clone https://github.com/Baidu-Music-FE/muplayer.git $dir
 
-cd $dir/lib
+cd $dir
 
 npm install
 

@@ -9,18 +9,18 @@ commander
 port = commander.port || 7777;
 
 module.exports = function(grunt) {
-    grunt.initConfig({
+    opt = {
         dirs: {
-            root: '..',
-            src: '../src',
-            dist: '../dist',
-            test: '../test',
-            tmp: '../tmp',
-            doc: '../doc',
-            css: '../src/css',
-            img: '../src/img',
-            js: '../src/js',
-            as: '../src/as'
+            root: '.',
+            src: './src',
+            dist: './dist',
+            test: './test',
+            tmp: './tmp',
+            doc: './doc',
+            css: './src/css',
+            img: './src/img',
+            js: './src/js',
+            as: './src/as'
         },
 
         jshint: {
@@ -204,7 +204,7 @@ module.exports = function(grunt) {
                     },
                     // HACK: 为了映射muplayer这个namespace
                     paths: {
-                        'muplayer': '../js'
+                        'muplayer': './js'
                     }
                 }
             },
@@ -229,7 +229,7 @@ module.exports = function(grunt) {
                         FlashCoreExclude: true
                     },
                     paths: {
-                        'muplayer': '../js'
+                        'muplayer': './js'
                     }
                 }
             }
@@ -278,7 +278,9 @@ module.exports = function(grunt) {
                 dest: '<%= dirs.dist %>/js/zepto-player.js'
             }
         }
-    });
+    };
+
+    console.log(JSON.stringify(opt.requirejs, null, 4))
 
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-connect');
@@ -292,7 +294,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('default', ['jshint', 'build', 'doc']);
+    grunt.registerTask('default', ['jshint', 'build']);
     grunt.registerTask('server', ['connect:server']);
     grunt.registerTask('copy-to-dist', ['copy:img', 'copy:mp3', 'copy:swf']);
     grunt.registerTask('pc-js', ['requirejs:pc', 'copy:pc']);

@@ -1,296 +1,3 @@
-//     Zepto.js
-//     (c) 2010-2014 Thomas Fuchs
-//     Zepto.js may be freely distributed under the MIT license.
-
-;(function($){
-  // Create a collection of callbacks to be fired in a sequence, with configurable behaviour
-  // Option flags:
-  //   - once: Callbacks fired at most one time.
-  //   - memory: Remember the most recent context and arguments
-  //   - stopOnFalse: Cease iterating over callback list
-  //   - unique: Permit adding at most one instance of the same callback
-  $.Callbacks = function(options) {
-    options = $.extend({}, options)
-
-    var memory, // Last fire value (for non-forgettable lists)
-        fired,  // Flag to know if list was already fired
-        firing, // Flag to know if list is currently firing
-        firingStart, // First callback to fire (used internally by add and fireWith)
-        firingLength, // End of the loop when firing
-        firingIndex, // Index of currently firing callback (modified by remove if needed)
-        list = [], // Actual callback list
-        stack = !options.once && [], // Stack of fire calls for repeatable lists
-        fire = function(data) {
-          memory = options.memory && data
-          fired = true
-          firingIndex = firingStart || 0
-          firingStart = 0
-          firingLength = list.length
-          firing = true
-          for ( ; list && firingIndex < firingLength ; ++firingIndex ) {
-            if (list[firingIndex].apply(data[0], data[1]) === false && options.stopOnFalse) {
-              memory = false
-              break
-            }
-          }
-          firing = false
-          if (list) {
-            if (stack) stack.length && fire(stack.shift())
-            else if (memory) list.length = 0
-            else Callbacks.disable()
-          }
-        },
-
-        Callbacks = {
-          add: function() {
-            if (list) {
-              var start = list.length,
-                  add = function(args) {
-                    $.each(args, function(_, arg){
-                      if (typeof arg === "function") {
-                        if (!options.unique || !Callbacks.has(arg)) list.push(arg)
-                      }
-                      else if (arg && arg.length && typeof arg !== 'string') add(arg)
-                    })
-                  }
-              add(arguments)
-              if (firing) firingLength = list.length
-              else if (memory) {
-                firingStart = start
-                fire(memory)
-              }
-            }
-            return this
-          },
-          remove: function() {
-            if (list) {
-              $.each(arguments, function(_, arg){
-                var index
-                while ((index = $.inArray(arg, list, index)) > -1) {
-                  list.splice(index, 1)
-                  // Handle firing indexes
-                  if (firing) {
-                    if (index <= firingLength) --firingLength
-                    if (index <= firingIndex) --firingIndex
-                  }
-                }
-              })
-            }
-            return this
-          },
-          has: function(fn) {
-            return !!(list && (fn ? $.inArray(fn, list) > -1 : list.length))
-          },
-          empty: function() {
-            firingLength = list.length = 0
-            return this
-          },
-          disable: function() {
-            list = stack = memory = undefined
-            return this
-          },
-          disabled: function() {
-            return !list
-          },
-          lock: function() {
-            stack = undefined;
-            if (!memory) Callbacks.disable()
-            return this
-          },
-          locked: function() {
-            return !stack
-          },
-          fireWith: function(context, args) {
-            if (list && (!fired || stack)) {
-              args = args || []
-              args = [context, args.slice ? args.slice() : args]
-              if (firing) stack.push(args)
-              else fire(args)
-            }
-            return this
-          },
-          fire: function() {
-            return Callbacks.fireWith(this, arguments)
-          },
-          fired: function() {
-            return !!fired
-          }
-        }
-
-    return Callbacks
-  }
-})(Zepto)
-
-//     Zepto.js
-//     (c) 2010-2014 Thomas Fuchs
-//     Zepto.js may be freely distributed under the MIT license.
-//
-//     Some code (c) 2005, 2013 jQuery Foundation, Inc. and other contributors
-
-;(function($){
-  var slice = Array.prototype.slice
-
-  function Deferred(func) {
-    var tuples = [
-          // action, add listener, listener list, final state
-          [ "resolve", "done", $.Callbacks({once:1, memory:1}), "resolved" ],
-          [ "reject", "fail", $.Callbacks({once:1, memory:1}), "rejected" ],
-          [ "notify", "progress", $.Callbacks({memory:1}) ]
-        ],
-        state = "pending",
-        promise = {
-          state: function() {
-            return state
-          },
-          always: function() {
-            deferred.done(arguments).fail(arguments)
-            return this
-          },
-          then: function(/* fnDone [, fnFailed [, fnProgress]] */) {
-            var fns = arguments
-            return Deferred(function(defer){
-              $.each(tuples, function(i, tuple){
-                var fn = $.isFunction(fns[i]) && fns[i]
-                deferred[tuple[1]](function(){
-                  var returned = fn && fn.apply(this, arguments)
-                  if (returned && $.isFunction(returned.promise)) {
-                    returned.promise()
-                      .done(defer.resolve)
-                      .fail(defer.reject)
-                      .progress(defer.notify)
-                  } else {
-                    var context = this === promise ? defer.promise() : this,
-                        values = fn ? [returned] : arguments
-                    defer[tuple[0] + "With"](context, values)
-                  }
-                })
-              })
-              fns = null
-            }).promise()
-          },
-
-          promise: function(obj) {
-            return obj != null ? $.extend( obj, promise ) : promise
-          }
-        },
-        deferred = {}
-
-    $.each(tuples, function(i, tuple){
-      var list = tuple[2],
-          stateString = tuple[3]
-
-      promise[tuple[1]] = list.add
-
-      if (stateString) {
-        list.add(function(){
-          state = stateString
-        }, tuples[i^1][2].disable, tuples[2][2].lock)
-      }
-
-      deferred[tuple[0]] = function(){
-        deferred[tuple[0] + "With"](this === deferred ? promise : this, arguments)
-        return this
-      }
-      deferred[tuple[0] + "With"] = list.fireWith
-    })
-
-    promise.promise(deferred)
-    if (func) func.call(deferred, deferred)
-    return deferred
-  }
-
-  $.when = function(sub) {
-    var resolveValues = slice.call(arguments),
-        len = resolveValues.length,
-        i = 0,
-        remain = len !== 1 || (sub && $.isFunction(sub.promise)) ? len : 0,
-        deferred = remain === 1 ? sub : Deferred(),
-        progressValues, progressContexts, resolveContexts,
-        updateFn = function(i, ctx, val){
-          return function(value){
-            ctx[i] = this
-            val[i] = arguments.length > 1 ? slice.call(arguments) : value
-            if (val === progressValues) {
-              deferred.notifyWith(ctx, val)
-            } else if (!(--remain)) {
-              deferred.resolveWith(ctx, val)
-            }
-          }
-        }
-
-    if (len > 1) {
-      progressValues = new Array(len)
-      progressContexts = new Array(len)
-      resolveContexts = new Array(len)
-      for ( ; i < len; ++i ) {
-        if (resolveValues[i] && $.isFunction(resolveValues[i].promise)) {
-          resolveValues[i].promise()
-            .done(updateFn(i, resolveContexts, resolveValues))
-            .fail(deferred.reject)
-            .progress(updateFn(i, progressContexts, progressValues))
-        } else {
-          --remain
-        }
-      }
-    }
-    if (!remain) deferred.resolveWith(resolveContexts, resolveValues)
-    return deferred.promise()
-  }
-
-  $.Deferred = Deferred
-})(Zepto)
-
-;(function($) {
-    var ObjProto = Object.prototype,
-        toString = ObjProto.toString;
-
-    $.isString = function(obj) {
-        return toString.call(obj) === '[object String]';
-    }
-
-    $.isNumeric = function(obj) {
-        return toString.call(obj) === '[object Number]';
-    }
-
-    // 参考: https://github.com/dexteryy/OzJS/blob/master/oz.js
-    $.getScript = function(url, op) {
-        var doc = document,
-            s = doc.createElement('script');
-            s.async = 'async';
-
-        if (!op) {
-            op = {};
-        } else if (isFunction(op)) {
-            op = {
-                callback: op
-            };
-        }
-
-        if (op.charset) {
-            s.charset = op.charset;
-        }
-
-        s.src = url;
-
-        var h = doc.getElementsByTagName('head')[0];
-
-        s.onload = s.onreadystatechange = function(__, isAbort) {
-            if (isAbort || !s.readyState || /loaded|complete/.test(s.readyState)) {
-                s.onload = s.onreadystatechange = null;
-                if (h && s.parentNode) {
-                    h.removeChild(s);
-                }
-                s = undefined;
-                if (!isAbort && op.callback) {
-                    op.callback();
-                }
-            }
-        };
-
-        h.insertBefore(s, h.firstChild);
-    }
-})(Zepto);
-
 /* @license
  * Baidu Music Player: 1.0.0
  * -------------------------
@@ -456,27 +163,28 @@
       }
     },
     time2str: function(time) {
-      var floor, hour, minute, pad, r, second,
-        _this = this;
+      var floor, hour, minute, pad, r, second;
       r = [];
       floor = Math.floor;
       time = Math.round(time);
       hour = floor(time / 3600);
       minute = floor((time - 3600 * hour) / 60);
       second = time % 60;
-      pad = function(source, length) {
-        var nagative, pre, str;
-        pre = '';
-        nagative = '';
-        if (source < 0) {
-          nagative = '-';
-        }
-        str = String(Math.abs(source));
-        if (str.length < length) {
-          pre = new Array(length - str.length + 1).join('0');
-        }
-        return nagative + pre + str;
-      };
+      pad = (function(_this) {
+        return function(source, length) {
+          var nagative, pre, str;
+          pre = '';
+          nagative = '';
+          if (source < 0) {
+            nagative = '-';
+          }
+          str = String(Math.abs(source));
+          if (str.length < length) {
+            pre = new Array(length - str.length + 1).join('0');
+          }
+          return nagative + pre + str;
+        };
+      })(this);
       if (hour) {
         r.push(hour);
       }
@@ -779,15 +487,16 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     Playlist.prototype.remove = function(sid) {
-      var id, remove, _i, _len,
-        _this = this;
-      remove = function(sid) {
-        var i;
-        i = $.inArray(sid, _this.list);
-        if (i !== -1) {
-          return _this.list.splice(i, 1);
-        }
-      };
+      var id, remove, _i, _len;
+      remove = (function(_this) {
+        return function(sid) {
+          var i;
+          i = $.inArray(sid, _this.list);
+          if (i !== -1) {
+            return _this.list.splice(i, 1);
+          }
+        };
+      })(this);
       sid = formatSid(sid);
       if ($.isArray(sid)) {
         for (_i = 0, _len = sid.length; _i < _len; _i++) {
@@ -1238,8 +947,7 @@ var __hasProp = {}.hasOwnProperty,
     AudioCore.prototype.engineType = TYPES.AUDIO;
 
     function AudioCore(options) {
-      var audio, k, least, levels, opts, playEmpty, v,
-        _this = this;
+      var audio, k, least, levels, opts, playEmpty, v;
       this.opts = opts = $.extend(AudioCore.defaults, options);
       levels = {
         '': 0,
@@ -1261,21 +969,27 @@ var __hasProp = {}.hasOwnProperty,
       audio.preload = opts.preload;
       audio.autoplay = opts.autoplay;
       audio.loop = false;
-      audio.on = function(type, listener) {
-        audio.addEventListener(type, listener, false);
-        return audio;
-      };
-      audio.off = function(type, listener) {
-        audio.removeEventListener(type, listener, false);
-        return audio;
-      };
+      audio.on = (function(_this) {
+        return function(type, listener) {
+          audio.addEventListener(type, listener, false);
+          return audio;
+        };
+      })(this);
+      audio.off = (function(_this) {
+        return function(type, listener) {
+          audio.removeEventListener(type, listener, false);
+          return audio;
+        };
+      })(this);
       this.audio = audio;
       this._needCanPlay(['play', 'setCurrentPosition']);
       this._initEvents();
-      playEmpty = function() {
-        _this.setUrl(opts.emptyMP3).play();
-        return win.removeEventListener('touchstart', playEmpty, false);
-      };
+      playEmpty = (function(_this) {
+        return function() {
+          _this.setUrl(opts.emptyMP3).play();
+          return win.removeEventListener('touchstart', playEmpty, false);
+        };
+      })(this);
       win.addEventListener('touchstart', playEmpty, false);
     }
 
@@ -1288,43 +1002,60 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._initEvents = function() {
-      var buffer, progressTimer, trigger,
-        _this = this;
+      var buffer, progressTimer, trigger;
       trigger = this.trigger;
-      this.trigger = function(type, listener) {
-        if (_this.getUrl() !== _this.opts.emptyMP3) {
-          return trigger.call(_this, type, listener);
-        }
-      };
-      buffer = function(per) {
-        _this.setState(STATES.BUFFERING);
-        return _this.trigger(EVENTS.PROGRESS, per || _this.getLoadedPercent());
-      };
-      progressTimer = null;
-      return this.audio.on('loadstart', function() {
-        var audio;
-        audio = _this.audio;
-        progressTimer = setInterval(function() {
-          if (audio.readyState > 1) {
-            return clearInterval(progressTimer);
+      this.trigger = (function(_this) {
+        return function(type, listener) {
+          if (_this.getUrl() !== _this.opts.emptyMP3) {
+            return trigger.call(_this, type, listener);
           }
-          return buffer();
-        }, 50);
-        return _this.setState(STATES.PREBUFFER);
-      }).on('playing', function() {
-        return _this.setState(STATES.PLAYING);
-      }).on('pause', function() {
-        return _this.setState(_this.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
-      }).on('ended', function() {
-        return _this.setState(STATES.END);
-      }).on('error', function() {
-        _this.setState(STATES.END);
-        return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK);
-      }).on('waiting', function() {
-        return _this.setState(_this.getCurrentPosition() && STATES.BUFFERING || STATES.PREBUFFER);
-      }).on('timeupdate', function() {
-        return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
-      }).on('progress', function(e) {
+        };
+      })(this);
+      buffer = (function(_this) {
+        return function(per) {
+          _this.setState(STATES.BUFFERING);
+          return _this.trigger(EVENTS.PROGRESS, per || _this.getLoadedPercent());
+        };
+      })(this);
+      progressTimer = null;
+      return this.audio.on('loadstart', (function(_this) {
+        return function() {
+          var audio;
+          audio = _this.audio;
+          progressTimer = setInterval(function() {
+            if (audio.readyState > 1) {
+              return clearInterval(progressTimer);
+            }
+            return buffer();
+          }, 50);
+          return _this.setState(STATES.PREBUFFER);
+        };
+      })(this)).on('playing', (function(_this) {
+        return function() {
+          return _this.setState(STATES.PLAYING);
+        };
+      })(this)).on('pause', (function(_this) {
+        return function() {
+          return _this.setState(_this.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
+        };
+      })(this)).on('ended', (function(_this) {
+        return function() {
+          return _this.setState(STATES.END);
+        };
+      })(this)).on('error', (function(_this) {
+        return function() {
+          _this.setState(STATES.END);
+          return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK);
+        };
+      })(this)).on('waiting', (function(_this) {
+        return function() {
+          return _this.setState(_this.getCurrentPosition() && STATES.BUFFERING || STATES.PREBUFFER);
+        };
+      })(this)).on('timeupdate', (function(_this) {
+        return function() {
+          return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
+        };
+      })(this)).on('progress', function(e) {
         var loaded, total;
         clearInterval(progressTimer);
         loaded = e.loaded || 0;
@@ -1334,26 +1065,27 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._needCanPlay = function(fnames) {
-      var audio, name, _i, _len, _results,
-        _this = this;
+      var audio, name, _i, _len, _results;
       audio = this.audio;
       _results = [];
       for (_i = 0, _len = fnames.length; _i < _len; _i++) {
         name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], function() {
-          var args, fn, handle;
-          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-          if (audio.readyState < 3) {
-            handle = function() {
+        _results.push(this[name] = utils.wrap(this[name], (function(_this) {
+          return function() {
+            var args, fn, handle;
+            fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+            if (audio.readyState < 3) {
+              handle = function() {
+                fn.apply(_this, args);
+                return audio.off('canplay', handle);
+              };
+              audio.on('canplay', handle);
+            } else {
               fn.apply(_this, args);
-              return audio.off('canplay', handle);
-            };
-            audio.on('canplay', handle);
-          } else {
-            fn.apply(_this, args);
-          }
-          return _this;
-        }));
+            }
+            return _this;
+          };
+        })(this)));
       }
       return _results;
     };
@@ -1520,17 +1252,22 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setEngine = function(engine) {
-      var bindEvents, positionHandle, progressHandle, statechangeHandle, unbindEvents,
-        _this = this;
-      statechangeHandle = function(e) {
-        return _this.trigger(EVENTS.STATECHANGE, e);
-      };
-      positionHandle = function(pos) {
-        return _this.trigger(EVENTS.POSITIONCHANGE, pos);
-      };
-      progressHandle = function(progress) {
-        return _this.trigger(EVENTS.PROGRESS, progress);
-      };
+      var bindEvents, positionHandle, progressHandle, statechangeHandle, unbindEvents;
+      statechangeHandle = (function(_this) {
+        return function(e) {
+          return _this.trigger(EVENTS.STATECHANGE, e);
+        };
+      })(this);
+      positionHandle = (function(_this) {
+        return function(pos) {
+          return _this.trigger(EVENTS.POSITIONCHANGE, pos);
+        };
+      })(this);
+      progressHandle = (function(_this) {
+        return function(progress) {
+          return _this.trigger(EVENTS.PROGRESS, progress);
+        };
+      })(this);
       bindEvents = function(engine) {
         return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle);
       };
@@ -1684,12 +1421,12 @@ var __hasProp = {}.hasOwnProperty,
   var EVENTS, Player, STATES, time2str, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   time2str = utils.time2str;
+
   /**
    * muplayer的Player类（对应player.js）是对外暴露的接口，它封装了音频操作及播放列表（Playlist）逻辑，并屏蔽了对音频内核适配的细节对音频内核适配的细节。
    * <b>对一般应用场景，只需签出编译后的 <code>dist/js/player.min.js</code> 即可</b>。
    * 文档中 <code>player</code> 指代Player的实例。
-  */
-
+   */
   Player = (function() {
     var instance;
 
@@ -1700,6 +1437,7 @@ var __hasProp = {}.hasOwnProperty,
       mute: false,
       volume: 80
     };
+
 
     /**
      * Player初始化方法
@@ -1735,8 +1473,7 @@ var __hasProp = {}.hasOwnProperty,
      *    </pre>
      *    </td>
      *  </tr></table>
-    */
-
+     */
 
     function Player(options) {
       var opts;
@@ -1753,54 +1490,60 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Player.prototype._initEngine = function(engine) {
-      var _this = this;
-      return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
-        var st;
-        st = e.newState;
-        _this.trigger(st);
-        if (st === STATES.END) {
-          return _this.next(true);
-        }
-      }).on(EVENTS.POSITIONCHANGE, function(pos) {
-        return _this.trigger('timeupdate', pos);
-      }).on(EVENTS.PROGRESS, function(progress) {
-        return _this.trigger('progress', progress);
-      });
+      return this.engine = engine.on(EVENTS.STATECHANGE, (function(_this) {
+        return function(e) {
+          var st;
+          st = e.newState;
+          _this.trigger(st);
+          if (st === STATES.END) {
+            return _this.next(true);
+          }
+        };
+      })(this)).on(EVENTS.POSITIONCHANGE, (function(_this) {
+        return function(pos) {
+          return _this.trigger('timeupdate', pos);
+        };
+      })(this)).on(EVENTS.PROGRESS, (function(_this) {
+        return function(progress) {
+          return _this.trigger('progress', progress);
+        };
+      })(this));
     };
+
 
     /**
      * 若播放列表中有歌曲就开始播放。会派发 <code>player:play</code> 事件。
      * @param {Number} startTime 指定歌曲播放的起始位置，单位：毫秒。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.play = function(startTime) {
-      var def, engine, play,
-        _this = this;
+      var def, engine, play;
       startTime = ~~startTime;
       def = $.Deferred();
       engine = this.engine;
-      play = function() {
-        if (startTime) {
-          engine.setCurrentPosition(startTime);
-        } else {
-          engine.play();
-        }
-        _this.trigger('player:play', startTime);
-        return def.resolve();
-      };
+      play = (function(_this) {
+        return function() {
+          if (startTime) {
+            engine.setCurrentPosition(startTime);
+          } else {
+            engine.play();
+          }
+          _this.trigger('player:play', startTime);
+          return def.resolve();
+        };
+      })(this);
       this._fetch().done(function() {
         return play();
       });
       return def.promise();
     };
 
+
     /**
      * 若player正在播放，则暂停播放 (这时，如果再执行play方法，则从暂停位置继续播放)。会派发 <code>player:pause</code> 事件。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.pause = function() {
       this.engine.pause();
@@ -1808,11 +1551,11 @@ var __hasProp = {}.hasOwnProperty,
       return this;
     };
 
+
     /**
      * 停止播放，会将当前播放位置重置。即stop后执行play，将从音频头部重新播放。会派发 <code>player:stop</code> 事件。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.stop = function() {
       this.engine.stop();
@@ -1820,22 +1563,22 @@ var __hasProp = {}.hasOwnProperty,
       return this;
     };
 
+
     /**
      * stop() + play()的快捷方式。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.replay = function() {
       return this.stop().play();
     };
 
+
     /**
      * 播放前一首歌。会派发 <code>player:prev</code> 事件，事件参数：
      * <pre>cur // 调用prev时正在播放的歌曲</pre>
      * @return {player}
-    */
-
+     */
 
     Player.prototype.prev = function() {
       var cur;
@@ -1849,14 +1592,14 @@ var __hasProp = {}.hasOwnProperty,
       return this.stop();
     };
 
+
     /**
      * 播放下一首歌。参数auto是布尔值，代表是否是因自动切歌而触发的（比如因为一首歌播放完会自动触发next方法，这时auto为true，其他主动调用auto应为undefined）。
      * 会派发 <code>player:next</code> 事件，事件参数：
      * <pre>auto // 是否为自动切歌
      * cur  // 调用next时正在播放的歌曲</pre>
      * @return {player}
-    */
-
+     */
 
     Player.prototype.next = function(auto) {
       var cur;
@@ -1871,12 +1614,12 @@ var __hasProp = {}.hasOwnProperty,
       return this.stop();
     };
 
+
     /**
      * 获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。
      * 如果之前没有主动执行过setCur，则认为播放列表的第一首歌是当前歌曲。
      * @return {String}
-    */
-
+     */
 
     Player.prototype.getCur = function() {
       var cur, pl;
@@ -1889,12 +1632,12 @@ var __hasProp = {}.hasOwnProperty,
       return cur + '';
     };
 
+
     /**
      * 设置当前歌曲。
      * @param {String} sid 可以是音频文件url，也可以是音频文件id（如果是文件id，则要自己重写_fetch方法，决定如何根据id获得相应音频的实际地址）。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.setCur = function(sid) {
       var pl;
@@ -1907,11 +1650,11 @@ var __hasProp = {}.hasOwnProperty,
       return this;
     };
 
+
     /**
      * 当前播进度（单位秒）。
      * @return {Number}
-    */
-
+     */
 
     Player.prototype.curPos = function(format) {
       var pos;
@@ -1923,11 +1666,11 @@ var __hasProp = {}.hasOwnProperty,
       }
     };
 
+
     /**
      * 单曲总时长（单位秒）。
      * @return {Number}
-    */
-
+     */
 
     Player.prototype.duration = function(format) {
       var duration;
@@ -1939,12 +1682,12 @@ var __hasProp = {}.hasOwnProperty,
       }
     };
 
+
     /**
      * 将音频资源添加到播放列表
      * @param {String|Array} sid 要添加的单曲资源或标识，为数组则代表批量添加。会派发 <code>player:add</code> 事件。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.add = function(sid) {
       if (sid) {
@@ -1954,12 +1697,12 @@ var __hasProp = {}.hasOwnProperty,
       return this;
     };
 
+
     /**
      * 从播放列表中移除指定资源，若移除资源后列表为空则触发reset。会派发 <code>player:remove</code> 事件。
      * @param {String|Array} sid 要移除的资源标识（与add方法参数相对应）。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.remove = function(sid) {
       if (sid) {
@@ -1972,12 +1715,12 @@ var __hasProp = {}.hasOwnProperty,
       return this;
     };
 
+
     /**
      * 播放列表和内核资源重置。会派发 <code>player:reset</code> 事件。
      * 如有特别需要可以自行扩展，比如通过监听 <code>player:reset</code> 来重置相关业务逻辑的标志位或事件等。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.reset = function() {
       this.playlist.reset();
@@ -1986,135 +1729,136 @@ var __hasProp = {}.hasOwnProperty,
       return this;
     };
 
+
     /**
      * 获取播放内核当前状态。所有可能状态值参见 <code>cfg.coffee</code> 中的 <code>engine.STATES</code> 声明。
      * @return {String}
-    */
-
+     */
 
     Player.prototype.getState = function() {
       return this.engine.getState();
     };
+
 
     /**
      * 设置当前播放资源的url。一般而言，这个方法是私有方法，供_fetch等内部方法中调用，客户端无需关心。
      * 但出于调试和灵活性的考虑，依然之暴露为公共方法。
      * @param {String} url
      * @return {player}
-    */
-
+     */
 
     Player.prototype.setUrl = function(url) {
       this.engine.setUrl(url);
       return this;
     };
 
+
     /**
      * 获取当前播放资源的url。
      * @return {String}
-    */
-
+     */
 
     Player.prototype.getUrl = function() {
       return this.engine.getUrl();
     };
 
+
     /**
      * 设置播放器音量。
      * @param {Number} volume 合法范围：0 - 100，0是静音。注意volume与mute不会相互影响，即便setVolume(0)，getMute()的结果依然维持不变。反之亦然。
-    */
-
+     */
 
     Player.prototype.setVolume = function(volume) {
       return this.engine.setVolume(volume);
     };
 
+
     /**
      * 获取播放器音量。返回值范围：0 - 100
      * @return {Number}
-    */
-
+     */
 
     Player.prototype.getVolume = function() {
       return this.engine.getVolume();
     };
 
+
     /**
      * 设置是否静音。
      * @param {Boolean} mute true为静音，flase为不静音。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.setMute = function(mute) {
       this.engine.setMute(mute);
       return this;
     };
 
+
     /**
      * 获取静音状态。
      * @return {Boolean}
-    */
-
+     */
 
     Player.prototype.getMute = function() {
       return this.engine.getMute();
     };
 
+
     /**
      * 检验内核是否支持播放指定的音频格式。
      * @param {String} type 标识音频格式（或音频文件后缀）的字符串，如'mp3', 'aac'等。
      * @return {Boolean}
-    */
-
+     */
 
     Player.prototype.canPlayType = function(type) {
       return this.engine.canPlayType(type);
     };
 
+
     /**
      * 播放列表中的歌曲总数。这一个快捷方法，如有更多需求，可自行获取播放列表：player.playlist.list。
      * @return {Number}
-    */
-
+     */
 
     Player.prototype.getSongsNum = function() {
       return this.playlist.list.length;
     };
 
+
     /**
      * 设置列表播放的模式。
      * @param {String} mode 可选值参见前文对初始化Player方法的options参数描述。
      * @return {player}
-    */
-
+     */
 
     Player.prototype.setMode = function(mode) {
       this.playlist.setMode(mode);
       return this;
     };
 
+
     /**
      * 获取列表播放的模式。
      * @return {String}
-    */
-
+     */
 
     Player.prototype.getMode = function() {
       return this.playlist.mode;
     };
 
     Player.prototype._fetch = function() {
-      var def,
-        _this = this;
+      var def;
       def = $.Deferred();
       if (this.getUrl() === this.getCur()) {
         def.resolve();
       } else {
-        setTimeout(function() {
-          _this.setUrl(_this.getCur());
-          return def.resolve();
-        }, 0);
+        setTimeout((function(_this) {
+          return function() {
+            _this.setUrl(_this.getCur());
+            return def.resolve();
+          };
+        })(this), 0);
       }
       return def.promise();
     };
