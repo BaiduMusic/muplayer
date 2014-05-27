@@ -10,7 +10,7 @@ package {
 
         function getVolume():uint;
 
-        function setVolume(v:uint):void;
+        function setVolume(v:uint):Boolean;
 
         function getUrl():String;
 

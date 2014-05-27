@@ -1,8 +1,9 @@
 package {
     import flash.display.Sprite;
     import flash.events.*;
-    import flash.errors.IOError;
+    import flash.media.SoundTransform;
     import flash.system.Security;
+    import flash.utils.Timer;
 
     import Consts;
     import State;
@@ -11,6 +12,9 @@ package {
     public class BaseCore extends Sprite implements IEngine {
         // JS回调
         private var jsInstance:String = '';
+
+        protected var playerTimer:Timer;
+        protected var stf:SoundTransform;
 
         // 实例属性
         protected var _volume:uint = 80;               // 音量(0-100)，默认80
@@ -47,6 +51,7 @@ package {
             Security.allowDomain('*');
             Security.allowInsecureDomain('*');
             loadFlashVars(loaderInfo.parameters);
+            stf = new SoundTransform(_volume / 100, 0);
         }
 
         protected function callJS(fn:String, data:Object = undefined):void {
@@ -62,7 +67,9 @@ package {
 
         protected function onPlayComplete(e:Event = null):void {}
 
-        public function handleErr(e:IOErrorEvent):void {
+        protected function onPlayTimer(e:TimerEvent = null):void {}
+
+        public function handleErr(e:* = null):void {
             onPlayComplete();
             callJS(Consts.SWF_ON_ERR, e);
         }
@@ -114,7 +121,14 @@ package {
             return _volume;
         }
 
-        public function setVolume(v:uint):void {}
+        public function setVolume(v:uint):Boolean {
+            if (v < 0 || v > 100) {
+                return false;
+            }
+            _volume = v;
+            stf.volume = v / 100;
+            return true;
+        }
 
         public function getUrl():String {
             return _url;
@@ -159,10 +173,28 @@ package {
 
         public function load(url:String):void {}
 
-        public function play(p:Number = 0):void {}
+        public function play(p:Number = 0):void {
+            if (_state != State.PLAYING) {
+                if (!p && _state == State.PAUSE) {
+                    p = _pausePosition;
+                }
+                playerTimer = new Timer(Consts.TIMER_INTERVAL);
+                playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
+                playerTimer.start();
+                setState(State.PLAYING);
+            }
+        }
 
         public function pause():void {}
 
-        public function stop(p:Number = 0):void {}
+        public function stop(p:Number = 0):void {
+            _pausePosition = p;
+            if (playerTimer) {
+                playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
+                playerTimer.stop();
+                playerTimer = null;
+            }
+            setState(p && State.PAUSE || State.STOP);
+        }
     }
 }

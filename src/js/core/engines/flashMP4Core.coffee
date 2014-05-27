@@ -5,7 +5,9 @@ do (root = this, factory = (cfg, FlashCore) ->
         defaults:
             swf: '../dist/swf/muplayer_mp4.swf'
             instanceName: 'MP4Core'
-            flashVer: '9.0.0'
+            # Adobe AIR and Flash Player 9.0.115.0 and later versions support
+            # files derived from the standard MPEG-4 container format.
+            flashVer: '9.0.115'
         _supportedTypes: ['m4a']
         engineType: TYPES.FLASH_MP4
 

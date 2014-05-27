@@ -1,6 +1,5 @@
 package {
     import flash.events.*;
-    import flash.errors.IOError;
     import flash.external.ExternalInterface;
     import flash.media.Sound;
     import flash.media.SoundChannel;
@@ -8,7 +7,6 @@ package {
     import flash.media.SoundLoaderContext;
     import flash.net.URLRequest;
     import flash.system.Security;
-    import flash.utils.Timer;
 
     import BaseCore;
     import Consts;
@@ -17,14 +15,11 @@ package {
     public class MP3Core extends BaseCore {
         private var s:Sound;
         private var sc:SoundChannel;
-        private var stf:SoundTransform;
-        private var playerTimer:Timer;
 
         override public function init():void {
             super.init();
             if (ExternalInterface.available) {
                 reset();
-                stf = new SoundTransform(_volume / 100, 0);
                 ExternalInterface.addCallback('load', load);
                 ExternalInterface.addCallback('play', play);
                 ExternalInterface.addCallback('pause', pause);
@@ -41,6 +36,7 @@ package {
 
         private function onProgress(e:ProgressEvent):void {
             setState(State.BUFFERING);
+
             if (!_bytesTotal) {
                 _bytesTotal = s.bytesTotal;
             }
@@ -60,20 +56,17 @@ package {
             setState(State.END);
         }
 
-        private function onPlayTimer(e:TimerEvent = null):void {
+        override protected function onPlayTimer(e:TimerEvent = null):void {
             _position = sc.position;
             _positionPct = Math.round(100 * _position / _length) / 100;
         }
 
-        override public function setVolume(v:uint):void {
-            if (v < 0 || v > 100) {
-                return;
-            }
-            _volume = v;
-            stf.volume = v / 100;
-            if (sc) {
+        override public function setVolume(v:uint):Boolean {
+            var success:Boolean = super.setVolume(v);
+            if (success && sc) {
                 sc.soundTransform = stf;
             }
+            return success;
         }
 
         override public function reset():void {
@@ -92,7 +85,7 @@ package {
 
             try {
                 s && s.close();
-            } catch (err:IOError) {
+            } catch (err:Error) {
                 // Occurs if the file is either yet to be opened or has finished downloading.
             } finally {
                 reset();
@@ -106,23 +99,16 @@ package {
             var req:URLRequest = new URLRequest(url),
                 context:SoundLoaderContext = new SoundLoaderContext(getBufferTime(), true);
 
-            this._url = url;
+            _url = url;
             setState(State.PREBUFFER);
             s.load(req, context);
         }
 
         override public function play(p:Number = 0):void {
+            super.play(p);
             if (_state != State.PLAYING) {
-                if (!p && _state == State.PAUSE) {
-                    p = _pausePosition;
-                }
                 sc = s.play(p, 0, stf);
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
-                setState(State.PLAYING);
-
-                playerTimer = new Timer(Consts.TIMER_INTERVAL);
-                playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.start();
             }
         }
 
@@ -131,17 +117,11 @@ package {
         }
 
         override public function stop(p:Number = 0):void {
-            _pausePosition = p;
+            super.stop();
             // 判断sc是否存在是因为sc在play方法调用时才被延迟初始化
             if (sc) {
                 sc.stop();
             }
-            if (playerTimer) {
-                playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.stop();
-                playerTimer = null;
-            }
-            setState(p && State.PAUSE || State.STOP);
         }
     }
 }
