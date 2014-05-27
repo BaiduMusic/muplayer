@@ -6,9 +6,11 @@ package {
     import BaseCore;
     import Consts;
     import State;
+    import Utils;
 
     public class MP4Core extends BaseCore {
         override public function init():void {
+            Utils.log('mp4 init');
             super.init();
             if (ExternalInterface.available) {
                 reset();

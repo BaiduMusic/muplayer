@@ -28,6 +28,7 @@
     engine: {
       TYPES: {
         FLASH_MP3: 'FlashMP3Core',
+        FLASH_MP4: 'FlashMP4Core',
         AUDIO: 'AudioCore'
       },
       EVENTS: {
@@ -1867,6 +1868,44 @@ var __hasProp = {}.hasOwnProperty,
   return FlashMP3Core;
 });
 
+var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    return module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    return define('muplayer/core/engines/flashMP4Core',['muplayer/core/cfg', 'muplayer/core/engines/flashCore'], factory);
+  } else {
+    return root._mu.FlashMP4Core = factory(_mu.cfg, _mu.FlashCore);
+  }
+})(this, function(cfg, FlashCore) {
+  var FlashMP4Core, TYPES, _ref;
+  TYPES = cfg.engine.TYPES;
+  FlashMP4Core = (function(_super) {
+    __extends(FlashMP4Core, _super);
+
+    function FlashMP4Core() {
+      _ref = FlashMP4Core.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    FlashMP4Core.prototype.defaults = {
+      swf: '../dist/swf/muplayer_mp4.swf',
+      instanceName: 'MP4Core',
+      flashVer: '9.0.0'
+    };
+
+    FlashMP4Core.prototype._supportedTypes = ['m4a'];
+
+    FlashMP4Core.prototype.engineType = TYPES.FLASH_MP4;
+
+    return FlashMP4Core;
+
+  })(FlashCore);
+  return FlashMP4Core;
+});
+
 (function(root, factory) {
   if (typeof exports === 'object') {
     return module.exports = factory();
@@ -1878,6 +1917,7 @@ var __hasProp = {}.hasOwnProperty,
             , 'muplayer/core/engines/engineCore'
             , 'muplayer/core/engines/audioCore'
                         , 'muplayer/core/engines/flashMP3Core'
+            , 'muplayer/core/engines/flashMP4Core'
                     ], factory);
   } else {
     return root._mu.Engine = factory(
@@ -1887,20 +1927,24 @@ var __hasProp = {}.hasOwnProperty,
             , _mu.EngineCore
             , _mu.AudioCore
                         , _mu.FlashMP3Core
+            , _mu.FlashMP4Core
                     );
   }
-})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) {
+})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) {
   var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
   extReg = /\.(.+)(\?|$)/;
   Engine = (function() {
-    Engine.defaults = {
-      type: 'mp3',
-      el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>',
+    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>';
+
+    Engine.prototype.defaults = {
       engines: [
                                 {
                     constructor: FlashMP3Core
+                },
+                {
+                    constructor: FlashMP4Core
                 },
                                 {
                     constructor: AudioCore
@@ -1909,17 +1953,15 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     function Engine(options) {
-      this.opts = $.extend(Engine.defaults, options);
+      this.opts = $.extend({}, this.defaults, options);
       this._initEngines();
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, el, engine, i, opts, _i, _len, _ref1;
-      opts = this.opts;
+      var $el, args, constructor, engine, i, _i, _len, _ref1;
       this.engines = [];
-      el = opts.el.replace(/{{DATETIME}}/g, +new Date());
-      $el = $(el).appendTo('body');
-      _ref1 = opts.engines;
+      $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
+      _ref1 = this.opts.engines;
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         engine = _ref1[i];
         constructor = engine.constructor;
@@ -1998,7 +2040,7 @@ var __hasProp = {}.hasOwnProperty,
         }
       }
       if (!match && !stop) {
-        return this.switchEngineByType(this.opts.type, true);
+        return this.switchEngineByType(type, true);
       }
     };
 
@@ -2120,7 +2162,7 @@ var __hasProp = {}.hasOwnProperty,
 
     instance = null;
 
-    Player.defaults = {
+    Player.prototype.defaults = {
       mode: 'loop',
       mute: false,
       volume: 80
@@ -2146,10 +2188,10 @@ var __hasProp = {}.hasOwnProperty,
      *    <td>默认值: 80。播放音量，取值范围0 - 100。</td>
      *  </tr>
      *  <tr>
-     *    <td>engine</td>
+     *    <td>engines</td>
      *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
-     *    engines: [{<br>
+     *    [{<br>
      *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
      *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
      *    <span class="ts2"></span>swf: '../dist/swf/muplayer_mp3.swf' // 对应的swf文件路径<br>
@@ -2169,10 +2211,12 @@ var __hasProp = {}.hasOwnProperty,
         return instance;
       }
       instance = this;
-      this.opts = opts = $.extend(Player.defaults, options);
+      this.opts = opts = $.extend({}, this.defaults, options);
       this.playlist = new Playlist();
       this.playlist.setMode(opts.mode);
-      this._initEngine(new Engine(opts.engine));
+      this._initEngine(new Engine({
+        engines: opts.engines
+      }));
       this.setMute(opts.mute);
       this.setVolume(opts.volume);
     }

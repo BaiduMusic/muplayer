@@ -5,6 +5,7 @@
     <div class="hd">播放列表及交互</div>
     <div class="bd">
         <ul id="playlist-demo">
+            <li data-link="dist/mp3/test.m4a"><i class="play-btn"></i>m4a测试</li>
             <li data-link="dist/mp3/rain.mp3"><i class="play-btn"></i>雨声</li>
             <li data-link="dist/mp3/walking.mp3"><i class="play-btn"></i>走路声</li>
         </ul>
@@ -17,7 +18,12 @@
 <script>
 // 通过全局变量的方式初始化
 var player = new _mu.Player({
-        mode: 'list'
+        mode: 'list',
+        engines: [
+            {
+                constructor: 'FlashMP4Core'
+            }
+        ]
     }),
     $pl = $('#playlist-demo'),
     reset = function() {

@@ -10,7 +10,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
     class Player
         instance = null
 
-        @defaults:
+        defaults:
             mode: 'loop'
             mute: false
             volume: 80
@@ -35,10 +35,10 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *    <td>默认值: 80。播放音量，取值范围0 - 100。</td>
          *  </tr>
          *  <tr>
-         *    <td>engine</td>
+         *    <td>engines</td>
          *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
          *    <pre>
-         *    engines: [{<br>
+         *    [{<br>
          *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
          *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
          *    <span class="ts2"></span>swf: '../dist/swf/muplayer_mp3.swf' // 对应的swf文件路径<br>
@@ -55,11 +55,11 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 return instance
             instance = @
 
-            @opts = opts = $.extend(Player.defaults, options)
+            @opts = opts = $.extend({}, @defaults, options)
 
             @playlist = new Playlist()
             @playlist.setMode(opts.mode)
-            @_initEngine(new Engine(opts.engine))
+            @_initEngine(new Engine(engines: opts.engines))
             @setMute(opts.mute)
             @setVolume(opts.volume)
 
