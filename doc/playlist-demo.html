@@ -33,13 +33,23 @@ var player = new _mu.Player({
     findCurrItem = function() {
         return $pl.find('[data-link="' + player.getCur() + '"]');
     },
-    $time = $('<span class="time"></span>');
+    $time = $('<span class="time"></span>'),
+
+    // 获得资源的绝对路径
+    // 参考: http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
+    toAbsoluteUrl = function (url) {
+        var div = document.createElement('div');
+        div.innerHTML = '<a></a>';
+        div.firstChild.href = url;
+        div.innerHTML = div.innerHTML;
+        return div.firstChild.href;
+    };
 
 $pl.on('click', '> li', function() {
     if ($(this).hasClass('playing')) {
         player.pause();
     } else {
-        var link = $(this).data('link');
+        var link = toAbsoluteUrl($(this).data('link'));
         player.reset().add(link).play();
     }
 });
