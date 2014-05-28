@@ -5,10 +5,8 @@ _ = require 'lodash'
 
 class Builder
 	constructor: ->
-		@init_variables()
-
-	init_variables: ->
-		@build_path = 'build_temp'
+		@src_path = 'src'
+		@build_temp_path = 'build_temp'
 		@require_temp_path = 'require_temp'
 		@dist_path = 'dist'
 
@@ -20,26 +18,32 @@ class Builder
 		.then =>
 			@compile_all_coffee()
 		.then =>
-			@compress_client_js()
+			@combine_js()
+		.then =>
+			@compress_js()
+		.then =>
+			@build_as()
+		.then =>
+			@clean()
 		.done ->
-			console.log 'ok'
+			console.log '>> Build done.'.yellow
 
 	update_build_dir: ->
 		# Delete old build first.
 		Q.fcall =>
-			os.remove @build_path
+			os.remove @build_temp_path
 		.then =>
 			os.remove @dist_path
 		.then =>
 			from = 'src/js'
-			os.copy(from, @build_path + '/js').then ->
-				console.log '>> Copy: '.cyan + from + ' -> '.green + @build_path
+			os.copy(from, @build_temp_path + '/js').then ->
+				console.log '>> Copy: '.cyan + from + ' -> '.green + @build_temp_path
 
 	compile_all_coffee: ->
 		coffee = require 'coffee-script'
 
 		Q.fcall =>
-			os.glob os.path.join(@build_path, '**', '*.coffee')
+			os.glob os.path.join(@build_temp_path, '**', '*.coffee')
 		.then (coffee_list) =>
 			Q.all coffee_list.map (path) =>
 				js_path = path.replace(/(\.coffee)$/, '') + '.js'
@@ -60,7 +64,7 @@ class Builder
 					.then ->
 						console.log '>> Compiled: '.cyan + path
 
-	compress_client_js: (opts) ->
+	combine_js: (opts) ->
 		console.log ">> Compile client js with requirejs ...".cyan
 
 		requirejs = require 'requirejs'
@@ -68,7 +72,7 @@ class Builder
 		deferred = Q.defer()
 
 		opts_pc = {
-			appDir: @build_path,
+			appDir: @build_temp_path,
 			baseUrl: 'js/',
 			dir: @require_temp_path,
 
@@ -118,5 +122,53 @@ class Builder
 
 
 		return deferred.promise
+
+	compress_js: ->
+		compress = (path) ->
+			os.spawn 'node_modules/.bin/uglifyjs', [
+				'-mt'
+				'-o', path + '.min.js'
+				path + '.js'
+			]
+
+		Q.all(
+			[
+				@dist_path + '/player'
+				@dist_path + '/zepto-player'
+			].map (el) ->
+				compress el
+		).then ->
+			console.log ">> Compress js done.".cyan
+
+	build_as: ->
+		try
+			flex_sdk = require 'flex-sdk'
+		catch e
+			console.log e
+			return
+
+		os.spawn(
+			flex_sdk.bin.mxmlc, [
+				'-optimize=true'
+				'-show-actionscript-warnings=true'
+				'-static-link-runtime-shared-libraries=true'
+				'-o', "#{@dist_path}/muplayer_mp3.swf"
+				@src_path + '/as/MP3Core.as'
+			], (err, stdout, stderr) ->
+				if err
+					console.error err
+				else
+					console.log stdout
+					console.log stderr
+		).then ->
+			console.log ">> Build AS done.".cyan
+
+	clean: ->
+		console.log ">> Clean temp folders...".cyan
+		Q.all [
+			os.remove @build_temp_path
+			os.remove @require_temp_path
+		]
+
 
 module.exports = new Builder
