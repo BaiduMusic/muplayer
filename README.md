@@ -3,14 +3,20 @@
 
 
 ## 安装
+
 你可以使用 bower 安装
 
     bower install muplayer
 
-具体使用方法请参见在线 API 文档。
+或者到发布页面下载压缩文档：[Releases](https://github.com/Baidu-Music-FE/muplayer/releases)
 
-## API 文档
+具体使用方法请参见档部分。
+
+## 文档
+
 ### 参见：[MuPlayer API](http://labs.music.baidu.com/demo/muplayer/doc/api.html)
+
+### 示例：[Demo](http://labs.music.baidu.com/demo/muplayer/doc/demo.html)
 
 
 ## 为项目贡献代码
