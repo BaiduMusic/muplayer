@@ -11,7 +11,7 @@ do (root = this, factory = () ->
         timerResolution: 25
 
         emptyMP3: '../dist/mp3/empty.mp3'
-        expressInstaller: '../dist/swf/expressInstall.swf'
+        expressInstaller: './dist/expressInstall.swf'
         engine:
             TYPES:
                 FLASH_MP3: 'FlashMP3Core'

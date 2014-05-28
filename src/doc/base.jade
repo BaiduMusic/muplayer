@@ -42,7 +42,7 @@ mixin mainContent
       p
         iframe(width="100%", height="300", src=symbol.jsfiddle , allowfullscreen="allowfullscreen", frameborder="0")
 
-doctype 5
+doctype html
 html
   head
     meta(name="viewport", content="width=device-width, initial-scale=1.0", charset="utf-8")
@@ -50,7 +50,7 @@ html
     link(rel="icon", type="image/x-icon", href="favicon.ico")
     link(rel="stylesheet", href="bower_components/bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="bower_components/prism/themes/prism.css")
-    link(rel="stylesheet", href="dist/css/api.css")
+    link(rel="stylesheet", href="css/api.css")
 
   body
     header#header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav
@@ -80,7 +80,7 @@ html
                   a(href="api.html") API文档
         a(class="github", target="_blank", href="https://github.com/Baidu-Music-FE/muplayer")
           i
-          | View On GitHub
+            | View On GitHub
 
     section.jumbotron
       .container
@@ -89,20 +89,20 @@ html
         if currentName == 'Main'
             ul.advantages
                 li
-                  i.glyphicon.glyphicon-ok
-                  多端（PC & WebApp）通用，统一的API调用方式
+                  | i.glyphicon.glyphicon-ok
+                  | 多端（PC & WebApp）通用，统一的API调用方式
                 li
-                  i.glyphicon.glyphicon-ok
-                  HTML5 Audio与Flash内核的平滑切换（支持IE 6在内的所有常见浏览器）
+                  | i.glyphicon.glyphicon-ok
+                  | HTML5 Audio与Flash内核的平滑切换（支持IE 6在内的所有常见浏览器）
                 li
-                  i.glyphicon.glyphicon-ok
-                  文档完善，API设计灵活简洁
+                  | i.glyphicon.glyphicon-ok
+                  | 文档完善，API设计灵活简洁
                 li
-                  i.glyphicon.glyphicon-ok
-                  针对WebApp端的优化打包，节省加载资源
+                  | i.glyphicon.glyphicon-ok
+                  | 针对WebApp端的优化打包，节省加载资源
                 li
-                  i.glyphicon.glyphicon-ok
-                  百度多条产品线上实际应用，稳定可靠
+                  | i.glyphicon.glyphicon-ok
+                  | 百度多条产品线上实际应用，稳定可靠
 
     section.container.bs-docs-container
       if symbols.length
@@ -121,65 +121,65 @@ html
     footer.bs-footer
       .container
         p <code>MuPlayer</code>:
-          a(href="https://github.com/Baidu-Music-FE/muplayer") https://github.com/Baidu-Music-FE/muplayer
+          a(href="https://github.com/Baidu-Music-FE/muplayer", target="_blank") https://github.com/Baidu-Music-FE/muplayer
         p
-          | Copyright (c) 2014 a(href="http://labs.music.baidu.com") @MusicLab
-          a(href="http://weibo.com/musicfe") @音乐前端
+          | Copyright (c) 2014 a(href="http://labs.music.baidu.com", target="_blank") @MusicLab
+          a(href="http://weibo.com/musicfe", target="_blank") @音乐前端
 
     script(src="bower_components/jquery/jquery.min.js")
     script(src="bower_components/bootstrap/dist/js/bootstrap.min.js")
     script(src="bower_components/prism/prism.js")
     script(src="bower_components/prefixfree/prefixfree.min.js")
-    script
-        $(function() {
-            var $win = $(window),
-                $body = $(document.body),
-                $sideBar = $('.bs-sidebar'),
-                navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
+    script.
+      $(function() {
+        var $win = $(window),
+          $body = $(document.body),
+          $sideBar = $('.bs-sidebar'),
+          navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
 
-            $body.scrollspy({
-                target: '.bs-sidebar',
-                offset: navHeight
-            });
-
-            $win.on('load', function() {
-                $body.scrollspy('refresh');
-            });
-
-            setTimeout(function() {
-                $sideBar.affix({
-                    offset: {
-                        top: function() {
-                            var offsetTop = $sideBar.offset().top;
-                            return (this.top = offsetTop - navHeight);
-                        },
-                        bottom: function() {
-                            return (this.bottom = $('.bs-footer').outerHeight(true));
-                        }
-                    }
-                });
-            }, 100);
-
-            $sideBar.on('click', 'a[href^=#]', function() {
-                var id = $(this).attr('href').substr(1),
-                    top = $('#'+ id).offset().top - navHeight + 10;
-
-                $('html, body').animate({
-                    scrollTop: top
-                }, 300);
-
-                return false;
-            });
+        $body.scrollspy({
+          target: '.bs-sidebar',
+          offset: navHeight
         });
 
+        $win.on('load', function() {
+          $body.scrollspy('refresh');
+        });
+
+        setTimeout(function() {
+          $sideBar.affix({
+            offset: {
+              top: function() {
+                var offsetTop = $sideBar.offset().top;
+                return (this.top = offsetTop - navHeight);
+              },
+              bottom: function() {
+                return (this.bottom = $('.bs-footer').outerHeight(true));
+              }
+            }
+          });
+        }, 100);
+
+        $sideBar.on('click', 'a[href^=#]', function() {
+          var id = $(this).attr('href').substr(1),
+            top = $('#'+ id).offset().top - navHeight + 10;
+
+          $('html, body').animate({
+            scrollTop: top
+          }, 300);
+
+          return false;
+        });
+      });
+
     div(style="display: none")
-      script
+      script.
         var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
         document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F89a467ff5d4c7c906a933623c7db27bb'%3E%3C/script%3E"));
 
         try {
-            if (console && console.log) {
-                console.log('加入百度音乐前端，跟我们做些有挑战的趣事？');
-                console.info && console.info('简历请发 %c musicfe-hr@baidu.com', 'color: #c7254e');
-            }
+          if (console && console.log) {
+            console.log('加入百度音乐前端，跟我们做些有挑战的趣事？');
+            console.info && console.info('简历请发 %c musicfe-hr@baidu.com', 'color: #c7254e');
+          }
         } catch (e) {}

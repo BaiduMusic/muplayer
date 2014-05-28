@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="dist/css/player-demo.css">
+<link rel="stylesheet" href="css/player-demo.css">
 
 <div class="mod">
     <div class="hd">带UI的简易播放器</div>
@@ -22,7 +22,7 @@
                     <i class="glyphicon glyphicon-volume-down"></i><span class="bar"></span>
                 </div>
                 <a class="avatar" href="javascript:;">
-                    <img alt="" src="dist/img/default.jpg">
+                    <img alt="" src="img/default.jpg">
                 </a>
                 <div class="progress-bar"></div>
             </div>
@@ -40,7 +40,7 @@
 <script>
 require.config({
     paths: {
-        muplayer: 'dist/js' // 须指向muplayer.js存放的目录
+        muplayer: 'dist' // 须指向muplayer.js存放的目录
     }
 });
 
@@ -73,8 +73,8 @@ require([
         if ($ctrlIcon.hasClass('glyphicon-play')) {
             $ctrlIcon.removeClass('glyphicon-play').addClass('glyphicon-pause');
             player.reset().add([
-                'dist/mp3/rain.mp3',
-                'dist/mp3/walking.mp3'
+                'mp3/rain.mp3',
+                'mp3/walking.mp3'
             ]).play();
         } else if ($ctrlIcon.hasClass('glyphicon-pause')) {
             $ctrlIcon.removeClass('glyphicon-pause').addClass('glyphicon-play');

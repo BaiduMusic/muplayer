@@ -1,5 +1,5 @@
 /* @license
- * Baidu Music Player: 1.0.0
+ * Baidu Music Player: 0.9.0
  * -------------------------
  * (c) 2014 FE Team of Baidu Music
  * Can be freely distributed under the MIT license.
@@ -24,7 +24,7 @@
     version: '0.9.0',
     timerResolution: 25,
     emptyMP3: '../dist/mp3/empty.mp3',
-    expressInstaller: '../dist/swf/expressInstall.swf',
+    expressInstaller: './dist/expressInstall.swf',
     engine: {
       TYPES: {
         FLASH_MP3: 'FlashMP3Core',

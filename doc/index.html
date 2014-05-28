@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/prism/themes/prism.css">
-    <link rel="stylesheet" href="dist/css/api.css">
+    <link rel="stylesheet" href="css/api.css">
   </head>
   <body>
     <header id="header" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
@@ -20,7 +20,7 @@
             <li><a href="demo.html">示例</a></li>
             <li><a href="api.html">API文档</a></li>
           </ul>
-        </div><a target="_blank" href="https://github.com/Baidu-Music-FE/muplayer" class="github"><i></i>View On GitHub</a>
+        </div><a target="_blank" href="https://github.com/Baidu-Music-FE/muplayer" class="github"><i>View On GitHub</i></a>
       </div>
     </header>
     <section class="jumbotron">
@@ -28,57 +28,65 @@
         <h1><em>Mu</em><span>Player</span>『百度音乐播放内核』</h1>
         <p> —— 跨平台、轻量级的音频播放解决方案。</p>
         <ul class="advantages">
-          <li><i class="glyphicon glyphicon-ok"></i>多端（PC & WebApp）通用，统一的API调用方式</li>
-          <li><i class="glyphicon glyphicon-ok"></i>
-            <HTML5>Audio与Flash内核的平滑切换（支持IE 6在内的所有常见浏览器）</HTML5>
+          <li>
+            i.glyphicon.glyphicon-ok
+            多端（PC & WebApp）通用，统一的API调用方式
           </li>
-          <li><i class="glyphicon glyphicon-ok"></i>文档完善，API设计灵活简洁</li>
-          <li><i class="glyphicon glyphicon-ok"></i>针对WebApp端的优化打包，节省加载资源</li>
-          <li><i class="glyphicon glyphicon-ok"></i>百度多条产品线上实际应用，稳定可靠</li>
+          <li>
+            i.glyphicon.glyphicon-ok
+            HTML5 Audio与Flash内核的平滑切换（支持IE 6在内的所有常见浏览器）
+          </li>
+          <li>
+            i.glyphicon.glyphicon-ok
+            文档完善，API设计灵活简洁
+          </li>
+          <li>
+            i.glyphicon.glyphicon-ok
+            针对WebApp端的优化打包，节省加载资源
+          </li>
+          <li>
+            i.glyphicon.glyphicon-ok
+            百度多条产品线上实际应用，稳定可靠
+          </li>
         </ul>
       </div>
     </section>
     <section class="container bs-docs-container">
       <section id="Main"><h2 id="-">概述</h2>
-<p><strong>MuPlayer</strong> 是百度<a href="http://weibo.com/musicfe">音乐前端</a>团队开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
-<h2 id="-">源码目录</h2>
-<pre><code class="lang-text">muplayer/
-  +src/             (源码)
-    +demo.html      (一个完整的播放器demo示例)
-  +lib/             (第三方库、工具及grunt编译等)
-    +Gruntfile.js   (grunt配置)
-    +bower.json     (demo运行需要安装的静态文件声明)
-    +package.json   (grunt和bower等npm包的安装依赖声明)
-  +doc/             (本地Demo及API文档)
-  +test/            (qunit test)
-  +dist/            (grunt编译后生成的最终引用文件)</code></pre>
-<h2 id="-demo">签出源码并运行本地Demo</h2>
-<p>签出代码并安装必要依赖需执行：</p>
-<pre><code class="lang-shell">curl https://raw.githubusercontent.com/Baidu-Music-FE/muplayer/lib/install.sh | sh</code></pre>
-<p>之后进入lib/目录并运行 <code>grunt server [-p your port]</code>，可在 <code>localhost</code> 开启一个webserver。其中，-p为可选参数，可以指定server开启的端口（默认是7777）：</p>
-<pre><code class="lang-shell">cd muplayer/lib
-grunt server</code></pre>
-<p>之后，便可以访问并查看 <a href="http://localhost:7777/">本地文档及Demo</a> 了。</p>
-<h2 id="api-">API详解</h2>
-<p>参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">MuPlayer API</a></p>
-<h2 id="-">事件说明</h2>
-<p>在播放内核的实现中，事件的派发非常重要，这是解耦内核与UI交互的最佳方式 (客户端可自行监听需要的事件并做出相应的UI响应)。除上述部分API方法会派发诸如player:play，player:add等操作相关的事件外，下面还讲对播放状态相关的事件做一说明。<br>所有事件常量见 <code>cfg.coffee</code> 中的声明。默认对外派发的事件遵循精简且与HTML5 Auido规范统一的原则，player实例对外派发的事件点有三个：</p>
+<p><strong>MuPlayer</strong> 是百度 <a href="http://weibo.com/musicfe">@音乐前端</a> 团队开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
+<h2 id="-">安装</h2>
+<p>你可以使用 bower 安装</p>
+<pre><code>bower install muplayer</code></pre>
+<p>具体使用方法请参见在线 API 文档。</p>
+<h2 id="api-">API 文档</h2>
+<h3 id="-muplayer-api-http-labs-music-baidu-com-demo-muplayer-doc-api-html-">参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">MuPlayer API</a></h3>
+<h2 id="-">为项目贡献代码</h2>
 <ol>
-<li><code>EVENTS.STATECHANGE</code> 时，派发具体的change后的新状态。因此可以监听cfg.coffee中定义的所有STATES常量对应的状态。</li>
-<li><code>EVENTS.POSITIONCHANGE</code> 时，会派发timeupdate事件。</li>
-<li><code>EVENTS.PROGRESS</code> 时，会派发progress事件。<br>若以上均无法满足需求(在我们内部的产品中，还未曾遇到)，可以进一步监听player.engine的相应事件。</li>
+<li><p>签出项目</p>
+<p> git clone <a href="https://github.com/Baidu-Music-FE/muplayer.git">https://github.com/Baidu-Music-FE/muplayer.git</a><br> cd muplayer</p>
+</li>
+<li><p>安装依赖</p>
+<p> npm install</p>
+<p>这个步骤会提示你时候安装 Flex SDK，如果选择 <code>no</code>， 项目会利用现有的编译好的 <code>swf</code> 文件。如果你希望更改 action script 源码并编译，请选择 <code>yes</code>，这个 SDK 可能会需要下载 400MB 的依赖。</p>
+</li>
+<li><p>更改源代码</p>
+</li>
+<li><p>编译</p>
+<p> cake build</p>
+<p>编译好的文件会保存到 <code>dist</code> 文件夹。</p>
+</li>
 </ol>
 <h2 id="license">License</h2>
-<p><strong>MuPlayer</strong> is released under the MIT License.<br>Copyright (c) 2014 Baidu Music</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+<p><strong>MuPlayer</strong> 实行 MIT 许可协议.<br>版权 (c) 2014 Baidu Music</p>
+<p>被授权人有权利使用、复制、修改、合并、出版发行、散布、再授权及贩售软件及软件的副本。<br>被授权人可根据程序的需要修改授权条款为适当的内容。</p>
+<p>在软件和软件的所有副本中都必须包含版权声明和许可声明。</p>
+<p>此授权条款并非属 copyleft 的自由软件授权条款，允许在自由/开放源码软件或非自由软件（proprietary software）所使用。<br>MIT的内容可依照程序著作权者的需求更改内容。此亦为MIT与BSD（The BSD license, 3-clause BSD license）本质上不同处。<br>MIT条款可与其他授权条款并存。另外，MIT条款也是自由软件基金会（FSF）所认可的自由软件授权条款，与 GPL 兼容。</p>
 </section>
     </section>
     <footer class="bs-footer">
       <div class="container">
-        <p><code>MuPlayer</code>: <a href="https://github.com/Baidu-Music-FE/muplayer">https://github.com/Baidu-Music-FE/muplayer</a></p>
-        <p>Copyright (c) 2014 music-fe@baidu.com <a href="http://weibo.com/musicfe">@musicfe</a></p>
+        <p><code>MuPlayer</code>:<a href="https://github.com/Baidu-Music-FE/muplayer" target="_blank">https://github.com/Baidu-Music-FE/muplayer</a></p>
+        <p>Copyright (c) 2014 a(href="http://labs.music.baidu.com", target="_blank") @MusicLab<a href="http://weibo.com/musicfe" target="_blank">@音乐前端</a></p>
       </div>
     </footer>
     <script src="bower_components/jquery/jquery.min.js"></script>
@@ -87,44 +95,44 @@ grunt server</code></pre>
     <script src="bower_components/prefixfree/prefixfree.min.js"></script>
     <script>
       $(function() {
-          var $win = $(window),
-              $body = $(document.body),
-              $sideBar = $('.bs-sidebar'),
-              navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
-              
-          $body.scrollspy({
-              target: '.bs-sidebar',
-              offset: navHeight
-          });
+        var $win = $(window),
+          $body = $(document.body),
+          $sideBar = $('.bs-sidebar'),
+          navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
           
-          $win.on('load', function() {
-              $body.scrollspy('refresh');
+        $body.scrollspy({
+          target: '.bs-sidebar',
+          offset: navHeight
+        });
+        
+        $win.on('load', function() {
+          $body.scrollspy('refresh');
+        });
+        
+        setTimeout(function() {
+          $sideBar.affix({
+            offset: {
+              top: function() {
+                var offsetTop = $sideBar.offset().top;
+                return (this.top = offsetTop - navHeight);
+              },
+              bottom: function() {
+                return (this.bottom = $('.bs-footer').outerHeight(true));
+              }
+            }
           });
+        }, 100);
+        
+        $sideBar.on('click', 'a[href^=#]', function() {
+          var id = $(this).attr('href').substr(1),
+            top = $('#'+ id).offset().top - navHeight + 10;
+            
+          $('html, body').animate({
+            scrollTop: top
+          }, 300);
           
-          setTimeout(function() {
-              $sideBar.affix({
-                  offset: {
-                      top: function() {
-                          var offsetTop = $sideBar.offset().top;
-                          return (this.top = offsetTop - navHeight);
-                      },
-                      bottom: function() {
-                          return (this.bottom = $('.bs-footer').outerHeight(true));
-                      }
-                  }
-              });
-          }, 100);
-          
-          $sideBar.on('click', 'a[href^=#]', function() {
-              var id = $(this).attr('href').substr(1),
-                  top = $('#'+ id).offset().top - navHeight + 10;
-                  
-              $('html, body').animate({
-                  scrollTop: top
-              }, 300);
-              
-              return false;
-          });
+          return false;
+        });
       });
       
     </script>
@@ -134,10 +142,10 @@ grunt server</code></pre>
         document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F89a467ff5d4c7c906a933623c7db27bb'%3E%3C/script%3E"));
         
         try {
-            if (console && console.log) {
-                console.log('加入百度音乐前端，跟我们做些有挑战的趣事？');
-                console.info && console.info('简历请发 %c musicfe-hr@baidu.com', 'color: #c7254e');
-            }
+          if (console && console.log) {
+            console.log('加入百度音乐前端，跟我们做些有挑战的趣事？');
+            console.info && console.info('简历请发 %c musicfe-hr@baidu.com', 'color: #c7254e');
+          }
         } catch (e) {}
       </script>
     </div>
