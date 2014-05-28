@@ -1,5 +1,5 @@
 ## 概述
-**MuPlayer** 是百度 [@音乐前端](http://weibo.com/musicfe) 团队开发维护的浏览端音频播放内核，它基于HTML5 Audio及Flash音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
+**MuPlayer** 是百度 [@音乐前端](http://weibo.com/musicfe) 团队开发维护的浏览端音频播放内核，它基于 HTML5 Audio 及 Flash 音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
 
 
 ## 安装
@@ -15,24 +15,33 @@
 
 ## 为项目贡献代码
 
- ### 1. 签出项目
+ 1. 签出项目
 
-    git clone https://github.com/Baidu-Music-FE/muplayer.git
-    cd muplayer
+        git clone https://github.com/Baidu-Music-FE/muplayer.git
+        cd muplayer
 
- ### 2. 安装依赖
+ 2. 安装依赖
 
-    npm install
+        npm install
 
-  这个步骤会提示你时候安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，这个 SDK 可能会需要下载 400MB 的依赖。
+  这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。
 
- ### 4. 更改源代码
+ 3. 编译
 
- ### 5. 编译
-
-    cake build
+        cake build
 
   编译好的文件会保存到 `dist` 文件夹。
+
+
+## 修订文档
+
+ 1. 编译文档
+
+        cake doc
+
+ 2. 预览文档需要启动本地服务器
+
+        cake server
 
 
 ## License
