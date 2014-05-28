@@ -10,7 +10,12 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test"
+    "Cakefile",
+    "test",
+    "src",
+    "lib",
+    "kit",
+    "doc"
   ],
   "devDependencies": {
     "bootstrap": "~3.0.0",
