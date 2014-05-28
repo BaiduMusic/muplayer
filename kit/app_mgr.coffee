@@ -60,7 +60,7 @@ main = ->
                 console.log '>> Build doc done.'.yellow
 
         when 'server'
-            port = process.argv[3] or 8077
+            port = process.argv[3]
             node_static = require 'node-static'
             file = new node_static.Server 'doc'
 
