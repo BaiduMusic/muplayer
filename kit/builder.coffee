@@ -143,12 +143,11 @@ class Builder
     add_license: ->
         conf = require '../package'
         info = """
-            /* @license
-             * Baidu Music Player: #{conf.version}
-             * -------------------------
-             * (c) 2014 FE Team of Baidu Music
-             * Can be freely distributed under the MIT license.
-             */\n
+            // @license
+            // Baidu Music Player: #{conf.version}
+            // -------------------------
+            // (c) 2014 FE Team of Baidu Music
+            // Can be freely distributed under the MIT license.\n
         """
 
         Q.fcall =>

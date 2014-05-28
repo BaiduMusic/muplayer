@@ -1,12 +1,9 @@
-/*
- * Timer.js: A periodic timer for Node.js and the browser.
- *
- * Copyright (c) 2012 Arthur Klepchukov, Jarvis Badgley, Florian Schäfer
- * Licensed under the BSD license (BSD_LICENSE.txt)
- *
- * Version: 0.0.1
- *
- */
+// Timer.js: A periodic timer for Node.js and the browser.
+//
+// Copyright (c) 2012 Arthur Klepchukov, Jarvis Badgley, Florian Schäfer
+// Licensed under the BSD license (BSD_LICENSE.txt)
+//
+// Version: 0.0.1
 (function (root, factory) {
     if (typeof exports === 'object') {
         module.exports = factory();

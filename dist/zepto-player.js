@@ -1,9 +1,8 @@
-/* @license
- * Baidu Music Player: 0.9.0
- * -------------------------
- * (c) 2014 FE Team of Baidu Music
- * Can be freely distributed under the MIT license.
- */
+// @license
+// Baidu Music Player: 0.9.0
+// -------------------------
+// (c) 2014 FE Team of Baidu Music
+// Can be freely distributed under the MIT license.
 (function(root, factory) {
   if (typeof root._mu === 'undefined') {
     root._mu = {};
@@ -718,9 +717,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
   return EngineCore;
 });
 
-/* Modernizr 2.7.1 (Custom Build) | MIT & BSD
- * Build: http://modernizr.com/download/#-audio
- */
+// Modernizr 2.7.1 (Custom Build) | MIT & BSD
+// Build: http://modernizr.com/download/#-audio
 (function (root, factory) {
     if (typeof exports === 'object') {
         module.exports = factory();
