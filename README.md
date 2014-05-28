@@ -26,7 +26,7 @@
 
   这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。
 
- 3. 编译
+ 3. 编译 （如果你没有全局安装 coffee，请先运行 `npm install -g coffee-script`）
 
         cake build
 
