@@ -42,35 +42,35 @@ iframe {
   width: 100%;
 }
 
-/* line 69, ../../src/css/base.sass */
-ul, li {
+/* line 70, ../../src/css/base.sass */
+ul, ul li {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* line 74, ../../src/css/base.sass */
+/* line 75, ../../src/css/base.sass */
 #header {
   background: #5bc0de;
   border-color: #28a1c5;
 }
-/* line 77, ../../src/css/base.sass */
+/* line 78, ../../src/css/base.sass */
 #header .navbar-collapse, #header .navbar-form {
   border-color: #28a1c5;
 }
-/* line 79, ../../src/css/base.sass */
+/* line 80, ../../src/css/base.sass */
 #header .navbar-toggle {
   border-color: #28a1c5;
 }
-/* line 81, ../../src/css/base.sass */
+/* line 82, ../../src/css/base.sass */
 #header .navbar-toggle:hover, #header .navbar-toggle:focus {
   background-color: #28a1c5;
 }
-/* line 84, ../../src/css/base.sass */
+/* line 85, ../../src/css/base.sass */
 #header .navbar-toggle.collapsed .icon-bar {
   background: white;
 }
-/* line 86, ../../src/css/base.sass */
+/* line 87, ../../src/css/base.sass */
 #header .navbar-brand {
   color: white;
   font-weight: bold;
@@ -91,11 +91,11 @@ ul, li {
 #header .navbar-brand:active {
   color: white;
 }
-/* line 89, ../../src/css/base.sass */
+/* line 90, ../../src/css/base.sass */
 #header .navbar-nav {
   height: 50px;
 }
-/* line 91, ../../src/css/base.sass */
+/* line 92, ../../src/css/base.sass */
 #header .navbar-nav a {
   height: 50px;
   line-height: 50px;
@@ -122,7 +122,7 @@ ul, li {
 #header .navbar-nav a:active {
   color: #d6eff6;
 }
-/* line 97, ../../src/css/base.sass */
+/* line 98, ../../src/css/base.sass */
 #header .navbar-nav a:hover {
   height: 51px;
   line-height: 51px;
@@ -145,7 +145,7 @@ ul, li {
 #header .navbar-nav a:hover:active {
   color: white;
 }
-/* line 101, ../../src/css/base.sass */
+/* line 102, ../../src/css/base.sass */
 #header .navbar-nav .active a {
   color: white;
   background: #28a1c5;
@@ -166,15 +166,15 @@ ul, li {
 #header .navbar-nav .active a:active {
   color: white;
 }
-/* line 104, ../../src/css/base.sass */
+/* line 105, ../../src/css/base.sass */
 #header .navbar-nav .active a:hover {
   border-bottom: none;
 }
-/* line 106, ../../src/css/base.sass */
+/* line 107, ../../src/css/base.sass */
 #header .container {
   position: relative;
 }
-/* line 108, ../../src/css/base.sass */
+/* line 109, ../../src/css/base.sass */
 #header .github {
   display: -moz-inline-stack;
   display: inline-block;
@@ -190,7 +190,7 @@ ul, li {
   border-top: none;
   padding: 10px 15px;
 }
-/* line 117, ../../src/css/base.sass */
+/* line 118, ../../src/css/base.sass */
 #header .github i {
   display: -moz-inline-stack;
   display: inline-block;
@@ -209,28 +209,28 @@ ul, li {
   margin-right: 10px;
 }
 
-/* line 123, ../../src/css/base.sass */
+/* line 124, ../../src/css/base.sass */
 .jumbotron h1 em {
   color: #c7254e;
   font-style: normal;
 }
-/* line 126, ../../src/css/base.sass */
+/* line 127, ../../src/css/base.sass */
 .jumbotron h1 span {
   color: #5bc0de;
 }
-/* line 128, ../../src/css/base.sass */
+/* line 129, ../../src/css/base.sass */
 .jumbotron .advantages {
   padding: 20px 0 0 50px;
   margin: 35px 0 0 0;
   border-top: 2px dashed #5bc0de;
 }
-/* line 132, ../../src/css/base.sass */
+/* line 133, ../../src/css/base.sass */
 .jumbotron .advantages .glyphicon-ok {
   color: #5bc0de;
   margin-right: 20px;
 }
 
-/* line 136, ../../src/css/base.sass */
+/* line 137, ../../src/css/base.sass */
 .bs-footer {
   padding-top: 40px;
   padding-bottom: 30px;

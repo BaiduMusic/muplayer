@@ -15,20 +15,20 @@
 
 ## 为项目贡献代码
 
-0. 签出项目
+ ### 1. 签出项目
 
     git clone https://github.com/Baidu-Music-FE/muplayer.git
     cd muplayer
 
-0. 安装依赖
+ ### 2. 安装依赖
 
     npm install
 
   这个步骤会提示你时候安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，这个 SDK 可能会需要下载 400MB 的依赖。
 
-0. 更改源代码
+ ### 4. 更改源代码
 
-0. 编译
+ ### 5. 编译
 
     cake build
 
