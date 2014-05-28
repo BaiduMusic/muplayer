@@ -51,6 +51,7 @@ os =
 	readFile: Q.denodeify graceful.readFile
 	outputFile: Q.denodeify fs.outputFile
 	copy: Q.denodeify fs.copy
+	symlink: Q.denodeify fs.symlink
 	exists: Q.denodeify fs.exists
 	rename: Q.denodeify fs.rename
 	remove: Q.denodeify fs.remove

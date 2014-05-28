@@ -9,6 +9,7 @@ class Builder
 		@build_temp_path = 'build_temp'
 		@require_temp_path = 'require_temp'
 		@dist_path = 'dist'
+		@lib_path = 'lib'
 
 	start: ->
 		@start_time = Date.now()
@@ -22,6 +23,8 @@ class Builder
 		.then =>
 			@compress_js()
 		.then =>
+			@add_license()
+		.then =>
 			@build_as()
 		.then =>
 			@clean()
@@ -33,11 +36,11 @@ class Builder
 		Q.fcall =>
 			os.remove @build_temp_path
 		.then =>
-			os.remove @dist_path
-		.then =>
 			from = 'src/js'
 			os.copy(from, @build_temp_path + '/js').then ->
 				console.log '>> Copy: '.cyan + from + ' -> '.green + @build_temp_path
+		.then =>
+			os.copy @lib_path + '/expressInstall.swf', @dist_path + '/expressInstall.swf'
 
 	compile_all_coffee: ->
 		coffee = require 'coffee-script'
@@ -85,9 +88,6 @@ class Builder
 			],
 			fileExclusionRegExp: /^\./,
 			removeCombined: true,
-			wrap: {
-				startFile: 'src/license.txt'
-			},
 			pragmas: {
 				FlashCoreExclude: false
 			},
@@ -140,27 +140,48 @@ class Builder
 		).then ->
 			console.log ">> Compress js done.".cyan
 
+	add_license: ->
+		conf = require '../package'
+		info = """
+			/* @license
+			 * Baidu Music Player: #{conf.version}
+			 * -------------------------
+			 * (c) 2014 FE Team of Baidu Music
+			 * Can be freely distributed under the MIT license.
+			 */\n
+		"""
+
+		Q.fcall =>
+			os.glob @dist_path + '/*.js'
+		.then (paths) ->
+			Q.all paths.map (el) ->
+				console.log ">> License info added: ".cyan + el
+				os.readFile(el, 'utf8')
+				.then (str) ->
+					os.outputFile el, info + str
+
 	build_as: ->
 		try
 			flex_sdk = require 'flex-sdk'
 		catch e
-			console.log e
+			console.log ">> Warn: ".yellow + e.message
 			return
 
-		os.spawn(
-			flex_sdk.bin.mxmlc, [
-				'-optimize=true'
-				'-show-actionscript-warnings=true'
-				'-static-link-runtime-shared-libraries=true'
-				'-o', "#{@dist_path}/muplayer_mp3.swf"
-				@src_path + '/as/MP3Core.as'
-			], (err, stdout, stderr) ->
-				if err
-					console.error err
-				else
-					console.log stdout
-					console.log stderr
-		).then ->
+		bin_name = 'muplayer_mp3.swf'
+
+		os.spawn flex_sdk.bin.mxmlc, [
+			'-optimize=true'
+			'-show-actionscript-warnings=true'
+			'-static-link-runtime-shared-libraries=true'
+			'-o', "#{@dist_path}/#{bin_name}"
+			@src_path + '/as/MP3Core.as'
+		], (err, stdout, stderr) ->
+			if err
+				console.error err
+			else
+				console.log stdout
+				console.log stderr
+
 			console.log ">> Build AS done.".cyan
 
 	clean: ->
