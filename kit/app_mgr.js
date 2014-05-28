@@ -65,7 +65,7 @@
           };
         })(this));
       case 'server':
-        port = 8077;
+        port = process.argv[3] || 8077;
         node_static = require('node-static');
         file = new node_static.Server('doc');
         require('http').createServer(function(req, res) {
