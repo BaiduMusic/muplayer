@@ -1,6 +1,0 @@
-/* @license
- * Baidu Music Player: 1.0.0
- * -------------------------
- * (c) 2014 FE Team of Baidu Music
- * Can be freely distributed under the MIT license.
- */
