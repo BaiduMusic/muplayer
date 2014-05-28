@@ -4,7 +4,7 @@
 
 ## 安装
 
-你可以使用 bower 安装
+你可以使用 [bower](https://github.com/bower/bower) 安装
 
     bower install muplayer
 
@@ -26,17 +26,21 @@
         git clone https://github.com/Baidu-Music-FE/muplayer.git
         cd muplayer
 
- 2. 安装依赖
+ 2. 如果你没有全局安装 [coffee](http://coffeescript.org/)，请先安装它
+
+        npm install -g coffee-script
+
+    安装依赖
 
         npm install
 
-  这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。
+    这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。
 
- 3. 编译 （如果你没有全局安装 coffee，请先运行 `npm install -g coffee-script`）
+ 3. 编译
 
         cake build
 
-  编译好的文件会保存到 `dist` 文件夹。
+    编译好的文件会保存到 `dist` 文件夹。
 
 
 ## 修订文档
@@ -49,8 +53,12 @@
 
         cake server
 
+    指定端口号
 
-## License
+        cake -p 8080 server
+
+
+## 许可
 **MuPlayer** 实行 MIT 许可协议.
 版权 (c) 2014 Baidu Music
 
