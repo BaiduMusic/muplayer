@@ -1,6 +1,8 @@
 require 'coffee-script/register'
+os = require './lib/os'
 
-task 'build', 'desc', ->
-	builder = require './kit/builder'
+task 'setup', 'Build all source code.', ->
+	os.spawn 'node', ['kit/app_mgr.js', 'setup']
 
-	builder.start()
+task 'build', 'Build all source code.', ->
+	os.spawn 'node', ['kit/app_mgr.js', 'build']
