@@ -65,7 +65,12 @@ package {
             }
         }
 
-        protected function onPlayComplete(e:Event = null):void {}
+        protected function onPlayComplete(e:Event = null):void {
+            // 保证length和positionPct赋值正确。
+            onPlayTimer();
+            stop();
+            setState(State.END);
+        }
 
         protected function onPlayTimer(e:TimerEvent = null):void {}
 
