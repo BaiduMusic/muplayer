@@ -34,14 +34,21 @@ package {
 
         // 事件含义可参考: http://help.adobe.com/zh_CN/AS2LCR/Flash_10.0/help.html?content=00001409.html
         private function onNetStatus(e:NetStatusEvent):void {
-            // 实测发现，Play.Start会先于Buffer.Full触发，因此这段事件可以认为是在onProgress做一些buffering
+            // 实测发现，Play.Start会先于Buffer.Full触发，
+            // 因此这段时间可认为是onProgress做些buffering
             switch (e.info.code) {
                 case 'NetStream.Play.Start':
                     setState(State.BUFFERING);
+                    onPlayTimer();
                     break;
                 case 'NetStream.Buffer.Full':
                     setState(State.PLAYING);
                 case 'NetStream.Play.Stop':
+                    onPlayTimer();
+                    // jPlayer: Check if media is at the end (or close) otherwise this was due to download bandwidth stopping playback. ie., Download is not fast enough.
+                    if (_length && Math.abs(_length - _position) < 150) { // Testing found 150ms worked best for M4A files, where playHead(99.9) caused a stuck state due to firing with ~116ms left to play.// Testing found 150ms worked best for M4A files, where playHead(99.9) caused a stuck state due to firing with ~116ms left to play.
+                        onPlayComplete();
+                    }
                     break;
                 case 'NetStream.Seek.InvalidTime':
                     onPlayComplete();
@@ -54,7 +61,7 @@ package {
 
         private function onMetaData(meta:Object):void {
             if (meta.duration) {
-                _length = meta.duration;
+                _length = meta.duration * 1000;
             }
         }
 
@@ -67,7 +74,7 @@ package {
 
             if (!_length) {
                 // 估算的音频时长，精确值在onMetaData中获得
-                _length = Math.ceil(ns.time / _bytesLoaded * _bytesTotal);
+                _length = Math.ceil(ns.time * 1000 / _bytesLoaded * _bytesTotal);
             }
         }
 
@@ -76,7 +83,7 @@ package {
                 onProgress();
             }
 
-            _position = ns.time;
+            _position = ns.time * 1000;
             if (_position > _length) {
                 _length = _position;
             }
@@ -125,8 +132,9 @@ package {
                     p = _pausePosition;
                 }
                 try {
-                    if (_state == State.PAUSE) {
-                        ns.seek(p);
+                    if (p != 0) {
+                        // 注意换算单位，seek的参数是秒，而position则是毫秒
+                        ns.seek(p / 1000);
                         ns.resume();
                     } else {
                         ns.play(_url);
@@ -141,7 +149,7 @@ package {
         }
 
         override public function pause():void {
-            stop(ns.time);
+            stop(ns.time * 1000);
         }
 
         override public function stop(p:Number = 0):void {
