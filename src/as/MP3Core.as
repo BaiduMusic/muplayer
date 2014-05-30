@@ -36,23 +36,19 @@ package {
                 _bytesTotal = s.bytesTotal;
             }
             _bytesLoaded = s.bytesLoaded;
+            _loadedPct = Math.round(100 * _bytesLoaded / _bytesTotal) / 100;
 
             if (!_length) {
-                // 估算的音频数据大小，精确值需要在onLoadComplete中获得。
+                // 估算的音频时长，精确值需要在onLoadComplete中获得。
                 _length = Math.ceil(s.length / _bytesLoaded * _bytesTotal);
             }
-            _loadedPct = Math.round(100 * _bytesLoaded / _bytesTotal) / 100;
-        }
-
-        override protected function onPlayComplete(e:Event = null):void {
-            // 保证length和positionPct赋值正确。
-            onPlayTimer();
-            stop();
-            setState(State.END);
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
             _position = sc.position;
+            if (_position > _length) {
+                _length = _position;
+            }
             _positionPct = Math.round(100 * _position / _length) / 100;
         }
 

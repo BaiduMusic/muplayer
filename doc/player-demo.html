@@ -49,13 +49,11 @@ require([
     'muplayer/player'
 ], function(Player) {
     var player = new Player({
-            /*
             engines: [
                 {
                     constructor: 'FlashMP4Core'
                 }
             ]
-            */
         }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
@@ -85,10 +83,10 @@ require([
         };
 
     player.add([
-        //toAbsoluteUrl('dist/mp3/test.m4a'),
-        //toAbsoluteUrl('dist/mp3/test.m4a')
-        toAbsoluteUrl('dist/mp3/rain.mp3'),
-        toAbsoluteUrl('dist/mp3/walking.mp3')
+        toAbsoluteUrl('dist/mp3/test.m4a'),
+        toAbsoluteUrl('dist/mp3/test.m4a')
+        //toAbsoluteUrl('dist/mp3/rain.mp3'),
+        //toAbsoluteUrl('dist/mp3/walking.mp3')
     ]);
 
     // 在各个按钮上监听点击事件，触发时改变按钮的对应样式，并执行player的相应方法

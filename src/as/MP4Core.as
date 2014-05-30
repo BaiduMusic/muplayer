@@ -5,6 +5,7 @@ package {
     import flash.net.NetConnection;
     import flash.net.NetStream;
     import flash.net.URLRequest;
+    import flash.utils.Timer;
 
     public class MP4Core extends BaseCore {
         private var nc:NetConnection;
@@ -31,30 +32,55 @@ package {
             }
         }
 
+        // 事件含义可参考: http://help.adobe.com/zh_CN/AS2LCR/Flash_10.0/help.html?content=00001409.html
         private function onNetStatus(e:NetStatusEvent):void {
-            //Utils.log(e.info.code);
+            // 实测发现，Play.Start会先于Buffer.Full触发，因此这段事件可以认为是在onProgress做一些buffering
             switch (e.info.code) {
-                case 'NetConnection.Connect.Success':
-                    break;
                 case 'NetStream.Play.Start':
+                    setState(State.BUFFERING);
                     break;
+                case 'NetStream.Buffer.Full':
+                    setState(State.PLAYING);
                 case 'NetStream.Play.Stop':
                     break;
                 case 'NetStream.Seek.InvalidTime':
+                    onPlayComplete();
                     break;
                 case 'NetStream.Play.StreamNotFound':
+                    handleErr();
                     break;
             }
         }
 
-        private function onMetaData(info:Object):void {
-            //Utils.log(info);
+        private function onMetaData(meta:Object):void {
+            if (meta.duration) {
+                _length = meta.duration;
+            }
         }
 
-        override protected function onPlayComplete(e:Event = null):void {
+        private function onProgress():void {
+            if (!_bytesTotal) {
+                _bytesTotal = ns.bytesTotal;
+            }
+            _bytesLoaded = ns.bytesLoaded;
+            _loadedPct = Math.round(100 * _bytesLoaded / _bytesTotal) / 100;
+
+            if (!_length) {
+                // 估算的音频时长，精确值在onMetaData中获得
+                _length = Math.ceil(ns.time / _bytesLoaded * _bytesTotal);
+            }
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
+            if (_state == State.BUFFERING) {
+                onProgress();
+            }
+
+            _position = ns.time;
+            if (_position > _length) {
+                _length = _position;
+            }
+            _positionPct = Math.round(100 * _position / _length) / 100;
         }
 
         override public function setVolume(v:uint):Boolean {
@@ -108,7 +134,9 @@ package {
                 } catch (err:Error) {
                     return handleErr(err);
                 }
-                super.play(p);
+                playerTimer = new Timer(Consts.TIMER_INTERVAL);
+                playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
+                playerTimer.start();
             }
         }
 
