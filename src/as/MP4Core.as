@@ -6,11 +6,6 @@ package {
     import flash.net.NetStream;
     import flash.net.URLRequest;
 
-    import BaseCore;
-    import Consts;
-    import State;
-    import Utils;
-
     public class MP4Core extends BaseCore {
         private var nc:NetConnection;
         private var ns:NetStream;
@@ -37,7 +32,7 @@ package {
         }
 
         private function onNetStatus(e:NetStatusEvent):void {
-            Utils.log(e.info.code);
+            //Utils.log(e.info.code);
             switch (e.info.code) {
                 case 'NetConnection.Connect.Success':
                     break;
@@ -53,7 +48,7 @@ package {
         }
 
         private function onMetaData(info:Object):void {
-            Utils.log(info);
+            //Utils.log(info);
         }
 
         override protected function onPlayComplete(e:Event = null):void {
@@ -78,7 +73,6 @@ package {
         }
 
         override public function load(url:String):void {
-            Utils.log('load: ' + url);
             stop();
 
             try {
@@ -101,15 +95,21 @@ package {
 
         override public function play(p:Number = 0):void {
             if (_state != State.PLAYING) {
-                try {
-                    var req:URLRequest = new URLRequest(_url);
-                    Utils.log(req.url);
-                    ns.play(req.url, p);
-                } catch (err:Error) {
-                    handleErr(err);
+                if (p == 0 && _pausePosition) {
+                    p = _pausePosition;
                 }
+                try {
+                    if (_state == State.PAUSE) {
+                        ns.seek(p);
+                        ns.resume();
+                    } else {
+                        ns.play(_url);
+                    }
+                } catch (err:Error) {
+                    return handleErr(err);
+                }
+                super.play(p);
             }
-            super.play(p);
         }
 
         override public function pause():void {
@@ -117,7 +117,7 @@ package {
         }
 
         override public function stop(p:Number = 0):void {
-            super.stop();
+            super.stop(p);
             // 判断ns是否存在是因为ns在load方法调用时才被延迟初始化
             if (ns) {
                 ns.pause();

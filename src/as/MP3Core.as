@@ -6,11 +6,6 @@ package {
     import flash.media.SoundTransform;
     import flash.media.SoundLoaderContext;
     import flash.net.URLRequest;
-    import flash.system.Security;
-
-    import BaseCore;
-    import Consts;
-    import State;
 
     public class MP3Core extends BaseCore {
         private var s:Sound;
@@ -105,8 +100,11 @@ package {
         }
 
         override public function play(p:Number = 0):void {
-            super.play(p);
             if (_state != State.PLAYING) {
+                if (p == 0 && _pausePosition) {
+                    p = _pausePosition;
+                }
+                super.play(p);
                 sc = s.play(p, 0, stf);
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
             }
@@ -117,7 +115,7 @@ package {
         }
 
         override public function stop(p:Number = 0):void {
-            super.stop();
+            super.stop(p);
             // 判断sc是否存在是因为sc在play方法调用时才被延迟初始化
             if (sc) {
                 sc.stop();

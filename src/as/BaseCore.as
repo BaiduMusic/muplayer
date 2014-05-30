@@ -175,9 +175,6 @@ package {
 
         public function play(p:Number = 0):void {
             if (_state != State.PLAYING) {
-                if (!p && _state == State.PAUSE) {
-                    p = _pausePosition;
-                }
                 playerTimer = new Timer(Consts.TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
