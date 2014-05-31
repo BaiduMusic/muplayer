@@ -1520,7 +1520,15 @@ var __hasProp = {}.hasOwnProperty,
     Engine.prototype.setEngine = function(engine) {
       var bindEvents, oldEngine, positionHandle, progressHandle, statechangeHandle, unbindEvents,
         _this = this;
+      this._lastE = {};
       statechangeHandle = function(e) {
+        if (e.oldState === _this._lastE.oldState && e.newState === _this._lastE.newState) {
+          return;
+        }
+        _this._lastE = {
+          oldState: e.oldState,
+          newState: e.newState
+        };
         return _this.trigger(EVENTS.STATECHANGE, e);
       };
       positionHandle = function(pos) {
