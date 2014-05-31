@@ -2,6 +2,8 @@
 *.swp
 *.swo
 .sass-cache
+kit/setup.js
+kit/builder.js
 
 # Dependencies #
 ################

@@ -1,18 +1,21 @@
-do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) ->
+do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
     {EVENTS, STATES} = cfg.engine
     timerResolution = cfg.timerResolution
-    extReg = /\.(.+)(\?|$)/
+    extReg = /\.(\w+)$/
 
     class Engine
-        @defaults:
-            type: 'mp3'
-            # 隐藏容器, 用于容纳swf和audio等标签
-            # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
-            el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>'
+        # 隐藏容器, 用于容纳swf和audio等标签
+        # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
+        @el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>'
+
+        defaults:
             engines: `[
                 //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
                 {
                     constructor: FlashMP3Core
+                },
+                {
+                    constructor: FlashMP4Core
                 },
                 //>>excludeEnd("FlashCoreExclude");
                 {
@@ -21,17 +24,15 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             ]`
 
         constructor: (options) ->
-            @opts = $.extend(Engine.defaults, options)
+            @opts = $.extend({}, @defaults, options)
             @_initEngines()
 
         _initEngines: () ->
-            opts = @opts
             @engines = []
 
-            el = opts.el.replace(/{{DATETIME}}/g, +new Date())
-            $el = $(el).appendTo('body')
+            $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
 
-            for engine, i in opts.engines
+            for engine, i in @opts.engines
                 constructor = engine.constructor
                 args = engine.args or {}
                 args.$el = $el
@@ -52,7 +53,17 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
                 @setEngine(new EngineCore)
 
         setEngine: (engine) ->
+            # HACK: 怀疑aralejs事件库有潜在bug, 内核切换时（比如从FlashMP4Core切到FlashMP3Core），
+            # statechangeHandle有可能派发连续的重复事件，导致STATES.END被重复触发引发跳歌。
+            # 升级事件库后有其他问题，暂时通过lastE标记解决。后续可以更新事件库或深入研究下。
+            @_lastE = {}
+
             statechangeHandle = (e) =>
+                if e.oldState is @_lastE.oldState and e.newState is @_lastE.newState
+                    return
+                @_lastE =
+                    oldState: e.oldState
+                    newState: e.newState
                 @trigger(EVENTS.STATECHANGE, e)
             positionHandle = (pos) =>
                 @trigger(EVENTS.POSITIONCHANGE, pos)
@@ -71,10 +82,11 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             unless @curEngine
                 @curEngine = bindEvents(engine)
             else if @curEngine isnt engine
-                unbindEvents(@curEngine)
+                oldEngine = @curEngine
+                unbindEvents(oldEngine).reset()
                 @curEngine = bindEvents(engine)
-                    .setVolume(@curEngine.getVolume())
-                    .setMute(@curEngine.getMute())
+                @curEngine.setVolume(oldEngine.getVolume())
+                    .setMute(oldEngine.getMute())
 
         canPlayType: (type) ->
             $.inArray(type, @getSupportedTypes()) isnt -1
@@ -85,7 +97,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
                 types = types.concat(engine.getSupportedTypes())
             types
 
-        switchEngineByType: (type, stop) ->
+        switchEngineByType: (type) ->
             match = false
 
             for engine in @engines
@@ -94,9 +106,9 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
                     match = true
                     break
 
-            # 如果没有匹配到则用默认类型适配
-            if not match and not stop
-                @switchEngineByType(@opts.type, true)
+            # 如果没有匹配到则用默认类型适配。
+            unless match
+                @setEngine(@engines[0])
 
         reset: () ->
             @curEngine.reset()
@@ -106,11 +118,10 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             if extReg.test(url)
                 ext = RegExp.$1
 
-            engine = @curEngine
-            @switchEngineByType(ext) unless @canPlayType(ext)
-
-            if engine.engineType isnt @curEngine.engineType
-                engine.stop()
+            if @canPlayType(ext)
+                @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
+            else
+                throw "Can not play with: #{ext}"
 
             @curEngine.setUrl(url)
             @
@@ -184,6 +195,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             , 'muplayer/core/engines/audioCore'
             //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
             , 'muplayer/core/engines/flashMP3Core'
+            , 'muplayer/core/engines/flashMP4Core'
             //>>excludeEnd("FlashCoreExclude");
         ], factory)`
     else
@@ -195,5 +207,6 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             , _mu.AudioCore
             //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
             , _mu.FlashMP3Core
+            , _mu.FlashMP4Core
             //>>excludeEnd("FlashCoreExclude");
         )`

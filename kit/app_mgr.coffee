@@ -5,7 +5,7 @@ require 'colors'
 os = require '../lib/os'
 Q = require 'q'
 
-coffee_bin = os.path.resolve os.path.join('node_modules','.bin', 'coffee')
+coffee_bin = os.path.resolve os.path.join('node_modules', '.bin', 'coffee')
 
 main = ->
     switch process.argv[2]
