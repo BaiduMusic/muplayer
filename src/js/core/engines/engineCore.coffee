@@ -17,7 +17,6 @@ do (root = this, factory = (cfg, utils, Events) ->
         reset: () ->
             @stop()
             @setUrl()
-            @setState(STATES.END)
             @
 
         play: () ->

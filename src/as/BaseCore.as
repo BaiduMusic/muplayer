@@ -63,7 +63,6 @@ package {
         }
 
         protected function onPlayComplete(e:Event = null):void {
-            Utils.log('onPlayComplete');
             // 保证length和positionPct赋值正确。
             onPlayTimer();
             stop();
@@ -73,7 +72,6 @@ package {
         protected function onPlayTimer(e:TimerEvent = null):void {}
 
         protected function handleErr(e:* = null):void {
-            Utils.log('handleErr');
             // 出错时默认跳歌重试，再次出错就交由外部JS处理，比如切换播放内核等。
             if (errTimes++) {
                 onPlayComplete();
