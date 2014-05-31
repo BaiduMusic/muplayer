@@ -49,13 +49,14 @@ require([
     'muplayer/player'
 ], function(Player) {
     var player = new Player({
-            /*
             engines: [
                 {
                     constructor: 'FlashMP4Core'
+                },
+                {
+                    constructor: 'FlashMP3Core'
                 }
             ]
-            */
         }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
@@ -85,8 +86,8 @@ require([
         };
 
     player.add([
-        //toAbsoluteUrl('dist/mp3/test.m4a'),
-        //toAbsoluteUrl('dist/mp3/test.m4a')
+        toAbsoluteUrl('dist/mp3/1.m4a'),
+        toAbsoluteUrl('dist/mp3/2.m4a'),
         toAbsoluteUrl('dist/mp3/rain.mp3'),
         toAbsoluteUrl('dist/mp3/walking.mp3')
     ]);

@@ -107,11 +107,11 @@ do (root = this, factory = (cfg) ->
                     d = arg.split(period)
                     [i, l] = [0, d.length]
                     while i < l
-                        o[d[i]] = o[d[i]] || {}
+                        o[d[i]] = o[d[i]] or {}
                         o = o[d[i]]
                         i++
                 else
-                    o[arg] = o[arg] = {}
+                    o[arg] = o[arg] or {}
                     o = o[arg]
             o
 

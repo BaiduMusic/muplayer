@@ -123,6 +123,10 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 [fn, args] = @_queue.shift()
                 fn.apply(@, args)
 
+        reset: () ->
+            @_queue.length = 0
+            super()
+
         play: () ->
             @flash.play()
             @
@@ -141,12 +145,12 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
         setUrl: (url) ->
             if url
                 @_setUrl(url)
-                # 检测后缀名为mp3, 但实际不是mp3资源的情况。
+                # 检测后缀与实际资源不符的情况。
                 # 错误统一抛EVENTS.ERROR事件, 由调用方决定如何处理。
                 do () =>
                     checker = null
                     check = (e) =>
-                        if e.newState is STATES.PLAY and e.oldState is STATES.PREBUFFER
+                        if e.newState is STATES.PLAYING and e.oldState is STATES.PREBUFFER
                             checker = setTimeout(() =>
                                 @off(EVENTS.STATECHANGE, check)
                                 if @getCurrentPosition() < 100

@@ -1,7 +1,7 @@
 do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
     {EVENTS, STATES} = cfg.engine
     timerResolution = cfg.timerResolution
-    extReg = /\.(.+)(\?|$)/
+    extReg = /\.(\w+)$/
 
     class Engine
         # 隐藏容器, 用于容纳swf和audio等标签
@@ -72,10 +72,11 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             unless @curEngine
                 @curEngine = bindEvents(engine)
             else if @curEngine isnt engine
-                unbindEvents(@curEngine)
+                oldEngine = @curEngine
+                unbindEvents(oldEngine).reset()
                 @curEngine = bindEvents(engine)
-                    .setVolume(@curEngine.getVolume())
-                    .setMute(@curEngine.getMute())
+                @curEngine.setVolume(oldEngine.getVolume())
+                    .setMute(oldEngine.getMute())
 
         canPlayType: (type) ->
             $.inArray(type, @getSupportedTypes()) isnt -1
@@ -86,7 +87,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
                 types = types.concat(engine.getSupportedTypes())
             types
 
-        switchEngineByType: (type, stop) ->
+        switchEngineByType: (type) ->
             match = false
 
             for engine in @engines
@@ -95,9 +96,9 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
                     match = true
                     break
 
-            # 如果没有匹配到则用默认类型适配
-            if not match and not stop
-                @switchEngineByType(type, true)
+            # 如果没有匹配到则用默认类型适配。
+            unless match
+                @setEngine(@engines[0])
 
         reset: () ->
             @curEngine.reset()
@@ -107,11 +108,10 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
             if extReg.test(url)
                 ext = RegExp.$1
 
-            engine = @curEngine
-            @switchEngineByType(ext) unless @canPlayType(ext)
-
-            if engine.engineType isnt @curEngine.engineType
-                engine.stop()
+            if @canPlayType(ext)
+                @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
+            else
+                throw "Can not play with: #{ext}"
 
             @curEngine.setUrl(url)
             @

@@ -5,13 +5,10 @@ package {
     import flash.system.Security;
     import flash.utils.Timer;
 
-    import Consts;
-    import State;
-    import Utils;
-
     public class BaseCore extends Sprite implements IEngine {
         // JS回调
         private var jsInstance:String = '';
+        private var errTimes:int = 0;
 
         protected var playerTimer:Timer;
         protected var stf:SoundTransform;
@@ -66,6 +63,7 @@ package {
         }
 
         protected function onPlayComplete(e:Event = null):void {
+            Utils.log('onPlayComplete');
             // 保证length和positionPct赋值正确。
             onPlayTimer();
             stop();
@@ -74,9 +72,17 @@ package {
 
         protected function onPlayTimer(e:TimerEvent = null):void {}
 
-        public function handleErr(e:* = null):void {
-            onPlayComplete();
-            callJS(Consts.SWF_ON_ERR, e);
+        protected function handleErr(e:* = null):void {
+            Utils.log('handleErr');
+            // 出错时默认跳歌重试，再次出错就交由外部JS处理，比如切换播放内核等。
+            if (errTimes++) {
+                onPlayComplete();
+            } else {
+                errTimes = 0;
+                stop();
+                reset();
+                callJS(Consts.SWF_ON_ERR, e);
+            }
         }
 
         public function getData(k:String):* {
@@ -117,7 +123,7 @@ package {
                 _muteVolume = _volume;
                 setVolume(0);
             } else {
-                setVolume(_muteVolume);
+                setVolume(_muteVolume || _volume);
             }
             _mute = m;
         }
