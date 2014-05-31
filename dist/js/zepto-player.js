@@ -925,7 +925,6 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.reset = function() {
       this.stop();
       this.setUrl();
-      this.setState(STATES.END);
       return this;
     };
 
