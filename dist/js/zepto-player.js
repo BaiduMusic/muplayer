@@ -501,7 +501,7 @@
             i++;
           }
         } else {
-          o[arg] = o[arg] = {};
+          o[arg] = o[arg] || {};
           o = o[arg];
         }
       }
@@ -1472,7 +1472,7 @@ var __hasProp = {}.hasOwnProperty,
   var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
-  extReg = /\.(.+)(\?|$)/;
+  extReg = /\.(\w+)$/;
   Engine = (function() {
     Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>';
 
@@ -1519,7 +1519,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setEngine = function(engine) {
-      var bindEvents, positionHandle, progressHandle, statechangeHandle, unbindEvents,
+      var bindEvents, oldEngine, positionHandle, progressHandle, statechangeHandle, unbindEvents,
         _this = this;
       statechangeHandle = function(e) {
         return _this.trigger(EVENTS.STATECHANGE, e);
@@ -1539,8 +1539,10 @@ var __hasProp = {}.hasOwnProperty,
       if (!this.curEngine) {
         return this.curEngine = bindEvents(engine);
       } else if (this.curEngine !== engine) {
-        unbindEvents(this.curEngine);
-        return this.curEngine = bindEvents(engine).setVolume(this.curEngine.getVolume()).setMute(this.curEngine.getMute());
+        oldEngine = this.curEngine;
+        unbindEvents(oldEngine).reset();
+        this.curEngine = bindEvents(engine);
+        return this.curEngine.setVolume(oldEngine.getVolume()).setMute(oldEngine.getMute());
       }
     };
 
@@ -1559,7 +1561,7 @@ var __hasProp = {}.hasOwnProperty,
       return types;
     };
 
-    Engine.prototype.switchEngineByType = function(type, stop) {
+    Engine.prototype.switchEngineByType = function(type) {
       var engine, match, _i, _len, _ref1;
       match = false;
       _ref1 = this.engines;
@@ -1571,8 +1573,8 @@ var __hasProp = {}.hasOwnProperty,
           break;
         }
       }
-      if (!match && !stop) {
-        return this.switchEngineByType(type, true);
+      if (!match) {
+        return this.setEngine(this.engines[0]);
       }
     };
 
@@ -1582,16 +1584,16 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setUrl = function(url) {
-      var engine, ext;
+      var ext;
       if (extReg.test(url)) {
         ext = RegExp.$1;
       }
-      engine = this.curEngine;
-      if (!this.canPlayType(ext)) {
-        this.switchEngineByType(ext);
-      }
-      if (engine.engineType !== this.curEngine.engineType) {
-        engine.stop();
+      if (this.canPlayType(ext)) {
+        if (!this.curEngine.canPlayType(ext)) {
+          this.switchEngineByType(ext);
+        }
+      } else {
+        throw "Can not play with: " + ext;
       }
       this.curEngine.setUrl(url);
       return this;

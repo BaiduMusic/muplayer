@@ -15,19 +15,14 @@ package {
             super.init();
             if (ExternalInterface.available) {
                 reset();
-
                 nc = new NetConnection();
-                nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
                 nc.connect(null);
-                stf = new SoundTransform(_volume / 100, 0);
-
                 ExternalInterface.addCallback('load', load);
                 ExternalInterface.addCallback('play', play);
                 ExternalInterface.addCallback('pause', pause);
                 ExternalInterface.addCallback('stop', stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
-
                 callJS(Consts.SWF_ON_LOAD);
             }
         }

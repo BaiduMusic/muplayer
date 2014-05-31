@@ -50,11 +50,14 @@ package {
                 _length = _position;
             }
             _positionPct = Math.round(100 * _position / _length) / 100;
+            Utils.log('pos: ' + _position);
         }
 
         override public function setVolume(v:uint):Boolean {
             var success:Boolean = super.setVolume(v);
+            Utils.log('setVolume 1: ' + success + ' : ' + v);
             if (success && sc) {
+                Utils.log('setVolume 2: ' + v);
                 sc.soundTransform = stf;
             }
             return success;
@@ -102,6 +105,7 @@ package {
                 }
                 super.play(p);
                 sc = s.play(p, 0, stf);
+                Utils.log('play: ' + _url);
                 sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
             }
         }
