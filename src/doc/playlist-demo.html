@@ -5,8 +5,9 @@
     <div class="hd">播放列表及交互</div>
     <div class="bd">
         <ul id="playlist-demo">
-            <li data-link="mp3/rain.mp3"><i class="play-btn"></i>雨声</li>
-            <li data-link="mp3/walking.mp3"><i class="play-btn"></i>走路声</li>
+            <li data-link="dist/mp3/rain.mp3"><i class="play-btn"></i>雨声(mp3)</li>
+            <li data-link="dist/mp3/coins.m4a"><i class="play-btn"></i>钢蹦声(m4a)</li>
+            <li data-link="dist/mp3/walking.mp3"><i class="play-btn"></i>脚步声(mp3)</li>
         </ul>
         <script src="https://gist.github.com/hustKiwi/d4cb4eab9402ff56e28f.js"></script>
     </div>
@@ -27,13 +28,23 @@ var player = new _mu.Player({
     findCurrItem = function() {
         return $pl.find('[data-link="' + player.getCur() + '"]');
     },
-    $time = $('<span class="time"></span>');
+    $time = $('<span class="time"></span>'),
+
+    // 获得资源的绝对路径
+    // 参考: http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
+    toAbsoluteUrl = function (url) {
+        var div = document.createElement('div');
+        div.innerHTML = '<a></a>';
+        div.firstChild.href = url;
+        div.innerHTML = div.innerHTML;
+        return div.firstChild.href;
+    };
 
 $pl.on('click', '> li', function() {
     if ($(this).hasClass('playing')) {
         player.pause();
     } else {
-        var link = $(this).data('link');
+        var link = toAbsoluteUrl($(this).data('link'));
         player.reset().add(link).play();
     }
 });

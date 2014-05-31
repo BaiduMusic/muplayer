@@ -25,7 +25,7 @@ class Builder
         .then =>
             @add_license()
         .then =>
-            @build_as()
+            @complie_as()
         .then =>
             @clean()
         .done ->
@@ -37,7 +37,7 @@ class Builder
             os.remove @build_temp_path
         .then =>
             from = 'src/js'
-            os.copy(from, @build_temp_path + '/js').then ->
+            os.copy(from, @build_temp_path + '/js').then =>
                 console.log '>> Copy: '.cyan + from + ' -> '.green + @build_temp_path
         .then =>
             os.copy @lib_path + '/expressInstall.swf', @dist_path + '/expressInstall.swf'
@@ -159,28 +159,33 @@ class Builder
                 .then (str) ->
                     os.outputFile el, info + str
 
-    build_as: ->
+    complie_as: ->
         try
             flex_sdk = require 'flex-sdk'
         catch e
             console.log ">> Warn: ".yellow + e.message
             return
 
-        bin_name = 'muplayer_mp3.swf'
+        compile = (src, dist) =>
+            bin_name = 'muplayer_mp3.swf'
 
-        os.spawn flex_sdk.bin.mxmlc, [
-            '-optimize=true'
-            '-show-actionscript-warnings=true'
-            '-static-link-runtime-shared-libraries=true'
-            '-o', "#{@dist_path}/#{bin_name}"
-            @src_path + '/as/MP3Core.as'
-        ], (err, stdout, stderr) ->
-            if err
-                console.error err
-            else
-                console.log stdout
-                console.log stderr
+            os.spawn flex_sdk.bin.mxmlc, [
+                '-optimize=true'
+                '-show-actionscript-warnings=true'
+                '-static-link-runtime-shared-libraries=true'
+                '-o', "#{@dist_path}/#{dist}.swf"
+                "#{@src_path}/as/#{src}.as"
+            ], (err, stdout, stderr) ->
+                if err
+                    console.error err
+                else
+                    console.log stdout
+                    console.log stderr
 
+        Q.all([
+            compile 'MP3Core', 'muplayer_mp3'
+            compile 'MP4Core', 'muplayer_mp4'
+        ]).then ->
             console.log ">> Build AS done.".cyan
 
     clean: ->

@@ -48,7 +48,16 @@ require.config({
 require([
     'muplayer/player'
 ], function(Player) {
-    var player = new Player(),
+    var player = new Player({
+            engines: [
+                {
+                    constructor: 'FlashMP4Core'
+                },
+                {
+                    constructor: 'FlashMP3Core'
+                }
+            ]
+        }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
         $ctrlBtn = $opts.find('.ctrl'),
@@ -66,16 +75,27 @@ require([
             var pos = player.curPos(),
                 duration = player.duration();
             $progress.slider('option', 'value', duration ? pos / duration * 1000 : 0);
+        },
+
+        toAbsoluteUrl = function (url) {
+            var div = document.createElement('div');
+            div.innerHTML = '<a></a>';
+            div.firstChild.href = url;
+            div.innerHTML = div.innerHTML;
+            return div.firstChild.href;
         };
+
+    player.add([
+        toAbsoluteUrl('dist/mp3/rain.mp3'),
+        toAbsoluteUrl('dist/mp3/coins.m4a'),
+        toAbsoluteUrl('dist/mp3/walking.mp3')
+    ]);
 
     // 在各个按钮上监听点击事件，触发时改变按钮的对应样式，并执行player的相应方法
     $ctrlBtn.click(function() {
         if ($ctrlIcon.hasClass('glyphicon-play')) {
             $ctrlIcon.removeClass('glyphicon-play').addClass('glyphicon-pause');
-            player.reset().add([
-                'mp3/rain.mp3',
-                'mp3/walking.mp3'
-            ]).play();
+            player.play();
         } else if ($ctrlIcon.hasClass('glyphicon-pause')) {
             $ctrlIcon.removeClass('glyphicon-pause').addClass('glyphicon-play');
             player.pause();

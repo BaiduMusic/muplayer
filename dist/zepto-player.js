@@ -27,6 +27,7 @@
     engine: {
       TYPES: {
         FLASH_MP3: 'FlashMP3Core',
+        FLASH_MP4: 'FlashMP4Core',
         AUDIO: 'AudioCore'
       },
       EVENTS: {
@@ -207,7 +208,7 @@
             i++;
           }
         } else {
-          o[arg] = o[arg] = {};
+          o[arg] = o[arg] || {};
           o = o[arg];
         }
       }
@@ -632,7 +633,6 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.reset = function() {
       this.stop();
       this.setUrl();
-      this.setState(STATES.END);
       return this;
     };
 
@@ -1197,15 +1197,15 @@ var __hasProp = {}.hasOwnProperty,
             , _mu.AudioCore
                     );
   }
-})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core) {
+})(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) {
   var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
-  extReg = /\.(.+)(\?|$)/;
+  extReg = /\.(\w+)$/;
   Engine = (function() {
-    Engine.defaults = {
-      type: 'mp3',
-      el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>',
+    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>';
+
+    Engine.prototype.defaults = {
       engines: [
                                 {
                     constructor: AudioCore
@@ -1214,17 +1214,15 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     function Engine(options) {
-      this.opts = $.extend(Engine.defaults, options);
+      this.opts = $.extend({}, this.defaults, options);
       this._initEngines();
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, el, engine, i, opts, _i, _len, _ref1;
-      opts = this.opts;
+      var $el, args, constructor, engine, i, _i, _len, _ref1;
       this.engines = [];
-      el = opts.el.replace(/{{DATETIME}}/g, +new Date());
-      $el = $(el).appendTo('body');
-      _ref1 = opts.engines;
+      $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
+      _ref1 = this.opts.engines;
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         engine = _ref1[i];
         constructor = engine.constructor;
@@ -1250,9 +1248,17 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setEngine = function(engine) {
-      var bindEvents, positionHandle, progressHandle, statechangeHandle, unbindEvents;
+      var bindEvents, oldEngine, positionHandle, progressHandle, statechangeHandle, unbindEvents;
+      this._lastE = {};
       statechangeHandle = (function(_this) {
         return function(e) {
+          if (e.oldState === _this._lastE.oldState && e.newState === _this._lastE.newState) {
+            return;
+          }
+          _this._lastE = {
+            oldState: e.oldState,
+            newState: e.newState
+          };
           return _this.trigger(EVENTS.STATECHANGE, e);
         };
       })(this);
@@ -1275,8 +1281,10 @@ var __hasProp = {}.hasOwnProperty,
       if (!this.curEngine) {
         return this.curEngine = bindEvents(engine);
       } else if (this.curEngine !== engine) {
-        unbindEvents(this.curEngine);
-        return this.curEngine = bindEvents(engine).setVolume(this.curEngine.getVolume()).setMute(this.curEngine.getMute());
+        oldEngine = this.curEngine;
+        unbindEvents(oldEngine).reset();
+        this.curEngine = bindEvents(engine);
+        return this.curEngine.setVolume(oldEngine.getVolume()).setMute(oldEngine.getMute());
       }
     };
 
@@ -1295,7 +1303,7 @@ var __hasProp = {}.hasOwnProperty,
       return types;
     };
 
-    Engine.prototype.switchEngineByType = function(type, stop) {
+    Engine.prototype.switchEngineByType = function(type) {
       var engine, match, _i, _len, _ref1;
       match = false;
       _ref1 = this.engines;
@@ -1307,8 +1315,8 @@ var __hasProp = {}.hasOwnProperty,
           break;
         }
       }
-      if (!match && !stop) {
-        return this.switchEngineByType(this.opts.type, true);
+      if (!match) {
+        return this.setEngine(this.engines[0]);
       }
     };
 
@@ -1318,16 +1326,16 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setUrl = function(url) {
-      var engine, ext;
+      var ext;
       if (extReg.test(url)) {
         ext = RegExp.$1;
       }
-      engine = this.curEngine;
-      if (!this.canPlayType(ext)) {
-        this.switchEngineByType(ext);
-      }
-      if (engine.engineType !== this.curEngine.engineType) {
-        engine.stop();
+      if (this.canPlayType(ext)) {
+        if (!this.curEngine.canPlayType(ext)) {
+          this.switchEngineByType(ext);
+        }
+      } else {
+        throw "Can not play with: " + ext;
       }
       this.curEngine.setUrl(url);
       return this;
@@ -1430,7 +1438,7 @@ var __hasProp = {}.hasOwnProperty,
 
     instance = null;
 
-    Player.defaults = {
+    Player.prototype.defaults = {
       mode: 'loop',
       mute: false,
       volume: 80
@@ -1457,10 +1465,10 @@ var __hasProp = {}.hasOwnProperty,
      *    <td>默认值: 80。播放音量，取值范围0 - 100。</td>
      *  </tr>
      *  <tr>
-     *    <td>engine</td>
+     *    <td>engines</td>
      *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
-     *    engines: [{<br>
+     *    [{<br>
      *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
      *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
      *    <span class="ts2"></span>swf: '../dist/swf/muplayer_mp3.swf' // 对应的swf文件路径<br>
@@ -1479,10 +1487,12 @@ var __hasProp = {}.hasOwnProperty,
         return instance;
       }
       instance = this;
-      this.opts = opts = $.extend(Player.defaults, options);
+      this.opts = opts = $.extend({}, this.defaults, options);
       this.playlist = new Playlist();
       this.playlist.setMode(opts.mode);
-      this._initEngine(new Engine(opts.engine));
+      this._initEngine(new Engine({
+        engines: opts.engines
+      }));
       this.setMute(opts.mute);
       this.setVolume(opts.volume);
     }
