@@ -1,10 +1,7 @@
 do (root = this, factory = (utils, Events) ->
-    # 将sid统一转成字符串, 有利于减少对API返回的值特例处理
-    formatSid = (sids) ->
-        $.isArray(sids) and ('' + sid for sid in sids when sid) or '' + sids
-
     class Playlist
-        constructor: () ->
+        constructor: (options) ->
+            @opts = $.extend({}, @defaults, options)
             @reset()
 
         reset: () ->
@@ -21,18 +18,29 @@ do (root = this, factory = (utils, Events) ->
                 @_listRandom = utils.shuffle([0...@list.length])
                 @cur = @list[@_listRandom[index]]
 
+        _formatSid: (sids) ->
+            absoluteUrl = @opts.absoluteUrl
+
+            # 根据配置，决定是否转换为绝对路径的方式。
+            # 同时保证将存储在播放列表中的sid统一转成字符串格式，
+            # 有利于减少对API返回的值特例处理。
+            format = (sid) ->
+                absoluteUrl and utils.toAbsoluteUrl(sid) or '' + sid
+
+            $.isArray(sids) and (format(sid) for sid in sids when sid) or format(sids)
+
         setMode: (mode) ->
             if mode in [
-                'single',
-                'random',
-                'list-random',
-                'list',
+                'single'
+                'random'
+                'list-random'
+                'list'
                 'loop'
             ] then @mode = mode
             @_resetListRandom()
 
         add: (sid) ->
-            sid = formatSid(sid)
+            sid = @_formatSid(sid)
 
             # 剔除重复sid, 保证列表是一个set
             @remove(sid)
@@ -51,7 +59,7 @@ do (root = this, factory = (utils, Events) ->
                 unless i is -1
                     @list.splice(i, 1)
 
-            sid = formatSid(sid)
+            sid = @_formatSid(sid)
             if $.isArray(sid)
                 remove(id) for id in sid
             else
@@ -129,6 +137,6 @@ do (root = this, factory = (utils, Events) ->
         ], factory)
     else
         root._mu.Playlist = factory(
-            _mu.cfg
+            _mu.utils
             _mu.Events
         )

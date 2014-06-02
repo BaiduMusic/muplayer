@@ -14,6 +14,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             mode: 'loop'
             mute: false
             volume: 80
+            absoluteUrl: true
 
         ###*
          * Player初始化方法
@@ -57,7 +58,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
 
             @opts = opts = $.extend({}, @defaults, options)
 
-            @playlist = new Playlist()
+            @playlist = new Playlist(absoluteUrl: opts.absoluteUrl)
             @playlist.setMode(opts.mode)
             @_initEngine(new Engine(engines: opts.engines))
             @setMute(opts.mute)

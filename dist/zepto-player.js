@@ -221,6 +221,14 @@
         push.apply(args, arguments);
         return wrapper.apply(this, args);
       };
+    },
+    toAbsoluteUrl: function(url) {
+      var div;
+      div = document.createElement('div');
+      div.innerHTML = '<a></a>';
+      div.firstChild.href = url;
+      div.innerHTML = div.innerHTML;
+      return div.firstChild.href;
     }
   });
   return utils;
@@ -421,26 +429,13 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
   } else if (typeof define === 'function' && define.amd) {
     return define('muplayer/core/playlist',['muplayer/core/utils', 'muplayer/lib/events'], factory);
   } else {
-    return root._mu.Playlist = factory(_mu.cfg, _mu.Events);
+    return root._mu.Playlist = factory(_mu.utils, _mu.Events);
   }
 })(this, function(utils, Events) {
-  var Playlist, formatSid;
-  formatSid = function(sids) {
-    var sid;
-    return $.isArray(sids) && ((function() {
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = sids.length; _i < _len; _i++) {
-        sid = sids[_i];
-        if (sid) {
-          _results.push('' + sid);
-        }
-      }
-      return _results;
-    })()) || '' + sids;
-  };
+  var Playlist;
   Playlist = (function() {
-    function Playlist() {
+    function Playlist(options) {
+      this.opts = $.extend({}, this.defaults, options);
       this.reset();
     }
 
@@ -467,6 +462,25 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       }
     };
 
+    Playlist.prototype._formatSid = function(sids) {
+      var absoluteUrl, format, sid;
+      absoluteUrl = this.opts.absoluteUrl;
+      format = function(sid) {
+        return absoluteUrl && utils.toAbsoluteUrl(sid) || '' + sid;
+      };
+      return $.isArray(sids) && ((function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = sids.length; _i < _len; _i++) {
+          sid = sids[_i];
+          if (sid) {
+            _results.push(format(sid));
+          }
+        }
+        return _results;
+      })()) || format(sids);
+    };
+
     Playlist.prototype.setMode = function(mode) {
       if (mode === 'single' || mode === 'random' || mode === 'list-random' || mode === 'list' || mode === 'loop') {
         this.mode = mode;
@@ -475,7 +489,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     Playlist.prototype.add = function(sid) {
-      sid = formatSid(sid);
+      sid = this._formatSid(sid);
       this.remove(sid);
       if ($.isArray(sid) && sid.length) {
         this.list = sid.concat(this.list);
@@ -497,7 +511,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           }
         };
       })(this);
-      sid = formatSid(sid);
+      sid = this._formatSid(sid);
       if ($.isArray(sid)) {
         for (_i = 0, _len = sid.length; _i < _len; _i++) {
           id = sid[_i];
@@ -1441,7 +1455,8 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.defaults = {
       mode: 'loop',
       mute: false,
-      volume: 80
+      volume: 80,
+      absoluteUrl: true
     };
 
 
@@ -1488,7 +1503,9 @@ var __hasProp = {}.hasOwnProperty,
       }
       instance = this;
       this.opts = opts = $.extend({}, this.defaults, options);
-      this.playlist = new Playlist();
+      this.playlist = new Playlist({
+        absoluteUrl: opts.absoluteUrl
+      });
       this.playlist.setMode(opts.mode);
       this._initEngine(new Engine({
         engines: opts.engines
