@@ -91,7 +91,7 @@ class Builder
             pragmas: {
                 FlashCoreExclude: false
             },
-            # HACK: 为了映射muplayer这个namespace
+            # 为映射muplayer这个namespace
             paths: {
                 'muplayer': '.'
             }
@@ -115,11 +115,9 @@ class Builder
                 , (err) ->
                     deferred.reject err
                 )
-
         , (err) ->
             deferred.reject err
         )
-
 
         return deferred.promise
 
@@ -194,6 +192,5 @@ class Builder
             os.remove @build_temp_path
             os.remove @require_temp_path
         ]
-
 
 module.exports = new Builder

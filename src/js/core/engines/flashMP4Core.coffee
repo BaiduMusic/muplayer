@@ -3,7 +3,7 @@ do (root = this, factory = (cfg, FlashCore) ->
 
     class FlashMP4Core extends FlashCore
         defaults:
-            swf: './dist/swf/muplayer_mp4.swf'
+            swf: './dist/muplayer_mp4.swf'
             instanceName: 'MP4Core'
             # Adobe AIR and Flash Player 9.0.115.0 and later versions support
             # files derived from the standard MPEG-4 container format.
