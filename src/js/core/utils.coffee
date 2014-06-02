@@ -121,6 +121,15 @@ do (root = this, factory = (cfg) ->
                 args = [func]
                 push.apply(args, arguments)
                 wrapper.apply(@, args)
+
+        # 获得资源的绝对路径
+        # 参考: http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
+        toAbsoluteUrl: (url) ->
+            div = document.createElement('div')
+            div.innerHTML = '<a></a>'
+            div.firstChild.href = url
+            div.innerHTML = div.innerHTML
+            div.firstChild.href
     }
 
     utils

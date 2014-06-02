@@ -26,26 +26,17 @@ var player = new _mu.Player({
             .find('.time').remove();
     },
     findCurrItem = function() {
-        return $pl.find('[data-link="' + player.getCur() + '"]');
+        var link = player.getCur();
+        link = link.substring(link.indexOf('mp3/'));
+        return $pl.find('[data-link="' + link + '"]');
     },
-    $time = $('<span class="time"></span>'),
-
-    // 获得资源的绝对路径
-    // 参考: http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
-    toAbsoluteUrl = function (url) {
-        var div = document.createElement('div');
-        div.innerHTML = '<a></a>';
-        div.firstChild.href = url;
-        div.innerHTML = div.innerHTML;
-        return div.firstChild.href;
-    };
+    $time = $('<span class="time"></span>');
 
 $pl.on('click', '> li', function() {
     if ($(this).hasClass('playing')) {
         player.pause();
     } else {
-        var link = toAbsoluteUrl($(this).data('link'));
-        player.reset().add(link).play();
+        player.reset().add($(this).data('link')).play();
     }
 });
 
