@@ -15,12 +15,12 @@ class Setup
                 pattern: /(yes)|(no)/
             }]
         .catch (e) ->
-            if e.message == 'canceled'
+            if e.message is 'canceled'
                 console.log '\n>> Canceled.'.red
                 process.exit 0
 
         .then (opts) =>
-            if opts.install_flex_sdk == 'yes'
+            if opts.install_flex_sdk is 'yes'
                 os.spawn 'npm', ['install', 'flex-sdk']
         .done ->
             console.log ">> Setup done.".yellow

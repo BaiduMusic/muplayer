@@ -41,7 +41,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *    [{<br>
          *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
          *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
-         *    <span class="ts2"></span>swf: '../dist/swf/muplayer_mp3.swf' // 对应的swf文件路径<br>
+         *    <span class="ts2"></span>swf: 'muplayer_mp3.swf' // 对应的swf文件路径<br>
          *    <span class="ts"></span>}<br>
          *    }, {<br>
          *    <span class="ts"></span>constructor: 'AudioCore'<br>
