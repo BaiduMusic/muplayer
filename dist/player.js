@@ -1672,8 +1672,8 @@ var __hasProp = {}.hasOwnProperty,
           return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
         };
       })(this);
-      this.progressTimer.every('200 ms', triggerProgress);
-      this.positionTimer.every('200 ms', triggerPosition);
+      this.progressTimer.every('50 ms', triggerProgress);
+      this.positionTimer.every('50 ms', triggerPosition);
       return this.on(EVENTS.STATECHANGE, (function(_this) {
         return function(e) {
           var st;
