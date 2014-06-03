@@ -96,14 +96,17 @@ package {
         }
 
         override public function play(p:Number = 0):void {
-            if (_state != State.PLAYING) {
-                if (p == 0 && _pausePosition) {
-                    p = _pausePosition;
-                }
-                super.play(p);
-                sc = s.play(p, 0, stf);
-                sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+            super.play(p);
+
+            if (p == 0 && _pausePosition) {
+                p = _pausePosition;
             }
+
+            if (sc) {
+                sc.removeEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+            }
+            sc = s.play(p, 0, stf);
+            sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
         }
 
         override public function pause():void {

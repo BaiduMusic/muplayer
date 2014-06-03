@@ -183,7 +183,7 @@ package {
         public function load(url:String):void {}
 
         public function play(p:Number = 0):void {
-            if (_state != State.PLAYING) {
+            if (!playerTimer) {
                 playerTimer = new Timer(Consts.TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();

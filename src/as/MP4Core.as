@@ -122,21 +122,23 @@ package {
         }
 
         override public function play(p:Number = 0):void {
-            if (_state != State.PLAYING) {
-                if (p == 0 && _pausePosition) {
-                    p = _pausePosition;
+            if (p == 0 && _pausePosition) {
+                p = _pausePosition;
+            }
+
+            try {
+                if (p != 0) {
+                    // 注意换算单位，seek的参数是秒，而position则是毫秒
+                    ns.seek(p / 1000);
+                    ns.resume();
+                } else {
+                    ns.play(_url);
                 }
-                try {
-                    if (p != 0) {
-                        // 注意换算单位，seek的参数是秒，而position则是毫秒
-                        ns.seek(p / 1000);
-                        ns.resume();
-                    } else {
-                        ns.play(_url);
-                    }
-                } catch (err:Error) {
-                    return handleErr(err);
-                }
+            } catch (err:Error) {
+                return handleErr(err);
+            }
+
+            if (!playerTimer) {
                 playerTimer = new Timer(Consts.TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
