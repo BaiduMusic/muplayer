@@ -1660,7 +1660,10 @@ var __hasProp = {}.hasOwnProperty,
         return function() {
           var per;
           per = _this.getLoadedPercent();
-          _this.trigger(EVENTS.PROGRESS, per);
+          if (_this._lastPer !== per) {
+            _this._lastPer = per;
+            _this.trigger(EVENTS.PROGRESS, per);
+          }
           if (per === 1) {
             return _this.progressTimer.stop();
           }
@@ -1668,7 +1671,12 @@ var __hasProp = {}.hasOwnProperty,
       })(this);
       triggerPosition = (function(_this) {
         return function() {
-          return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
+          var pos;
+          pos = _this.getCurrentPosition();
+          if (_this._lastPos !== pos) {
+            _this._lastPos = pos;
+            return _this.trigger(EVENTS.POSITIONCHANGE, pos);
+          }
         };
       })(this);
       this.progressTimer.every('100 ms', triggerProgress);
