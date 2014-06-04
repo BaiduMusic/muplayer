@@ -1117,8 +1117,10 @@ var __hasProp = {}.hasOwnProperty,
         this.audio.currentTime = 0;
       } catch (_error) {
 
+      } finally {
+        this.pause();
       }
-      return this.pause();
+      return this;
     };
 
     AudioCore.prototype.setUrl = function(url) {
@@ -1145,16 +1147,13 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.setCurrentPosition = function(ms) {
-      var err;
       try {
         this.audio.currentTime = ms / 1000;
       } catch (_error) {
-        err = _error;
-        if (typeof console !== "undefined" && console !== null) {
-          console.error(err);
-        }
+
+      } finally {
+        this.play();
       }
-      this.play();
       return this;
     };
 
