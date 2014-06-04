@@ -646,8 +646,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
 
     EngineCore.prototype.reset = function() {
       this.stop();
-      this.setUrl();
-      return this;
+      return this.setUrl();
     };
 
     EngineCore.prototype.play = function() {
@@ -1765,6 +1764,12 @@ var __hasProp = {}.hasOwnProperty,
         _results.push(fn.apply(this, args));
       }
       return _results;
+    };
+
+    FlashCore.prototype.reset = function() {
+      FlashCore.__super__.reset.call(this);
+      this.setMute(this.getMute());
+      return this.setVolume(this.getVolume());
     };
 
     FlashCore.prototype.play = function() {
