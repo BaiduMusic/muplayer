@@ -187,6 +187,9 @@ package {
                 playerTimer = new Timer(Consts.TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
+            }
+
+            if (_state != State.PLAYING) {
                 setState(State.PLAYING);
             }
         }
