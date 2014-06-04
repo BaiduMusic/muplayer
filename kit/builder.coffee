@@ -139,13 +139,13 @@ class Builder
             console.log ">> Compress js done.".cyan
 
     add_license: ->
-        conf = require '../package'
+        conf = require '../bower'
         info = """
             // @license
             // Baidu Music Player: #{conf.version}
             // -------------------------
             // (c) 2014 FE Team of Baidu Music
-            // Can be freely distributed under the MIT license.\n
+            // Can be freely distributed under the BSD license.\n
         """
 
         Q.fcall =>
