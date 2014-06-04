@@ -127,7 +127,9 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             try
                 @audio.currentTime = 0
             catch
-            @pause()
+            finally
+                @pause()
+            @
 
         setUrl: (url = '') ->
             @audio.src = url
@@ -150,9 +152,9 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
         setCurrentPosition: (ms) ->
             try
                 @audio.currentTime = ms / 1000
-            catch err
-                console?.error(err)
-            @play()
+            catch
+            finally
+                @play()
             @
 
         getCurrentPosition: () ->

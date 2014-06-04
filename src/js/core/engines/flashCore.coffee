@@ -67,8 +67,8 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             triggerPosition = () =>
                 @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
 
-            @progressTimer.every('50 ms', triggerProgress)
-            @positionTimer.every('50 ms', triggerPosition)
+            @progressTimer.every('100 ms', triggerProgress)
+            @positionTimer.every('100 ms', triggerPosition)
 
             @on EVENTS.STATECHANGE, (e) =>
                 st = e.newState
