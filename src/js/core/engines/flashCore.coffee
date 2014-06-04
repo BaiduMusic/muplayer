@@ -19,18 +19,20 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             @_queue = []
 
             @_needFlashReady([
-                'play', 'pause', 'stop',  'setCurrentPosition',
+                'play', 'pause', 'stop', 'setCurrentPosition',
                 '_setUrl', '_setVolume', '_setMute'
             ])
             @_unexceptionGet([
                 'getCurrentPosition', 'getLoadedPercent', 'getTotalTime'
             ])
 
-            utils.namespace('engines')[opts.instanceName] = @
-            # TODO: 有没有不hard code的方式呢?
-            instanceName = '_mu.engines.' + opts.instanceName
             # setTimeout的方式生成自增id。
-            id = 'muplayer_flashcore_' + setTimeout((->), 0)
+            id = 'muplayer_' + setTimeout((->), 0)
+            instanceName = opts.instanceName + '_' + id
+
+            utils.namespace('engines')[instanceName] = @
+            # TODO: 有没有不hard code的方式呢?
+            instanceName = '_mu.engines.' + instanceName
 
             @flash = $.flash.create
                 swf: opts.swf
@@ -123,14 +125,9 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             @_queue.push([fn, args])
 
         _fireQueue: () ->
-            l = @_queue.length
-            while l--
+            while @_queue.length
                 [fn, args] = @_queue.shift()
                 fn.apply(@, args)
-
-        reset: () ->
-            @_queue.length = 0
-            super()
 
         play: () ->
             @flash.play()
