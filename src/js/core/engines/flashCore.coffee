@@ -129,6 +129,13 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 [fn, args] = @_queue.shift()
                 fn.apply(@, args)
 
+        reset: () ->
+            super()
+            # HACK: 在_swfOnLoad被触发前调用了reset，会使得mute和volume设置实效。
+            # 但奇怪的是_queue是被执行过的，没有特别查明原因。这里临时做hotfix。
+            @setMute(@getMute())
+            @setVolume(@getVolume())
+
         play: () ->
             @flash.play()
             @
