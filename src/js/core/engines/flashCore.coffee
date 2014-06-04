@@ -62,10 +62,15 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
 
             triggerProgress = () =>
                 per = @getLoadedPercent()
-                @trigger(EVENTS.PROGRESS, per)
+                if @_lastPer isnt per
+                    @_lastPer = per
+                    @trigger(EVENTS.PROGRESS, per)
                 @progressTimer.stop() if per is 1
             triggerPosition = () =>
-                @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
+                pos = @getCurrentPosition()
+                if @_lastPos isnt pos
+                    @_lastPos = pos
+                    @trigger(EVENTS.POSITIONCHANGE, pos)
 
             @progressTimer.every('100 ms', triggerProgress)
             @positionTimer.every('100 ms', triggerPosition)

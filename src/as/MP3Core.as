@@ -104,13 +104,18 @@ package {
 
             if (sc) {
                 sc.removeEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+                sc.stop();
+                sc = null;
             }
+
             sc = s.play(p, 0, stf);
             sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
         }
 
         override public function pause():void {
-            stop(sc.position);
+            if (sc) {
+                stop(sc.position);
+            }
         }
 
         override public function stop(p:Number = 0):void {
