@@ -8,6 +8,9 @@ class Setup
         Q.fcall ->
             os.spawn 'node_modules/.bin/bower', ['install']
         .then =>
+            if process.env.quiet == 'true'
+                return { install_flex_sdk: 'no' }
+
             os.prompt_get [{
                 name: 'install_flex_sdk'
                 description: 'Whether Flex SDK or not? (yes/no)'
