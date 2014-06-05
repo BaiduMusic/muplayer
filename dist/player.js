@@ -646,8 +646,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
 
     EngineCore.prototype.reset = function() {
       this.stop();
-      this.setUrl();
-      return this;
+      return this.setUrl();
     };
 
     EngineCore.prototype.play = function() {
@@ -1622,9 +1621,10 @@ var __hasProp = {}.hasOwnProperty,
       this._queue = [];
       this._needFlashReady(['play', 'pause', 'stop', 'setCurrentPosition', '_setUrl', '_setVolume', '_setMute']);
       this._unexceptionGet(['getCurrentPosition', 'getLoadedPercent', 'getTotalTime']);
-      utils.namespace('engines')[opts.instanceName] = this;
-      instanceName = '_mu.engines.' + opts.instanceName;
-      id = 'muplayer_flashcore_' + setTimeout((function() {}), 0);
+      id = 'muplayer_' + setTimeout((function() {}), 0);
+      instanceName = opts.instanceName + '_' + id;
+      utils.namespace('engines')[instanceName] = this;
+      instanceName = '_mu.engines.' + instanceName;
       this.flash = $.flash.create({
         swf: opts.swf,
         id: id,
@@ -1757,10 +1757,9 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype._fireQueue = function() {
-      var args, fn, l, _ref1, _results;
-      l = this._queue.length;
+      var args, fn, _ref1, _results;
       _results = [];
-      while (l--) {
+      while (this._queue.length) {
         _ref1 = this._queue.shift(), fn = _ref1[0], args = _ref1[1];
         _results.push(fn.apply(this, args));
       }
@@ -1768,8 +1767,9 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype.reset = function() {
-      this._queue.length = 0;
-      return FlashCore.__super__.reset.call(this);
+      FlashCore.__super__.reset.call(this);
+      this.setMute(this.getMute());
+      return this.setVolume(this.getVolume());
     };
 
     FlashCore.prototype.play = function() {
@@ -2233,6 +2233,7 @@ var __hasProp = {}.hasOwnProperty,
       mode: 'loop',
       mute: false,
       volume: 80,
+      singleton: true,
       absoluteUrl: true
     };
 
@@ -2275,11 +2276,13 @@ var __hasProp = {}.hasOwnProperty,
 
     function Player(options) {
       var opts;
-      if (instance) {
-        return instance;
-      }
-      instance = this;
       this.opts = opts = $.extend({}, this.defaults, options);
+      if (opts.singleton) {
+        if (instance) {
+          return instance;
+        }
+        instance = this;
+      }
       this.playlist = new Playlist({
         absoluteUrl: opts.absoluteUrl
       });

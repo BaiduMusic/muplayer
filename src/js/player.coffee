@@ -14,6 +14,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             mode: 'loop'
             mute: false
             volume: 80
+            singleton: true
             absoluteUrl: true
 
         ###*
@@ -52,11 +53,12 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *  </tr></table>
         ###
         constructor: (options) ->
-            if instance
-                return instance
-            instance = @
-
             @opts = opts = $.extend({}, @defaults, options)
+
+            if opts.singleton
+                if instance
+                    return instance
+                instance = @
 
             @playlist = new Playlist(absoluteUrl: opts.absoluteUrl)
             @playlist.setMode(opts.mode)
