@@ -646,8 +646,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
 
     EngineCore.prototype.reset = function() {
       this.stop();
-      this.setUrl();
-      return this;
+      return this.setUrl();
     };
 
     EngineCore.prototype.play = function() {
@@ -1455,6 +1454,7 @@ var __hasProp = {}.hasOwnProperty,
       mode: 'loop',
       mute: false,
       volume: 80,
+      singleton: true,
       absoluteUrl: true
     };
 
@@ -1497,11 +1497,13 @@ var __hasProp = {}.hasOwnProperty,
 
     function Player(options) {
       var opts;
-      if (instance) {
-        return instance;
-      }
-      instance = this;
       this.opts = opts = $.extend({}, this.defaults, options);
+      if (opts.singleton) {
+        if (instance) {
+          return instance;
+        }
+        instance = this;
+      }
       this.playlist = new Playlist({
         absoluteUrl: opts.absoluteUrl
       });
