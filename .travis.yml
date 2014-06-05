@@ -6,3 +6,4 @@ before_install:
 install:
   - quiet=true npm install
   - cake build
+
