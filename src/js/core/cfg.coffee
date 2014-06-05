@@ -4,14 +4,12 @@ do (root = this, factory = () ->
     return $.extend({
         namespace: root._mu
         debug: false
-        version: '0.9.0'
+        version: '0.9.1'
 
         # XXX: timerResolution = 25ms是最小的计时粒度,
         # 这个不经测试调优就尽量不要改, 会影响部分统计数据和性能。
         timerResolution: 25
 
-        emptyMP3: '../dist/mp3/empty.mp3'
-        expressInstaller: './dist/expressInstall.swf'
         engine:
             TYPES:
                 FLASH_MP3: 'FlashMP3Core'

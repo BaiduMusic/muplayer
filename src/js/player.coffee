@@ -11,6 +11,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         instance = null
 
         defaults:
+            baseDir: "http://mu7.bdstatic.com/cms/app/muplayer/#{cfg.version.replace(/\./g, '_')}/"
             mode: 'loop'
             mute: false
             volume: 80
@@ -55,6 +56,12 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         constructor: (options) ->
             @opts = opts = $.extend({}, @defaults, options)
 
+            baseDir = opts.baseDir
+            unless baseDir
+                throw "baseDir must be set! Usually, it should point to the MuPlayer's dist directory."
+            unless baseDir.endsWith('/')
+                baseDir = baseDir + '/'
+
             if opts.singleton
                 if instance
                     return instance
@@ -62,7 +69,10 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
 
             @playlist = new Playlist(absoluteUrl: opts.absoluteUrl)
             @playlist.setMode(opts.mode)
-            @_initEngine(new Engine(engines: opts.engines))
+            @_initEngine(new Engine(
+                baseDir: baseDir
+                engines: opts.engines
+            ))
             @setMute(opts.mute)
             @setVolume(opts.volume)
 

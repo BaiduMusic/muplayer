@@ -3,7 +3,7 @@ do (root = this, factory = (cfg, FlashCore) ->
 
     class FlashMP3Core extends FlashCore
         defaults:
-            swf: './dist/muplayer_mp3.swf'
+            swf: 'muplayer_mp3.swf'
             instanceName: 'MP3Core'
             flashVer: '9.0.0'
         _supportedTypes: ['mp3']

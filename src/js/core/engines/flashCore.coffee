@@ -14,7 +14,9 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
 
     class FlashCore extends EngineCore
         constructor: (options) ->
+            @defaults.expressInstaller = 'expressInstall.swf'
             @opts = opts = $.extend({}, @defaults, options)
+
             @_loaded = false
             @_queue = []
 
@@ -26,6 +28,8 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 'getCurrentPosition', 'getLoadedPercent', 'getTotalTime'
             ])
 
+            baseDir = opts.baseDir
+
             # setTimeout的方式生成自增id。
             id = 'muplayer_' + setTimeout((->), 0)
             instanceName = opts.instanceName + '_' + id
@@ -35,13 +39,13 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             instanceName = '_mu.engines.' + instanceName
 
             @flash = $.flash.create
-                swf: opts.swf
+                swf: baseDir + opts.swf
                 id: id
                 height: 1
                 width: 1
                 allowscriptaccess: 'always'
                 wmode : 'transparent'
-                expressInstaller: opts.expressInstaller or cfg.expressInstaller
+                expressInstaller: baseDir + opts.expressInstaller
                 flashvars:
                     _instanceName: instanceName
                     _buffertime: 5000

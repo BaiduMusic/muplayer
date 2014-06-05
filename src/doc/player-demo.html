@@ -48,7 +48,9 @@ require.config({
 require([
     'muplayer/player'
 ], function(Player) {
-    var player = new Player(),
+var player = new Player({
+            baseDir: 'dist'
+        }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
         $ctrlBtn = $opts.find('.ctrl'),
