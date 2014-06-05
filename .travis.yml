@@ -1,9 +1,8 @@
 language: node_js
 node_js:
-  - "0.10"
+  - '0.10'
 before_install:
   npm install -g coffee-script
 install:
   - quiet=true npm install
   - cake build
-
