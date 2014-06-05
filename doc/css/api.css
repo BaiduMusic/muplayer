@@ -291,32 +291,37 @@ ul, ul li {
   border-right: 1px solid #28a1c5;
 }
 
+/* line 25, ../../src/css/api.sass */
+.sub-params td {
+  padding: 15px 5px;
+}
+
 @media (min-width: 992px) {
-  /* line 25, ../../src/css/api.sass */
+  /* line 29, ../../src/css/api.sass */
   .bs-sidebar {
     display: block;
   }
-  /* line 27, ../../src/css/api.sass */
+  /* line 31, ../../src/css/api.sass */
   .bs-sidebar.affix {
     position: fixed;
     top: 70px;
   }
-  /* line 30, ../../src/css/api.sass */
+  /* line 34, ../../src/css/api.sass */
   .bs-sidebar.affix-bottom {
     position: absolute;
   }
-  /* line 32, ../../src/css/api.sass */
+  /* line 36, ../../src/css/api.sass */
   .bs-sidebar.affix, .bs-sidebar.affix-bottom {
     width: 213px;
   }
-  /* line 34, ../../src/css/api.sass */
+  /* line 38, ../../src/css/api.sass */
   .bs-sidebar.affix .bs-sidenav, .bs-sidebar.affix-bottom .bs-sidenav {
     margin-top: 0;
     margin-bottom: 0;
   }
 }
 @media (min-width: 1200px) {
-  /* line 40, ../../src/css/api.sass */
+  /* line 44, ../../src/css/api.sass */
   .bs-sidebar.affix, .bs-sidebar.affix-bottom {
     width: 263px;
   }

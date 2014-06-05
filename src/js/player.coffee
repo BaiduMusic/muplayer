@@ -26,6 +26,10 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *    <th>说明</th>
          *  </tr>
          *  <tr>
+         *    <td>baseDir</td>
+         *    <td>必填选项，指向MuPlayer编译后的静态文件资源目录。默认指向同版本线上CDN文件目录，但建议指向自己签出的dist文件夹目录，以规避潜在的flash跨域警告。</td>
+         *  </tr>
+         *  <tr>
          *    <td>mode</td>
          *    <td>默认值: 'loop'。加入播放器的歌曲列表的播放顺序逻辑，可选值为 'loop'（循环播放），'list'（列表播放，该列表播放到最后一首或第一首后则停止播放），'single'（单曲播放），'random'（单曲随机），'list-random'（列表随机，与random的区别是保证已随机过的列表中歌曲均播放一次后，再对列表随机重置）。</td>
          *  </tr>
@@ -38,6 +42,14 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *    <td>默认值: 80。播放音量，取值范围0 - 100。</td>
          *  </tr>
          *  <tr>
+         *    <td>singleton</td>
+         *    <td>默认值: true。初始化的Player实例是否是单实例。如果希望一个页面中有多个播放实例并存，可以设成false</td>
+         *  </tr>
+         *  <tr>
+         *    <td>absoluteUrl</td>
+         *    <td>默认值: true。播放音频的链接是否要自动转化成绝对地址。</td>
+         *  </tr>
+         *  <tr>
          *    <td>engines</td>
          *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
          *    <pre>
@@ -45,6 +57,11 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
          *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
          *    <span class="ts2"></span>swf: 'muplayer_mp3.swf' // 对应的swf文件路径<br>
+         *    <span class="ts"></span>}<br>
+         *    }, {<br>
+         *    <span class="ts"></span>constructor: 'FlashMP4Core',<br>
+         *    <span class="ts"></span>args: { // 初始化FlashMP4Core的参数, FlashMP4Core支持m4a格式的音频文件<br>
+         *    <span class="ts2"></span>swf: 'muplayer_mp4.swf' // 对应的swf文件路径<br>
          *    <span class="ts"></span>}<br>
          *    }, {<br>
          *    <span class="ts"></span>constructor: 'AudioCore'<br>
