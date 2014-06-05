@@ -16,11 +16,11 @@ do (root = this, factory = (cfg) ->
                 toString.call(obj) == '[object ' + name + ']';
 
     unless $.isFunction(StrProto.startsWith)
-        StrProto = (str) ->
+        StrProto.startsWith = (str) ->
             @slice(0, str.length) is str
 
     unless $.isFunction(StrProto.endsWith)
-        StrProto = (str) ->
+        StrProto.endsWith = (str) ->
             return @slice(-str.length) is str
 
     # ref: http://stackoverflow.com/questions/10470810/javascript-tofixed-bug-in-ie6

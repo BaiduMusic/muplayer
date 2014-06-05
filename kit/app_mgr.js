@@ -45,7 +45,7 @@ main = function() {
       })(this)).then((function(_this) {
         return function() {
           return Q.all([
-            os.symlink('../dist', 'doc/dist', 'dir'), os.symlink('../bower_components', 'doc/bower_components', 'dir'), os.symlink('../lib/mp3', 'doc/mp3', 'dir'), os.symlink('../src/img/favicon.ico', 'doc/favicon.ico'), os.glob('src/doc/*.html').then(function(paths) {
+            os.symlink('../dist', 'doc/dist', 'dir'), os.symlink('../bower_components', 'doc/bower_components', 'dir'), os.symlink('../lib/mp3', 'doc/mp3', 'dir'), os.symlink('../src/img/favicon.ico', 'doc/favicon.ico'), os.glob('src/doc/*.{html,xml}').then(function(paths) {
               var p, to, _i, _len, _results;
               _results = [];
               for (_i = 0, _len = paths.length; _i < _len; _i++) {

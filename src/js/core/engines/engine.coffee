@@ -29,12 +29,13 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
 
         _initEngines: () ->
             @engines = []
-
+            opts = @opts
             $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
 
-            for engine, i in @opts.engines
+            for engine, i in opts.engines
                 constructor = engine.constructor
                 args = engine.args or {}
+                args.baseDir = opts.baseDir
                 args.$el = $el
 
                 try

@@ -3,18 +3,21 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
     {TYPES, EVENTS, STATES, ERRCODE} = cfg.engine
 
     class AudioCore extends EngineCore
-        @defaults:
+        defaults:
             # Audio是否可以播放的置信度, 可选值是maybe, probably或空字符。
             # 参考: http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#dom-navigator-canplaytype
             confidence: 'maybe'
             preload: false
             autoplay: false
-            emptyMP3: cfg.emptyMP3
+            emptyMP3: 'empty.mp3'
         _supportedTypes: []
         engineType: TYPES.AUDIO
 
         constructor: (options) ->
-            @opts = opts = $.extend(AudioCore.defaults, options)
+            @opts = $.extend({}, @defaults, options)
+            @opts.emptyMP3 = @opts.baseDir + @opts.emptyMP3
+            opts = @opts
+
             levels =
                 '': 0
                 maybe: 1
