@@ -1,8 +1,6 @@
-/* line 41, ../../src/css/base.sass */
 .mod {
   margin-bottom: 50px;
 }
-/* line 43, ../../src/css/base.sass */
 .mod .hd {
   font-size: 24px;
   font-weight: bold;
@@ -10,92 +8,73 @@
   line-height: 1;
 }
 
-/* line 49, ../../src/css/base.sass */
 .ts {
   margin-left: 2em;
 }
 
-/* line 51, ../../src/css/base.sass */
 .ts2 {
   margin-left: 4em;
 }
 
-/* line 53, ../../src/css/base.sass */
 .mr5 {
   margin-right: 5px !important;
 }
 
-/* line 58, ../../src/css/base.sass */
 .sub-params th:first-child, .sub-params td:first-child {
   border-left: none;
 }
 
-/* line 61, ../../src/css/base.sass */
 body {
   position: relative;
   padding-top: 50px;
 }
 
-/* line 65, ../../src/css/base.sass */
 iframe {
   border: none;
   width: 100%;
 }
 
-/* line 70, ../../src/css/base.sass */
 ul, ul li {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* line 75, ../../src/css/base.sass */
 #header {
   background: #5bc0de;
   border-color: #28a1c5;
 }
-/* line 78, ../../src/css/base.sass */
 #header .navbar-collapse, #header .navbar-form {
   border-color: #28a1c5;
 }
-/* line 80, ../../src/css/base.sass */
 #header .navbar-toggle {
   border-color: #28a1c5;
 }
-/* line 82, ../../src/css/base.sass */
 #header .navbar-toggle:hover, #header .navbar-toggle:focus {
   background-color: #28a1c5;
 }
-/* line 85, ../../src/css/base.sass */
 #header .navbar-toggle.collapsed .icon-bar {
   background: white;
 }
-/* line 87, ../../src/css/base.sass */
 #header .navbar-brand {
   color: white;
   font-weight: bold;
 }
-/* line 18, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-brand:visited {
   color: white;
 }
-/* line 21, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-brand:focus {
   color: white;
 }
-/* line 24, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-brand:hover {
   color: white;
 }
-/* line 27, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-brand:active {
   color: white;
 }
-/* line 90, ../../src/css/base.sass */
 #header .navbar-nav {
   height: 50px;
 }
-/* line 92, ../../src/css/base.sass */
 #header .navbar-nav a {
   height: 50px;
   line-height: 50px;
@@ -106,75 +85,58 @@ ul, ul li {
   padding: 0 15px;
   background: transparent;
 }
-/* line 18, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:visited {
   color: #d6eff6;
 }
-/* line 21, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:focus {
   color: #d6eff6;
 }
-/* line 24, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:hover {
   color: #d6eff6;
 }
-/* line 27, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:active {
   color: #d6eff6;
 }
-/* line 98, ../../src/css/base.sass */
 #header .navbar-nav a:hover {
   height: 51px;
   line-height: 51px;
   color: white;
   border-bottom: 3px solid #c7254e;
 }
-/* line 18, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:hover:visited {
   color: white;
 }
-/* line 21, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:hover:focus {
   color: white;
 }
-/* line 24, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:hover:hover {
   color: white;
 }
-/* line 27, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav a:hover:active {
   color: white;
 }
-/* line 102, ../../src/css/base.sass */
 #header .navbar-nav .active a {
   color: white;
   background: #28a1c5;
 }
-/* line 18, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav .active a:visited {
   color: white;
 }
-/* line 21, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav .active a:focus {
   color: white;
 }
-/* line 24, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav .active a:hover {
   color: white;
 }
-/* line 27, ../../../.rvm/gems/ruby-2.0.0-p0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
 #header .navbar-nav .active a:active {
   color: white;
 }
-/* line 105, ../../src/css/base.sass */
 #header .navbar-nav .active a:hover {
   border-bottom: none;
 }
-/* line 107, ../../src/css/base.sass */
 #header .container {
   position: relative;
 }
-/* line 109, ../../src/css/base.sass */
 #header .github {
   display: -moz-inline-stack;
   display: inline-block;
@@ -190,7 +152,6 @@ ul, ul li {
   border-top: none;
   padding: 10px 15px;
 }
-/* line 118, ../../src/css/base.sass */
 #header .github i {
   display: -moz-inline-stack;
   display: inline-block;
@@ -209,28 +170,23 @@ ul, ul li {
   margin-right: 10px;
 }
 
-/* line 124, ../../src/css/base.sass */
 .jumbotron h1 em {
   color: #c7254e;
   font-style: normal;
 }
-/* line 127, ../../src/css/base.sass */
 .jumbotron h1 span {
   color: #5bc0de;
 }
-/* line 129, ../../src/css/base.sass */
 .jumbotron .advantages {
   padding: 20px 0 0 50px;
   margin: 35px 0 0 0;
   border-top: 2px dashed #5bc0de;
 }
-/* line 133, ../../src/css/base.sass */
 .jumbotron .advantages .glyphicon-ok {
   color: #5bc0de;
   margin-right: 20px;
 }
 
-/* line 137, ../../src/css/base.sass */
 .bs-footer {
   padding-top: 40px;
   padding-bottom: 30px;
@@ -238,12 +194,10 @@ ul, ul li {
   color: #666666;
   border-top: 1px solid #e5e5e5;
 }
-/* line 144, ../../src/css/base.sass */
 .bs-footer .copyright a {
   margin-left: 15px;
 }
 
-/* line 3, ../../src/css/demo.sass */
 #content {
   margin-bottom: -55px;
 }

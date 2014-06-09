@@ -2,7 +2,7 @@
 // Baidu Music Player: 0.9.0
 // -------------------------
 // (c) 2014 FE Team of Baidu Music
-// Can be freely distributed under the MIT license.
+// Can be freely distributed under the BSD license.
 (function(root, factory) {
   if (typeof root._mu === 'undefined') {
     root._mu = {};
@@ -20,10 +20,8 @@
   return $.extend({
     namespace: root._mu,
     debug: false,
-    version: '0.9.0',
+    version: '0.9.1',
     timerResolution: 25,
-    emptyMP3: '../dist/mp3/empty.mp3',
-    expressInstaller: './dist/expressInstall.swf',
     engine: {
       TYPES: {
         FLASH_MP3: 'FlashMP3Core',
@@ -85,12 +83,12 @@
     })(name);
   }
   if (!$.isFunction(StrProto.startsWith)) {
-    StrProto = function(str) {
+    StrProto.startsWith = function(str) {
       return this.slice(0, str.length) === str;
     };
   }
   if (!$.isFunction(StrProto.endsWith)) {
-    StrProto = function(str) {
+    StrProto.endsWith = function(str) {
       return this.slice(-str.length) === str;
     };
   }
@@ -946,11 +944,11 @@ var __hasProp = {}.hasOwnProperty,
   AudioCore = (function(_super) {
     __extends(AudioCore, _super);
 
-    AudioCore.defaults = {
+    AudioCore.prototype.defaults = {
       confidence: 'maybe',
       preload: false,
       autoplay: false,
-      emptyMP3: cfg.emptyMP3
+      emptyMP3: 'empty.mp3'
     };
 
     AudioCore.prototype._supportedTypes = [];
@@ -959,7 +957,9 @@ var __hasProp = {}.hasOwnProperty,
 
     function AudioCore(options) {
       var audio, k, least, levels, opts, playEmpty, v;
-      this.opts = opts = $.extend(AudioCore.defaults, options);
+      this.opts = $.extend({}, this.defaults, options);
+      this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
+      opts = this.opts;
       levels = {
         '': 0,
         maybe: 1,
@@ -1615,24 +1615,26 @@ var __hasProp = {}.hasOwnProperty,
     __extends(FlashCore, _super);
 
     function FlashCore(options) {
-      var id, instanceName, opts;
+      var baseDir, id, instanceName, opts;
+      this.defaults.expressInstaller = 'expressInstall.swf';
       this.opts = opts = $.extend({}, this.defaults, options);
       this._loaded = false;
       this._queue = [];
       this._needFlashReady(['play', 'pause', 'stop', 'setCurrentPosition', '_setUrl', '_setVolume', '_setMute']);
       this._unexceptionGet(['getCurrentPosition', 'getLoadedPercent', 'getTotalTime']);
+      baseDir = opts.baseDir;
       id = 'muplayer_' + setTimeout((function() {}), 0);
       instanceName = opts.instanceName + '_' + id;
       utils.namespace('engines')[instanceName] = this;
       instanceName = '_mu.engines.' + instanceName;
       this.flash = $.flash.create({
-        swf: opts.swf,
+        swf: baseDir + opts.swf,
         id: id,
         height: 1,
         width: 1,
         allowscriptaccess: 'always',
         wmode: 'transparent',
-        expressInstaller: opts.expressInstaller || cfg.expressInstaller,
+        expressInstaller: baseDir + opts.expressInstaller,
         flashvars: {
           _instanceName: instanceName,
           _buffertime: 5000
@@ -1906,7 +1908,7 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     FlashMP3Core.prototype.defaults = {
-      swf: './dist/muplayer_mp3.swf',
+      swf: 'muplayer_mp3.swf',
       instanceName: 'MP3Core',
       flashVer: '9.0.0'
     };
@@ -1943,7 +1945,7 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     FlashMP4Core.prototype.defaults = {
-      swf: './dist/muplayer_mp4.swf',
+      swf: 'muplayer_mp4.swf',
       instanceName: 'MP4Core',
       flashVer: '9.0.115'
     };
@@ -1992,16 +1994,16 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.defaults = {
       engines: [
-                                {
-                    constructor: FlashMP3Core
-                },
                 {
-                    constructor: FlashMP4Core
-                },
-                                {
                     constructor: AudioCore
                 }
-            ]
+                                , {
+                    constructor: FlashMP3Core
+                }
+                , {
+                    constructor: FlashMP4Core
+                }
+                            ]
     };
 
     function Engine(options) {
@@ -2010,14 +2012,16 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, engine, i, _i, _len, _ref1;
+      var $el, args, constructor, engine, i, opts, _i, _len, _ref1;
       this.engines = [];
+      opts = this.opts;
       $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
-      _ref1 = this.opts.engines;
+      _ref1 = opts.engines;
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         engine = _ref1[i];
         constructor = engine.constructor;
         args = engine.args || {};
+        args.baseDir = opts.baseDir;
         args.$el = $el;
         try {
           if (!$.isFunction(constructor)) {
@@ -2230,6 +2234,7 @@ var __hasProp = {}.hasOwnProperty,
     instance = null;
 
     Player.prototype.defaults = {
+      baseDir: "http://mu7.bdstatic.com/cms/app/muplayer/" + (cfg.version.replace(/\./g, '_')) + "/",
       mode: 'loop',
       mute: false,
       volume: 80,
@@ -2246,6 +2251,10 @@ var __hasProp = {}.hasOwnProperty,
      *    <th>说明</th>
      *  </tr>
      *  <tr>
+     *    <td>baseDir</td>
+     *    <td>必填选项，指向MuPlayer编译后的静态文件资源目录。默认指向同版本线上CDN文件目录，但建议指向自己签出的dist文件夹目录，以规避潜在的flash跨域警告。</td>
+     *  </tr>
+     *  <tr>
      *    <td>mode</td>
      *    <td>默认值: 'loop'。加入播放器的歌曲列表的播放顺序逻辑，可选值为 'loop'（循环播放），'list'（列表播放，该列表播放到最后一首或第一首后则停止播放），'single'（单曲播放），'random'（单曲随机），'list-random'（列表随机，与random的区别是保证已随机过的列表中歌曲均播放一次后，再对列表随机重置）。</td>
      *  </tr>
@@ -2258,6 +2267,14 @@ var __hasProp = {}.hasOwnProperty,
      *    <td>默认值: 80。播放音量，取值范围0 - 100。</td>
      *  </tr>
      *  <tr>
+     *    <td>singleton</td>
+     *    <td>默认值: true。初始化的Player实例是否是单实例。如果希望一个页面中有多个播放实例并存，可以设成false</td>
+     *  </tr>
+     *  <tr>
+     *    <td>absoluteUrl</td>
+     *    <td>默认值: true。播放音频的链接是否要自动转化成绝对地址。</td>
+     *  </tr>
+     *  <tr>
      *    <td>engines</td>
      *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
@@ -2265,6 +2282,11 @@ var __hasProp = {}.hasOwnProperty,
      *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
      *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
      *    <span class="ts2"></span>swf: 'muplayer_mp3.swf' // 对应的swf文件路径<br>
+     *    <span class="ts"></span>}<br>
+     *    }, {<br>
+     *    <span class="ts"></span>constructor: 'FlashMP4Core',<br>
+     *    <span class="ts"></span>args: { // 初始化FlashMP4Core的参数, FlashMP4Core支持m4a格式的音频文件<br>
+     *    <span class="ts2"></span>swf: 'muplayer_mp4.swf' // 对应的swf文件路径<br>
      *    <span class="ts"></span>}<br>
      *    }, {<br>
      *    <span class="ts"></span>constructor: 'AudioCore'<br>
@@ -2275,8 +2297,15 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     function Player(options) {
-      var opts;
+      var baseDir, opts;
       this.opts = opts = $.extend({}, this.defaults, options);
+      baseDir = opts.baseDir;
+      if (!baseDir) {
+        throw "baseDir must be set! Usually, it should point to the MuPlayer's dist directory.";
+      }
+      if (!baseDir.endsWith('/')) {
+        baseDir = baseDir + '/';
+      }
       if (opts.singleton) {
         if (instance) {
           return instance;
@@ -2288,6 +2317,7 @@ var __hasProp = {}.hasOwnProperty,
       });
       this.playlist.setMode(opts.mode);
       this._initEngine(new Engine({
+        baseDir: baseDir,
         engines: opts.engines
       }));
       this.setMute(opts.mute);

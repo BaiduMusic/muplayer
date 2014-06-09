@@ -38,11 +38,20 @@
         </div>
     </section>
 
-    <section id="content" class="container">
+<section id="content" class="container">
         <div class="mod">
             <div class="hd">快速上手</div>
             <div class="bd">
-                <script src="https://gist.github.com/hustKiwi/9682427.js"></script>
+                <p>
+                    使用MuPlayer首先要引入MuPlayer对应版本的JS文件。你可以直接从
+                    <a target="_blank" href="https://github.com/Baidu-Music-FE/muplayer/tree/master/dist">github上</a>下载，
+                    或使用<a target="_blank" href="http://bower.io/">Bower</a>下载编译后的MuPlayer静态文件，并托管在自己的静态服务器上。
+                    同时，你也可以如下面例子中展示的那样，直接使用我们放在百度音乐CDN上的对应版本的静态资源文件。
+                </p>
+                <p>
+                    在网站加载jQuery类库的后面，引入MuPlayer。之后便可以初始化一个MuPlayer实例（ <code>baseDir</code> 是必填初始化参数，指向刚才签出的MuPlayer静态资源目录），添加一段mp3音频，开始播放：
+                </p>
+                <script src="https://gist.github.com/hustKiwi/f2d0436c807b3a45744c.js"></script>
             </div>
         </div>
 
