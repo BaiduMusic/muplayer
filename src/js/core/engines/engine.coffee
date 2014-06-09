@@ -10,17 +10,17 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
 
         defaults:
             engines: `[
-                //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
-                {
-                    constructor: FlashMP3Core
-                },
-                {
-                    constructor: FlashMP4Core
-                },
-                //>>excludeEnd("FlashCoreExclude");
                 {
                     constructor: AudioCore
                 }
+                //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
+                , {
+                    constructor: FlashMP3Core
+                }
+                , {
+                    constructor: FlashMP4Core
+                }
+                //>>excludeEnd("FlashCoreExclude");
             ]`
 
         constructor: (options) ->

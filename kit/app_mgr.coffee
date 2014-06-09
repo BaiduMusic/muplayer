@@ -27,12 +27,13 @@ main = ->
                         'compile'
                         '--sass-dir', 'src/css'
                         '--css-dir', 'doc/css'
+                        '--no-line-comments'
                     ])
                     os.copy 'src/img', 'doc/img'
                     os.spawn(doxx_bin, [
                         '-d'
                         '-R', 'README.md'
-                        '-t', "MuPlayer 『百度音乐播放内核』"
+                        '-t', 'MuPlayer 『百度音乐播放内核』'
                         '-s', 'dist'
                         '-T', 'doc_temp'
                         '--template', 'src/doc/base.jade'
@@ -53,7 +54,7 @@ main = ->
                     os.glob('src/doc/*.{html,xml}').then (paths) ->
                         for p in paths
                             to = 'doc/' + os.path.basename(p)
-                            console.log ">> Link: ".cyan + p + ' -> '.cyan + to
+                            console.log '>> Link: '.cyan + p + ' -> '.cyan + to
                             os.symlink '../' + p, to
                 ]
             .done =>
@@ -71,6 +72,6 @@ main = ->
                 .resume()
             .listen port
 
-            console.log (">> Server start at port: " + port).cyan
+            console.log ">> Server start at port: #{port}".cyan
 
 main()

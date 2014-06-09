@@ -28,7 +28,7 @@ main = function() {
         };
       })(this)).then((function(_this) {
         return function() {
-          return Q.all([os.spawn('compass', ['compile', '--sass-dir', 'src/css', '--css-dir', 'doc/css']), os.copy('src/img', 'doc/img'), os.spawn(doxx_bin, ['-d', '-R', 'README.md', '-t', "MuPlayer 『百度音乐播放内核』", '-s', 'dist', '-T', 'doc_temp', '--template', 'src/doc/base.jade'])]);
+          return Q.all([os.spawn('compass', ['compile', '--sass-dir', 'src/css', '--css-dir', 'doc/css', '--no-line-comments']), os.copy('src/img', 'doc/img'), os.spawn(doxx_bin, ['-d', '-R', 'README.md', '-t', 'MuPlayer 『百度音乐播放内核』', '-s', 'dist', '-T', 'doc_temp', '--template', 'src/doc/base.jade'])]);
         };
       })(this)).then((function(_this) {
         return function() {
@@ -51,7 +51,7 @@ main = function() {
               for (_i = 0, _len = paths.length; _i < _len; _i++) {
                 p = paths[_i];
                 to = 'doc/' + os.path.basename(p);
-                console.log(">> Link: ".cyan + p + ' -> '.cyan + to);
+                console.log('>> Link: '.cyan + p + ' -> '.cyan + to);
                 _results.push(os.symlink('../' + p, to));
               }
               return _results;

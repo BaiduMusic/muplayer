@@ -68,7 +68,7 @@ class Builder
                         console.log '>> Compiled: '.cyan + path
 
     combine_js: (opts) ->
-        console.log ">> Compile client js with requirejs ...".cyan
+        console.log '>> Compile client js with requirejs ...'.cyan
 
         requirejs = require 'requirejs'
 
@@ -184,10 +184,10 @@ class Builder
             compile 'MP3Core', 'muplayer_mp3'
             compile 'MP4Core', 'muplayer_mp4'
         ]).then ->
-            console.log ">> Build AS done.".cyan
+            console.log '>> Build AS done.'.cyan
 
     clean: ->
-        console.log ">> Clean temp folders...".cyan
+        console.log '>> Clean temp folders...'.cyan
         Q.all [
             os.remove @build_temp_path
             os.remove @require_temp_path
