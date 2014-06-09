@@ -1,6 +1,7 @@
 # Customized
 *.swp
 *.swo
+.idea
 .sass-cache
 kit/setup.js
 kit/builder.js
