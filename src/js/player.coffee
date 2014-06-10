@@ -104,7 +104,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             ).on(EVENTS.PROGRESS, (progress) =>
                 @trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) =>
-                @trigger(EVENTS.ERROR, e)
+                @trigger('error', e)
             )
 
         ###*
