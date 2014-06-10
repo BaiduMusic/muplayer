@@ -40,9 +40,10 @@ main = ->
                     ])
                 ])
             .then =>
-                os.copy 'doc_temp/player.js.html', 'doc/api.html'
-            .then =>
-                os.copy 'doc_temp/index.html', 'doc/index.html'
+                Q.all([
+                    os.copy 'doc_temp/player.js.html', 'doc/api.html'
+                    os.copy 'doc_temp/index.html', 'doc/index.html'
+                ])
             .then =>
                 os.remove 'doc_temp'
             .then =>
