@@ -1,7 +1,7 @@
 do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
     {EVENTS, STATES} = cfg.engine
     timerResolution = cfg.timerResolution
-    extReg = /\.(\w+)$/
+    extReg = /\.(\w+)(\?.*)$/
 
     class Engine
         # 隐藏容器, 用于容纳swf和audio等标签
