@@ -103,6 +103,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 @trigger('timeupdate', pos)
             ).on(EVENTS.PROGRESS, (progress) =>
                 @trigger('progress', progress)
+            ).on(EVENTS.ERROR, (e) =>
+                @trigger(EVENTS.ERROR, e)
             )
 
         ###*

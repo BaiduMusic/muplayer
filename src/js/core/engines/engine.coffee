@@ -70,15 +70,19 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
                 @trigger(EVENTS.POSITIONCHANGE, pos)
             progressHandle = (progress) =>
                 @trigger(EVENTS.PROGRESS, progress)
+            errorHandle = (e) =>
+                @trigger(EVENTS.ERROR, e)
 
             bindEvents = (engine) ->
                 engine.on(EVENTS.STATECHANGE, statechangeHandle)
                     .on(EVENTS.POSITIONCHANGE, positionHandle)
                     .on(EVENTS.PROGRESS, progressHandle)
+                    .on(EVENTS.ERROR, errorHandle)
             unbindEvents = (engine) ->
                 engine.off(EVENTS.STATECHANGE, statechangeHandle)
                     .off(EVENTS.POSITIONCHANGE, positionHandle)
                     .off(EVENTS.PROGRESS, progressHandle)
+                    .on(EVENTS.ERROR, errorHandle)
 
             unless @curEngine
                 @curEngine = bindEvents(engine)
