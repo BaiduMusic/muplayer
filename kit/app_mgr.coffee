@@ -52,7 +52,7 @@ main = ->
                     os.symlink '../bower_components', 'doc/bower_components', 'dir'
                     os.symlink '../lib/mp3', 'doc/mp3', 'dir'
                     os.symlink '../src/img/favicon.ico', 'doc/favicon.ico'
-                    os.glob('src/doc/*.{html,xml}').then (paths) ->
+                    os.glob('src/doc/*.html').then (paths) ->
                         for p in paths
                             to = 'doc/' + os.path.basename(p)
                             console.log '>> Link: '.cyan + p + ' -> '.cyan + to

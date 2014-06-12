@@ -1213,7 +1213,7 @@ var __hasProp = {}.hasOwnProperty,
   var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
-  extReg = /\.(\w+)$/;
+  extReg = /\.(\w+)(\?.*)?$/;
   Engine = (function() {
     Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>';
 
@@ -1262,7 +1262,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setEngine = function(engine) {
-      var bindEvents, oldEngine, positionHandle, progressHandle, statechangeHandle, unbindEvents;
+      var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, statechangeHandle, unbindEvents;
       this._lastE = {};
       statechangeHandle = (function(_this) {
         return function(e) {
@@ -1286,11 +1286,16 @@ var __hasProp = {}.hasOwnProperty,
           return _this.trigger(EVENTS.PROGRESS, progress);
         };
       })(this);
+      errorHandle = (function(_this) {
+        return function(e) {
+          return _this.trigger(EVENTS.ERROR, e);
+        };
+      })(this);
       bindEvents = function(engine) {
-        return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle);
+        return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
       };
       unbindEvents = function(engine) {
-        return engine.off(EVENTS.STATECHANGE, statechangeHandle).off(EVENTS.POSITIONCHANGE, positionHandle).off(EVENTS.PROGRESS, progressHandle);
+        return engine.off(EVENTS.STATECHANGE, statechangeHandle).off(EVENTS.POSITIONCHANGE, positionHandle).off(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
       };
       if (!this.curEngine) {
         return this.curEngine = bindEvents(engine);
@@ -1560,6 +1565,10 @@ var __hasProp = {}.hasOwnProperty,
       })(this)).on(EVENTS.PROGRESS, (function(_this) {
         return function(progress) {
           return _this.trigger('progress', progress);
+        };
+      })(this)).on(EVENTS.ERROR, (function(_this) {
+        return function(e) {
+          return _this.trigger('error', e);
         };
       })(this));
     };
