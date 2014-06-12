@@ -2307,10 +2307,12 @@ var __hasProp = {}.hasOwnProperty,
       var baseDir, opts;
       this.opts = opts = $.extend({}, this.defaults, options);
       baseDir = opts.baseDir;
-      if (!baseDir) {
+      if (baseDir === false) {
+        baseDir = '';
+      } else if (!baseDir) {
         throw "baseDir must be set! Usually, it should point to the MuPlayer's dist directory.";
       }
-      if (!baseDir.endsWith('/')) {
+      if (baseDir && !baseDir.endsWith('/')) {
         baseDir = baseDir + '/';
       }
       if (opts.singleton) {

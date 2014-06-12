@@ -74,9 +74,11 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             @opts = opts = $.extend({}, @defaults, options)
 
             baseDir = opts.baseDir
-            unless baseDir
+            if baseDir is false
+                baseDir = ''
+            else unless baseDir
                 throw "baseDir must be set! Usually, it should point to the MuPlayer's dist directory."
-            unless baseDir.endsWith('/')
+            if baseDir and not baseDir.endsWith('/')
                 baseDir = baseDir + '/'
 
             if opts.singleton
