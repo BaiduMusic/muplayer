@@ -17,6 +17,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             @defaults.expressInstaller = 'expressInstall.swf'
             @opts = opts = $.extend({}, @defaults, options)
 
+            @_state = STATES.NOT_INIT
             @_loaded = false
             @_queue = []
 
