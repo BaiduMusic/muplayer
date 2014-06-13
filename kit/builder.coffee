@@ -40,7 +40,17 @@ class Builder
             os.copy(from, @build_temp_path + '/js').then =>
                 console.log '>> Copy: '.cyan + from + ' -> '.green + @build_temp_path
         .then =>
-            os.copy @lib_path + '/expressInstall.swf', @dist_path + '/expressInstall.swf'
+            copy = (from, to) =>
+                from = "#{@lib_path}/#{from}"
+                to = "#{@dist_path}/#{to}"
+
+                os.copy(from, to).then =>
+                    console.log '>> Copy: '.cyan + from + ' -> '.green + to
+
+            Q.all([
+                copy 'expressInstall.swf', 'expressInstall.swf'
+                copy 'mp3/empty.mp3', 'empty.mp3'
+            ])
 
     compile_all_coffee: ->
         coffee = require 'coffee-script'
