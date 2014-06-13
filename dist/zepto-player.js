@@ -1583,7 +1583,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.play = function(startTime) {
-      var def, engine, play;
+      var def, engine, play, _ref1;
       startTime = ~~startTime;
       def = $.Deferred();
       engine = this.engine;
@@ -1598,9 +1598,15 @@ var __hasProp = {}.hasOwnProperty,
           return def.resolve();
         };
       })(this);
-      this._fetch().done(function() {
-        return play();
-      });
+      if ((_ref1 = this.getState()) === STATES.NOT_INIT || _ref1 === STATES.STOP) {
+        this._fetch().done((function(_this) {
+          return function() {
+            return play();
+          };
+        })(this));
+      } else {
+        play();
+      }
       return def.promise();
     };
 
@@ -1648,13 +1654,14 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.prev = function() {
       var cur;
       cur = this.getCur();
+      this.stop();
       if (this.getSongsNum() && this.playlist.prev()) {
         this.trigger('player:prev', {
           cur: cur
         });
-        return this.play();
+        this.play();
       }
-      return this.stop();
+      return this;
     };
 
 
@@ -1669,14 +1676,15 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.next = function(auto) {
       var cur;
       cur = this.getCur();
+      this.stop();
       if (this.getSongsNum() && this.playlist.next()) {
         this.trigger('player:next', {
           auto: auto,
           cur: cur
         });
-        return this.play();
+        this.play();
       }
-      return this.stop();
+      return this;
     };
 
 
