@@ -174,7 +174,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             if @getSongsNum() and @playlist.prev()
                 @trigger('player:prev', {
                     cur: cur
-                }).play()
+                })
+                @play()
             @
 
         ###*
@@ -191,7 +192,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 @trigger('player:next', {
                     auto: auto,
                     cur: cur
-                }).play()
+                })
+                @play()
             @
 
         ###*
