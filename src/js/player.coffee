@@ -127,7 +127,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 @trigger('player:play', startTime)
                 def.resolve()
 
-            if @getState() is STATES.STOP
+            if @getState() in [STATES.NOT_INIT, STATES.STOP]
                 # XXX: 应该在_fetch中决定是否发起选链。
                 # 即是否从cache中取, 是否setUrl都是依据_fetch的实现去决定。
                 # 如果继承时覆盖重写_fetch, 这些都要自己权衡。
@@ -170,12 +170,12 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         prev: () ->
             cur = @getCur()
+            @stop()
             if @getSongsNum() and @playlist.prev()
                 @trigger('player:prev', {
                     cur: cur
-                })
-                return @play()
-            @stop()
+                }).play()
+            @
 
         ###*
          * 播放下一首歌。参数auto是布尔值，代表是否是因自动切歌而触发的（比如因为一首歌播放完会自动触发next方法，这时auto为true，其他主动调用auto应为undefined）。
@@ -186,13 +186,13 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         next: (auto) ->
             cur = @getCur()
+            @stop()
             if @getSongsNum() and @playlist.next()
                 @trigger('player:next', {
                     auto: auto,
                     cur: cur
-                })
-                return @play()
-            @stop()
+                }).play()
+            @
 
         ###*
          * 获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。
