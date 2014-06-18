@@ -141,7 +141,6 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             super(url)
 
         setVolume: (volume) ->
-            @ unless 0 <= volume <= 100
             @audio.volume = volume / 100
             super(volume)
 

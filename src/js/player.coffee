@@ -10,7 +10,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
     class Player
         instance = null
 
-        defaults:
+        @defaults:
             baseDir: "http://mu7.bdstatic.com/cms/app/muplayer/#{cfg.version.replace(/\./g, '_')}/"
             mode: 'loop'
             mute: false
@@ -71,7 +71,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          *  </tr></table>
         ###
         constructor: (options) ->
-            @opts = opts = $.extend({}, @defaults, options)
+            @opts = opts = $.extend({}, Player.defaults, options)
 
             baseDir = opts.baseDir
             if baseDir is false
