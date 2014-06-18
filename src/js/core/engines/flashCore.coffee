@@ -183,7 +183,6 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             @flash.setData('volume', volume)
 
         setVolume: (volume) ->
-            @ unless 0 <= volume <= 100
             @_setVolume(volume)
             super(volume)
 
