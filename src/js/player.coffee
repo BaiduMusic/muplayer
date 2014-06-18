@@ -216,10 +216,12 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         setCur: (sid) ->
             pl = @playlist
-            if sid
+            if not sid and @getSongsNum()
+                sid = pl.list[0]
+            if sid and @_sid isnt sid
                 pl.setCur(sid)
-            else if @getSongsNum()
-                pl.setCur(pl.list[0])
+                @_sid = sid
+                @stop()
             @
 
         ###*
