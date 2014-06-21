@@ -17,10 +17,10 @@ package {
                 reset();
                 nc = new NetConnection();
                 nc.connect(null);
-                ExternalInterface.addCallback('load', load);
-                ExternalInterface.addCallback('play', play);
-                ExternalInterface.addCallback('pause', pause);
-                ExternalInterface.addCallback('stop', stop);
+                ExternalInterface.addCallback('f_load', f_load);
+                ExternalInterface.addCallback('f_play', f_play);
+                ExternalInterface.addCallback('f_pause', f_pause);
+                ExternalInterface.addCallback('f_stop', f_stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
                 callJS(Consts.SWF_ON_LOAD);
@@ -100,8 +100,8 @@ package {
             }
         }
 
-        override public function load(url:String):void {
-            stop();
+        override public function f_load(url:String):void {
+            f_stop();
 
             try {
                 ns && ns.close();
@@ -121,7 +121,7 @@ package {
             setState(State.PREBUFFER);
         }
 
-        override public function play(p:Number = 0):void {
+        override public function f_play(p:Number = 0):void {
             if (p == 0 && _pausePosition) {
                 p = _pausePosition;
             }
@@ -145,12 +145,12 @@ package {
             }
         }
 
-        override public function pause():void {
-            stop(ns.time * 1000);
+        override public function f_pause():void {
+            f_stop(ns.time * 1000);
         }
 
-        override public function stop(p:Number = 0):void {
-            super.stop(p);
+        override public function f_stop(p:Number = 0):void {
+            super.f_stop(p);
             // 判断ns是否存在是因为ns在load方法调用时才被延迟初始化
             if (ns) {
                 ns.pause();

@@ -56,7 +56,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             win.addEventListener('touchstart', playEmpty, false)
 
         _test: (trigger) ->
-            return false if Modernizr.audio is false or @_supportedTypes.length is 0
+            return false if not Modernizr.audio or not @_supportedTypes.length
             trigger and @trigger(EVENTS.INIT_FAIL, @engineType)
             true
 

@@ -15,10 +15,10 @@ package {
             super.init();
             if (ExternalInterface.available) {
                 reset();
-                ExternalInterface.addCallback('load', load);
-                ExternalInterface.addCallback('play', play);
-                ExternalInterface.addCallback('pause', pause);
-                ExternalInterface.addCallback('stop', stop);
+                ExternalInterface.addCallback('f_load', f_load);
+                ExternalInterface.addCallback('f_play', f_play);
+                ExternalInterface.addCallback('f_pause', f_pause);
+                ExternalInterface.addCallback('f_stop', f_stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
                 callJS(Consts.SWF_ON_LOAD);
@@ -71,8 +71,8 @@ package {
             super.reset();
         }
 
-        override public function load(url:String):void {
-            stop();
+        override public function f_load(url:String):void {
+            f_stop();
 
             try {
                 s && s.close();
@@ -95,8 +95,8 @@ package {
             s.load(req, context);
         }
 
-        override public function play(p:Number = 0):void {
-            super.play(p);
+        override public function f_play(p:Number = 0):void {
+            super.f_play(p);
 
             if (p == 0 && _pausePosition) {
                 p = _pausePosition;
@@ -112,14 +112,14 @@ package {
             sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
         }
 
-        override public function pause():void {
+        override public function f_pause():void {
             if (sc) {
-                stop(sc.position);
+                f_stop(sc.position);
             }
         }
 
-        override public function stop(p:Number = 0):void {
-            super.stop(p);
+        override public function f_stop(p:Number = 0):void {
+            super.f_stop(p);
             // 判断sc是否存在是因为sc在play方法调用时才被延迟初始化
             if (sc) {
                 sc.stop();

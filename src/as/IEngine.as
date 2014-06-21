@@ -28,12 +28,14 @@ package {
 
         function getBytesLoaded():uint;
 
-        function load(url:String):void;
+        // 以f_前缀开头，是因为这些方法要通过ExternalInterface暴露给JS调用
+        // 在IE 8下会引起这个issue: https://github.com/Baidu-Music-FE/muplayer/issues/15
+        function f_load(url:String):void;
 
-        function play(p:Number = 0):void;
+        function f_play(p:Number = 0):void;
 
-        function pause():void;
+        function f_pause():void;
 
-        function stop(p:Number = 0):void;
+        function f_stop(p:Number = 0):void;
     }
 }

@@ -65,7 +65,7 @@ package {
         protected function onPlayComplete(e:Event = null):void {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
-            stop();
+            f_stop();
             setState(State.END);
         }
 
@@ -77,7 +77,7 @@ package {
                 onPlayComplete();
             } else {
                 errTimes = 0;
-                stop();
+                f_stop();
                 reset();
                 callJS(Consts.SWF_ON_ERR, e);
             }
@@ -180,9 +180,9 @@ package {
             _bytesLoaded = 0;
         }
 
-        public function load(url:String):void {}
+        public function f_load(url:String):void {}
 
-        public function play(p:Number = 0):void {
+        public function f_play(p:Number = 0):void {
             if (!playerTimer) {
                 playerTimer = new Timer(Consts.TIMER_INTERVAL);
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
@@ -194,9 +194,9 @@ package {
             }
         }
 
-        public function pause():void {}
+        public function f_pause():void {}
 
-        public function stop(p:Number = 0):void {
+        public function f_stop(p:Number = 0):void {
             _pausePosition = p;
             if (playerTimer) {
                 playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
