@@ -127,7 +127,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 @trigger('player:play', startTime)
                 def.resolve()
 
-            if @getState() in [STATES.NOT_INIT, STATES.STOP]
+            if @getState() in [STATES.NOT_INIT, STATES.STOP, STATES.END]
                 # XXX: 应该在_fetch中决定是否发起选链。
                 # 即是否从cache中取, 是否setUrl都是依据_fetch的实现去决定。
                 # 如果继承时覆盖重写_fetch, 这些都要自己权衡。

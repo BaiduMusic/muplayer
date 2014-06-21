@@ -17,7 +17,7 @@
 <script src="dist/player.js"></script>
 <script>
 // 通过全局变量的方式初始化
-var player = new _mu.Player({
+var player = window.player = new _mu.Player({
         mode: 'list',
         baseDir: 'dist'
     }),
@@ -34,20 +34,18 @@ var player = new _mu.Player({
     $time = $('<span class="time"></span>');
 
 $pl.on('click', '> li', function() {
-    if ($(this).hasClass('playing')) {
+    var $this = $(this);
+    if ($this.hasClass('playing')) {
         player.pause();
     } else {
-        player.reset().add($(this).data('link')).play();
+        player.reset().add($this.data('link')).play();
     }
 });
 
 player.on('playing pause', function() {
     reset();
     findCurrItem().addClass(player.getState()).append($time);
-}).on('ended', function() {
-    player.stop();
-    reset();
-}).on('timeupdate', function() {
+}).on('ended', reset).on('timeupdate', function() {
     $time.text(player.curPos(true) + ' / ' + player.duration(true));
 });
 </script>
