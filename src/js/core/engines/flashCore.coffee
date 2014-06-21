@@ -58,7 +58,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
         _test: (trigger) ->
             opts = @opts
             return false unless $.flash.hasVersion(opts.flashVer)
-            trigger and @trigger(EVENTS.INITFAIL, @engineType)
+            trigger and @trigger(EVENTS.INIT_FAIL, @engineType)
             true
 
         # TODO: 暂时通过轮询的方式派发加载、播放进度事件。
@@ -137,19 +137,19 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
                 fn.apply(@, args)
 
         play: () ->
-            @flash.play()
+            @flash.f_play()
             @
 
         pause: () ->
-            @flash.pause()
+            @flash.f_pause()
             @
 
         stop: () ->
-            @flash.stop()
+            @flash.f_stop()
             @
 
         _setUrl: (url) ->
-            @flash.load(url)
+            @flash.f_load(url)
 
         setUrl: (url) ->
             if url
@@ -190,7 +190,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             super(mute)
 
         setCurrentPosition: (ms) ->
-            @flash.play(ms)
+            @flash.f_play(ms)
             @
 
         getCurrentPosition: () ->
