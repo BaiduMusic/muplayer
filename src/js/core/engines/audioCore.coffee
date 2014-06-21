@@ -145,7 +145,6 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             super(volume)
 
         setMute: (mute) ->
-            mute = !!mute
             @audio.muted = mute
             super(mute)
 
