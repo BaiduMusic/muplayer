@@ -140,14 +140,23 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
 
         pause: () ->
             @curEngine.pause()
+            @setState(STATES.PAUSE)
             @
 
         stop: () ->
             @curEngine.stop()
+            @setState(STATES.STOP)
             @
 
+        setState: (st) ->
+            @curEngine.setState(st)
+            @
+
+        getState: () ->
+            @curEngine.getState()
+
         setMute: (mute) ->
-            @curEngine.setMute(mute) if utils.isBoolean(mute)
+            @curEngine.setMute(!!mute)
             @
 
         getMute: () ->

@@ -185,7 +185,6 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             @flash.setData('mute', mute)
 
         setMute: (mute) ->
-            mute = !!mute
             @_setMute(mute)
             super(mute)
 
