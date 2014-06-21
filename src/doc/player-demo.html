@@ -48,7 +48,7 @@ require.config({
 require([
     'muplayer/player'
 ], function(Player) {
-var player = new Player({
+    var player = window.player = new Player({
             baseDir: 'dist'
         }),
         $player = $('.player-widget'),
