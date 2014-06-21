@@ -1,5 +1,5 @@
 // @license
-// Baidu Music Player: 0.9.0
+// Baidu Music Player: 0.9.1
 // -------------------------
 // (c) 2014 FE Team of Baidu Music
 // Can be freely distributed under the BSD license.
@@ -644,7 +644,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
 
     EngineCore.prototype.reset = function() {
       this.stop();
-      return this.setUrl();
+      this.setUrl();
+      return this.setState(STATES.NOT_INIT);
     };
 
     EngineCore.prototype.play = function() {
@@ -944,7 +945,7 @@ var __hasProp = {}.hasOwnProperty,
   AudioCore = (function(_super) {
     __extends(AudioCore, _super);
 
-    AudioCore.prototype.defaults = {
+    AudioCore.defaults = {
       confidence: 'maybe',
       preload: false,
       autoplay: false,
@@ -957,7 +958,7 @@ var __hasProp = {}.hasOwnProperty,
 
     function AudioCore(options) {
       var audio, k, least, levels, opts, playEmpty, v;
-      this.opts = $.extend({}, this.defaults, options);
+      this.opts = $.extend({}, AudioCore.defaults, options);
       this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
       opts = this.opts;
       levels = {
@@ -994,6 +995,7 @@ var __hasProp = {}.hasOwnProperty,
       })(this);
       this.audio = audio;
       this._needCanPlay(['play', 'setCurrentPosition']);
+      this.setState(STATES.NOT_INIT);
       this._initEvents();
       playEmpty = (function(_this) {
         return function() {
@@ -1005,7 +1007,7 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     AudioCore.prototype._test = function(trigger) {
-      if (Modernizr.audio === false || this._supportedTypes.length === 0) {
+      if (!Modernizr.audio || !this._supportedTypes.length) {
         return false;
       }
       trigger && this.trigger(EVENTS.INIT_FAIL, this.engineType);
@@ -1132,15 +1134,11 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.setVolume = function(volume) {
-      if (!((0 <= volume && volume <= 100))) {
-        this;
-      }
       this.audio.volume = volume / 100;
       return AudioCore.__super__.setVolume.call(this, volume);
     };
 
     AudioCore.prototype.setMute = function(mute) {
-      mute = !!mute;
       this.audio.muted = mute;
       return AudioCore.__super__.setMute.call(this, mute);
     };
@@ -1614,9 +1612,12 @@ var __hasProp = {}.hasOwnProperty,
   FlashCore = (function(_super) {
     __extends(FlashCore, _super);
 
+    FlashCore.defaults = {
+      expressInstaller: 'expressInstall.swf'
+    };
+
     function FlashCore(options) {
       var baseDir, id, instanceName, opts;
-      this.defaults.expressInstaller = 'expressInstall.swf';
       this.opts = opts = $.extend({}, this.defaults, options);
       this._state = STATES.NOT_INIT;
       this._loaded = false;
@@ -1651,7 +1652,7 @@ var __hasProp = {}.hasOwnProperty,
       if (!$.flash.hasVersion(opts.flashVer)) {
         return false;
       }
-      trigger && this.trigger(EVENTS.INITFAIL, this.engineType);
+      trigger && this.trigger(EVENTS.INIT_FAIL, this.engineType);
       return true;
     };
 
@@ -1769,29 +1770,23 @@ var __hasProp = {}.hasOwnProperty,
       return _results;
     };
 
-    FlashCore.prototype.reset = function() {
-      FlashCore.__super__.reset.call(this);
-      this.setMute(this.getMute());
-      return this.setVolume(this.getVolume());
-    };
-
     FlashCore.prototype.play = function() {
-      this.flash.play();
+      this.flash.f_play();
       return this;
     };
 
     FlashCore.prototype.pause = function() {
-      this.flash.pause();
+      this.flash.f_pause();
       return this;
     };
 
     FlashCore.prototype.stop = function() {
-      this.flash.stop();
+      this.flash.f_stop();
       return this;
     };
 
     FlashCore.prototype._setUrl = function(url) {
-      return this.flash.load(url);
+      return this.flash.f_load(url);
     };
 
     FlashCore.prototype.setUrl = function(url) {
@@ -1830,9 +1825,6 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype.setVolume = function(volume) {
-      if (!((0 <= volume && volume <= 100))) {
-        this;
-      }
       this._setVolume(volume);
       return FlashCore.__super__.setVolume.call(this, volume);
     };
@@ -1842,13 +1834,12 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype.setMute = function(mute) {
-      mute = !!mute;
       this._setMute(mute);
       return FlashCore.__super__.setMute.call(this, mute);
     };
 
     FlashCore.prototype.setCurrentPosition = function(ms) {
-      this.flash.play(ms);
+      this.flash.f_play(ms);
       return this;
     };
 
@@ -2155,18 +2146,27 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.pause = function() {
       this.curEngine.pause();
+      this.setState(STATES.PAUSE);
       return this;
     };
 
     Engine.prototype.stop = function() {
       this.curEngine.stop();
+      this.setState(STATES.STOP);
       return this;
     };
 
+    Engine.prototype.setState = function(st) {
+      this.curEngine.setState(st);
+      return this;
+    };
+
+    Engine.prototype.getState = function() {
+      return this.curEngine.getState();
+    };
+
     Engine.prototype.setMute = function(mute) {
-      if (utils.isBoolean(mute)) {
-        this.curEngine.setMute(mute);
-      }
+      this.curEngine.setMute(!!mute);
       return this;
     };
 
@@ -2241,7 +2241,7 @@ var __hasProp = {}.hasOwnProperty,
 
     instance = null;
 
-    Player.prototype.defaults = {
+    Player.defaults = {
       baseDir: "http://mu7.bdstatic.com/cms/app/muplayer/" + (cfg.version.replace(/\./g, '_')) + "/",
       mode: 'loop',
       mute: false,
@@ -2306,7 +2306,7 @@ var __hasProp = {}.hasOwnProperty,
 
     function Player(options) {
       var baseDir, opts;
-      this.opts = opts = $.extend({}, this.defaults, options);
+      this.opts = opts = $.extend({}, Player.defaults, options);
       baseDir = opts.baseDir;
       if (baseDir === false) {
         baseDir = '';
@@ -2382,7 +2382,7 @@ var __hasProp = {}.hasOwnProperty,
           return def.resolve();
         };
       })(this);
-      if ((_ref1 = this.getState()) === STATES.NOT_INIT || _ref1 === STATES.STOP) {
+      if ((_ref1 = this.getState()) === STATES.NOT_INIT || _ref1 === STATES.STOP || _ref1 === STATES.END) {
         this._fetch().done((function(_this) {
           return function() {
             return play();
@@ -2499,10 +2499,13 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.setCur = function(sid) {
       var pl;
       pl = this.playlist;
-      if (sid) {
+      if (!sid && this.getSongsNum()) {
+        sid = pl.list[0];
+      }
+      if (sid && this._sid !== sid) {
         pl.setCur(sid);
-      } else if (this.getSongsNum()) {
-        pl.setCur(pl.list[0]);
+        this._sid = sid;
+        this.stop();
       }
       return this;
     };
