@@ -11,7 +11,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         instance = null
 
         @defaults:
-            baseDir: "http://mu7.bdstatic.com/cms/app/muplayer/#{cfg.version.replace(/\./g, '_')}/"
+            baseDir: "#{cfg.cdn}#{cfg.version}"
             mode: 'loop'
             mute: false
             volume: 80

@@ -10,6 +10,8 @@ do (root = this, factory = () ->
         # 这个不经测试调优就尽量不要改, 会影响部分统计数据和性能。
         timerResolution: 25
 
+        cdn: 'http://apps.bdimg.com/libs/muplayer/'
+
         engine:
             TYPES:
                 FLASH_MP3: 'FlashMP3Core'
