@@ -22,6 +22,7 @@
     debug: false,
     version: '0.9.1',
     timerResolution: 25,
+    cdn: 'http://apps.bdimg.com/libs/muplayer/',
     engine: {
       TYPES: {
         FLASH_MP3: 'FlashMP3Core',
@@ -1465,7 +1466,7 @@ var __hasProp = {}.hasOwnProperty,
     instance = null;
 
     Player.defaults = {
-      baseDir: "http://mu7.bdstatic.com/cms/app/muplayer/" + (cfg.version.replace(/\./g, '_')) + "/",
+      baseDir: "" + cfg.cdn + cfg.version,
       mode: 'loop',
       mute: false,
       volume: 80,
