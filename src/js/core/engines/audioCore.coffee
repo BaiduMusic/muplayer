@@ -9,6 +9,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             confidence: 'maybe'
             preload: false
             autoplay: false
+            needPlayEmpty: true
             emptyMP3: 'empty.mp3'
         _supportedTypes: []
         engineType: TYPES.AUDIO
@@ -50,10 +51,11 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             @_initEvents()
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
-            playEmpty = () =>
-                @setUrl(opts.emptyMP3).play()
-                win.removeEventListener('touchstart', playEmpty, false)
-            win.addEventListener('touchstart', playEmpty, false)
+            if opts.needPlayEmpty
+                playEmpty = () =>
+                    @setUrl(opts.emptyMP3).play()
+                    win.removeEventListener('touchstart', playEmpty, false)
+                win.addEventListener('touchstart', playEmpty, false)
 
         _test: (trigger) ->
             return false if not Modernizr.audio or not @_supportedTypes.length
