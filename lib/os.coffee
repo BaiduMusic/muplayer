@@ -37,6 +37,13 @@ os =
 
         return deferred.promise
 
+    concat: (dist, file_list) ->
+        Q.fcall ->
+            file_list.forEach((file) ->
+                data = fs.readFileSync(file)
+                fs.appendFileSync(dist, data)
+            )
+
     env_mode: (mode) ->
         {
             env: _.extend(

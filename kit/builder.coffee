@@ -118,10 +118,19 @@ class Builder
                 # Webapp
                 requirejs.optimize(opts_webapp, (buildResponse) =>
                     Q.fcall =>
-                        os.copy @require_temp_path + '/js/player.js', @dist_path + '/zepto-player.js'
+                        os.glob os.path.join(@require_temp_path + '/js/lib/zepto', '**', '*.js')
+                    .then (file_list) =>
+                        file_list.push(@require_temp_path + '/js/player.js')
+                        os.concat @require_temp_path + '/js/zepto-player.js', file_list
+                    .then =>
+                        os.copy @require_temp_path + '/js/zepto-player.js', @dist_path + '/zepto-player.js'
                     .then ->
                         console.log ">> Compile client js done.".cyan
                         deferred.resolve buildResponse
+                    .fail (err) ->
+                        console.log ">> Compile client js fail.".red
+                        console.log err
+                        deferred.reject err
                 , (err) ->
                     deferred.reject err
                 )
@@ -149,10 +158,10 @@ class Builder
             console.log ">> Compress js done.".cyan
 
     add_license: ->
-        conf = require '../bower'
+        cfg = require '../bower'
         info = """
             // @license
-            // Baidu Music Player: #{conf.version}
+            // Baidu Music Player: #{cfg.version}
             // -------------------------
             // (c) 2014 FE Team of Baidu Music
             // Can be freely distributed under the BSD license.\n
