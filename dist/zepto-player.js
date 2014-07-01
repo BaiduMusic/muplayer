@@ -1240,6 +1240,7 @@ var __hasProp = {}.hasOwnProperty,
       confidence: 'maybe',
       preload: false,
       autoplay: false,
+      needPlayEmpty: true,
       emptyMP3: 'empty.mp3'
     };
 
@@ -1288,13 +1289,15 @@ var __hasProp = {}.hasOwnProperty,
       this._needCanPlay(['play', 'setCurrentPosition']);
       this.setState(STATES.NOT_INIT);
       this._initEvents();
-      playEmpty = (function(_this) {
-        return function() {
-          _this.setUrl(opts.emptyMP3).play();
-          return win.removeEventListener('touchstart', playEmpty, false);
-        };
-      })(this);
-      win.addEventListener('touchstart', playEmpty, false);
+      if (opts.needPlayEmpty) {
+        playEmpty = (function(_this) {
+          return function() {
+            _this.setUrl(opts.emptyMP3).play();
+            return win.removeEventListener('touchstart', playEmpty, false);
+          };
+        })(this);
+        win.addEventListener('touchstart', playEmpty, false);
+      }
     }
 
     AudioCore.prototype._test = function(trigger) {
