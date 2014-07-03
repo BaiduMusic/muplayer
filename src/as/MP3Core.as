@@ -88,7 +88,7 @@ package {
             s.addEventListener(ProgressEvent.PROGRESS, onProgress);
 
             var req:URLRequest = new URLRequest(url),
-                context:SoundLoaderContext = new SoundLoaderContext(getBufferTime());
+                context:SoundLoaderContext = new SoundLoaderContext(getBufferTime(), false);
 
             _url = url;
             setState(State.PREBUFFER);
