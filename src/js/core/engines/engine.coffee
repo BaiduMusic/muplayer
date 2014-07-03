@@ -121,7 +121,7 @@ do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3C
 
         setUrl: (url) ->
             if extReg.test(url)
-                ext = RegExp.$1
+                ext = RegExp.$1.toLocaleLowerCase()
 
             if @canPlayType(ext)
                 @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
