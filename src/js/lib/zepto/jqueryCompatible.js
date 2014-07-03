@@ -18,7 +18,7 @@
 
         if (!op) {
             op = {};
-        } else if (isFunction(op)) {
+        } else if ($.isFunction(op)) {
             op = {
                 callback: op
             };
