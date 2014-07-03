@@ -2126,7 +2126,7 @@ var __hasProp = {}.hasOwnProperty,
     Engine.prototype.setUrl = function(url) {
       var ext;
       if (extReg.test(url)) {
-        ext = RegExp.$1;
+        ext = RegExp.$1.toLocaleLowerCase();
       }
       if (this.canPlayType(ext)) {
         if (!this.curEngine.canPlayType(ext)) {
