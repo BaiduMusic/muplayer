@@ -1,5 +1,5 @@
 // @license
-// Baidu Music Player: 0.9.1
+// Baidu Music Player: 0.9.2
 // -------------------------
 // (c) 2014 FE Team of Baidu Music
 // Can be freely distributed under the BSD license.
@@ -20,7 +20,7 @@
   return $.extend({
     namespace: root._mu,
     debug: false,
-    version: '0.9.1',
+    version: '0.9.2',
     timerResolution: 25,
     cdn: 'http://apps.bdimg.com/libs/muplayer/',
     engine: {
