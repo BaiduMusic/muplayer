@@ -10,7 +10,7 @@
 
 或者到发布页面下载压缩文档：[Releases](https://github.com/Baidu-Music-FE/muplayer/releases)
 
-具体使用方法请参见档部分。
+具体使用方法请参见文档部分。
 
 ## 文档
 
