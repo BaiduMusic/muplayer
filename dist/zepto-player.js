@@ -1300,11 +1300,10 @@ var __hasProp = {}.hasOwnProperty,
       }
     }
 
-    AudioCore.prototype._test = function(trigger) {
+    AudioCore.prototype._test = function() {
       if (!Modernizr.audio || !this._supportedTypes.length) {
         return false;
       }
-      trigger && this.trigger(EVENTS.INIT_FAIL, this.engineType);
       return true;
     };
 
@@ -1512,7 +1511,7 @@ var __hasProp = {}.hasOwnProperty,
     Engine.prototype.defaults = {
       engines: [
                 {
-                    constructor: AudioCore
+                    constructor: FlashMP3Core
                 }
                             ]
     };
@@ -1801,7 +1800,7 @@ var __hasProp = {}.hasOwnProperty,
      *  </tr>
      *  <tr>
      *    <td>engines</td>
-     *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
+     *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会根据内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
      *    [{<br>
      *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
