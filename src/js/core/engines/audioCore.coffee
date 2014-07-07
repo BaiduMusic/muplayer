@@ -57,9 +57,9 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
                     win.removeEventListener('touchstart', playEmpty, false)
                 win.addEventListener('touchstart', playEmpty, false)
 
-        _test: (trigger) ->
-            return false if not Modernizr.audio or not @_supportedTypes.length
-            trigger and @trigger(EVENTS.INIT_FAIL, @engineType)
+        _test: () ->
+            if not Modernizr.audio or not @_supportedTypes.length
+                return false
             true
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp

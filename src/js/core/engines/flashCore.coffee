@@ -17,7 +17,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             expressInstaller: 'expressInstall.swf'
 
         constructor: (options) ->
-            @opts = opts = $.extend({}, @defaults, options)
+            @opts = opts = $.extend({}, FlashCore.defaults, @defaults, options)
 
             @_state = STATES.NOT_INIT
             @_loaded = false
@@ -55,10 +55,10 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
             opts.$el.append(@flash)
             @_initEvents()
 
-        _test: (trigger) ->
+        _test: () ->
             opts = @opts
-            return false unless $.flash.hasVersion(opts.flashVer)
-            trigger and @trigger(EVENTS.INIT_FAIL, @engineType)
+            if not @flash or not $.flash.hasVersion(opts.flashVer)
+                return false
             true
 
         # TODO: 暂时通过轮询的方式派发加载、播放进度事件。
