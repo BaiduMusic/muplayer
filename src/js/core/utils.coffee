@@ -36,14 +36,6 @@ do (root = this, factory = (cfg) ->
         fixed
 
     $.extend utils, {
-        isEmpty: (obj) ->
-            unless obj? then return true
-            if $.isArray(obj) or @isString(obj)
-                return obj.length is 0
-            for key in obj
-                if @has(obj, key) then return false
-            true
-
         isBoolean: (obj) ->
             obj is true or obj is false or toString.call(obj) is '[object Boolean]'
 
@@ -64,10 +56,6 @@ do (root = this, factory = (cfg) ->
                 shuffled[i - 1] = shuffled[rand]
                 shuffled[rand] = item
             shuffled
-
-        clone: (obj) ->
-            unless $.isPlainObject(obj) then obj
-            if $.isArray(obj) then obj.slice() else $.extend({}, obj)
 
         time2str: (time) ->
             r = []
