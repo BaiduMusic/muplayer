@@ -400,22 +400,6 @@
     return fixed;
   };
   $.extend(utils, {
-    isEmpty: function(obj) {
-      var key, _j, _len1;
-      if (obj == null) {
-        return true;
-      }
-      if ($.isArray(obj) || this.isString(obj)) {
-        return obj.length === 0;
-      }
-      for (_j = 0, _len1 = obj.length; _j < _len1; _j++) {
-        key = obj[_j];
-        if (this.has(obj, key)) {
-          return false;
-        }
-      }
-      return true;
-    },
     isBoolean: function(obj) {
       return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
     },
@@ -440,16 +424,6 @@
         shuffled[rand] = item;
       }
       return shuffled;
-    },
-    clone: function(obj) {
-      if (!$.isPlainObject(obj)) {
-        obj;
-      }
-      if ($.isArray(obj)) {
-        return obj.slice();
-      } else {
-        return $.extend({}, obj);
-      }
     },
     time2str: function(time) {
       var floor, hour, minute, pad, r, second;
@@ -1511,7 +1485,7 @@ var __hasProp = {}.hasOwnProperty,
     Engine.prototype.defaults = {
       engines: [
                 {
-                    constructor: FlashMP3Core
+                    constructor: AudioCore
                 }
                             ]
     };
