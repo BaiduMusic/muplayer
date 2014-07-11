@@ -1136,9 +1136,16 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.getLoadedPercent = function() {
-      var audio, be, bl, buffered, duration, _ref1;
+      var be, duration;
+      be = this.getBufferedEnd();
+      duration = this.getTotalTime() / 1000;
+      be = be > duration ? duration : be;
+      return duration && (be / duration).toFixed(2) * 1 || 0;
+    };
+
+    AudioCore.prototype.getBufferedEnd = function() {
+      var audio, be, bl, buffered, _ref1;
       audio = this.audio;
-      duration = audio.duration;
       buffered = audio.buffered;
       bl = buffered.length;
       be = 0;
@@ -1148,14 +1155,16 @@ var __hasProp = {}.hasOwnProperty,
           break;
         }
       }
-      be = be > duration ? duration : be;
-      return duration && (be / duration).toFixed(2) * 1 || 0;
+      return be;
     };
 
     AudioCore.prototype.getTotalTime = function() {
       var duration;
       duration = this.audio.duration;
-      return duration && duration * 1000 || 0;
+      if (isFinite(duration)) {
+        return duration && duration * 1000 || 0;
+      }
+      return this.getBufferedEnd();
     };
 
     return AudioCore;
