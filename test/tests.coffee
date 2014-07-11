@@ -5,14 +5,6 @@ u = _mu.utils
 
 module 'utils'
 
-test 'isEmpty', ->
-    ok u.isEmpty(null)
-    ok u.isEmpty()
-    ok u.isEmpty({})
-    ok u.isEmpty([])
-    ok u.isEmpty(false)
-    throws u.isEmpty(1)
-
 test 'time2str', ->
     equal u.time2str(59), '00:59'
     equal u.time2str(59.6), '01:00'
