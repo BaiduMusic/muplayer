@@ -10,6 +10,7 @@ package {
     public class MP3Core extends BaseCore {
         private var s:Sound;
         private var sc:SoundChannel;
+        private var isPlaying:Boolean;
 
         override public function init():void {
             super.init();
@@ -27,6 +28,7 @@ package {
 
         private function onLoadComplete(e:Event):void {
             _length = Math.ceil(s.length);
+            setState(isPlaying && State.PLAYING || State.CANPLAYTHROUGH);
         }
 
         private function onProgress(e:ProgressEvent):void {
@@ -110,6 +112,7 @@ package {
 
             sc = s.play(p, 0, stf);
             sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+            isPlaying = true;
         }
 
         override public function f_pause():void {
