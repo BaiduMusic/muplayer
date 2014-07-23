@@ -1,5 +1,3 @@
-// Modernizr 2.7.1 (Custom Build) | MIT & BSD
-// Build: http://modernizr.com/download/#-audio
 (function (root, factory) {
     if (typeof exports === 'object') {
         module.exports = factory();
@@ -9,6 +7,8 @@
         root._mu.Modernizr = factory();
     }
 })(this, function () {
+    // Modernizr 2.7.1 (Custom Build) | MIT & BSD
+    // Build: http://modernizr.com/download/#-audio
     return (function( window, document, undefined ) {
 
         var version = '2.7.1',

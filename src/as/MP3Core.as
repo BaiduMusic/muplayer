@@ -52,9 +52,13 @@ package {
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
             if (!canPlayThrough) {
-                if (getState() === State.PLAYING && _position === sc.position) {
+                var st = getState(),
+                    pos = sc.position;
+
+                // 页面因网速较慢导致缓冲不够播放停止的情况
+                if (st === State.PLAYING && _position === pos) {
                     setState(State.PAUSE);
-                } else if (getState() === State.BUFFERING && _position < sc.position) {
+                } else if (st === State.BUFFERING && _position < pos) {
                     setState(State.PLAYING);
                 }
             }
