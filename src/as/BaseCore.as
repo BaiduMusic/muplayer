@@ -102,7 +102,7 @@ package {
         }
 
         public function setState(st:int):void {
-            if (_state != st && State.validate(st)) {
+            if (_state !== st && State.validate(st)) {
                 _state = st;
                 callJS(Consts.SWF_ON_STATE_CHANGE, st);
             }

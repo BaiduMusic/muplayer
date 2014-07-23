@@ -11,6 +11,7 @@ package {
         private var s:Sound;
         private var sc:SoundChannel;
         private var isPlaying:Boolean;
+        private var canPlayThrough:Boolean;
 
         override public function init():void {
             super.init();
@@ -29,10 +30,13 @@ package {
         private function onLoadComplete(e:Event):void {
             _length = Math.ceil(s.length);
             setState(isPlaying && State.PLAYING || State.CANPLAYTHROUGH);
+            canPlayThrough = true;
         }
 
         private function onProgress(e:ProgressEvent):void {
-            setState(State.BUFFERING);
+            if (getState() !== State.PLAYING) {
+                setState(State.BUFFERING);
+            }
 
             if (!_bytesTotal) {
                 _bytesTotal = s.bytesTotal;
@@ -47,10 +51,20 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
+            if (!canPlayThrough) {
+                if (getState() === State.PLAYING && _position === sc.position) {
+                    setState(State.PAUSE);
+                } else if (getState() === State.BUFFERING && _position < sc.position) {
+                    setState(State.PLAYING);
+                }
+            }
+
             _position = sc.position;
+
             if (_position > _length) {
                 _length = _position;
             }
+
             _positionPct = Math.round(100 * _position / _length) / 100;
         }
 
@@ -100,7 +114,7 @@ package {
         override public function f_play(p:Number = 0):void {
             super.f_play(p);
 
-            if (p == 0 && _pausePosition) {
+            if (p === 0 && _pausePosition) {
                 p = _pausePosition;
             }
 
