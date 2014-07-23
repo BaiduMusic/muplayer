@@ -74,7 +74,7 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
-            if (_state == State.BUFFERING) {
+            if (_state === State.BUFFERING) {
                 onProgress();
             }
 
@@ -122,12 +122,12 @@ package {
         }
 
         override public function f_play(p:Number = 0):void {
-            if (p == 0 && _pausePosition) {
+            if (p === 0 && _pausePosition) {
                 p = _pausePosition;
             }
 
             try {
-                if (p != 0) {
+                if (p !== 0) {
                     // 注意换算单位，seek的参数是秒，而position则是毫秒
                     ns.seek(p / 1000);
                     ns.resume();
