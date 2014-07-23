@@ -188,10 +188,6 @@ package {
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
             }
-
-            if (_state != State.PLAYING) {
-                setState(State.PLAYING);
-            }
         }
 
         public function f_pause():void {}

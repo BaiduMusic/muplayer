@@ -30,6 +30,7 @@ do (root = this, factory = () ->
             # HTML5 Audio相关事件可参考: http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#mediaevents
             STATES:
                 NOT_INIT: 'not_init'
+                CANPLAYTHROUGH: 'canplaythrough'
                 PREBUFFER: 'prebuffer'
                 BUFFERING: 'buffering'
                 PLAYING: 'playing'
