@@ -109,14 +109,21 @@ class Builder
 
         # PC
         requirejs.optimize(opts_pc, (buildResponse) =>
+            console.log ">> r.js for PC".cyan
+            console.log buildResponse
             Q.fcall =>
                 os.copy @require_temp_path + '/js/player.js', @dist_path + '/player.js'
             .then =>
                 opts_webapp = _.cloneDeep opts_pc
                 opts_webapp.pragmas.FlashCoreExclude = true
+                opts_webapp.modules.push({
+                    name: 'muplayer/plugin/equalizer'
+                })
 
                 # Webapp
                 requirejs.optimize(opts_webapp, (buildResponse) =>
+                    console.log ">> r.js for WebApp".cyan
+                    console.log buildResponse
                     Q.fcall =>
                         os.glob os.path.join(@require_temp_path + '/js/lib/zepto', '**', '*.js')
                     .then (file_list) =>
@@ -124,6 +131,7 @@ class Builder
                         os.concat @require_temp_path + '/js/zepto-player.js', file_list
                     .then =>
                         os.copy @require_temp_path + '/js/zepto-player.js', @dist_path + '/zepto-player.js'
+                        os.copy @require_temp_path + '/js/plugin/equalizer.js', @dist_path + '/equalizer.js'
                     .then ->
                         console.log ">> Compile client js done.".cyan
                         deferred.resolve buildResponse

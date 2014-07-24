@@ -1,8 +1,8 @@
-do (root = this, factory = () ->
+do (root = this, factory = (AudioNode) ->
     mathPow = Math.pow
 
     # http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
-    class Equalizer
+    class Equalizer extends AudioNode
         defaults:
             frequencies: [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
             filter:
@@ -21,12 +21,13 @@ do (root = this, factory = () ->
                 rock: [5, 4, 3, 1.5, -0.5, -1.5, 0.5, 2.5, 3.5, 4.5]
 
         constructor: (options) ->
-            @super(options)
+            super(options)
 
             opts = @opts
             context = @context
 
             filters = []
+            filtersMap = {}
             lastFilter = null
             filterOpts = opts.filter
 
@@ -35,11 +36,12 @@ do (root = this, factory = () ->
             for frequency in opts.frequencies
                 # BiquadFilter相关：http://chimera.labs.oreilly.com/books/1234000001552/ch06.html
                 filter = context.createBiquadFilter()
-                filter.type = filter.PEAKING or 5
+                filter.type = filter.PEAKING or 'peaking'
                 filter.Q.value = filterOpts.Q
                 filter.gain.value = filterOpts.gain
                 filter.frequency.value = frequency
                 filters.push(filter)
+                filtersMap[frequency] = filter
 
                 unless lastFilter
                     @input.connect(@preGain)
@@ -51,6 +53,7 @@ do (root = this, factory = () ->
             lastFilter.connect(@output)
 
             @filters = filters
+            @filtersMap = filtersMap
 
         setEffect: (type) ->
             effects = @opts.effects
@@ -63,11 +66,10 @@ do (root = this, factory = () ->
             v = 0 unless -12 <= v <= 12
             @preGain.gain.value = mathPow(10, v / 12)
 
-        setFilterValue: (index, v) ->
+        setFilterValue: (frequency, v) ->
             v = 0 unless -12 <= v <= 12
-            i = _.indexOf(@opts.frequencies, index)
-            i = index if i is -1
-            @filters[i].gain.value = v
+            filter = @filtersMap[frequency]
+            filter.gain.value = v if filter
 ) ->
     if typeof exports is 'object'
         module.exports = factory()
@@ -76,4 +78,6 @@ do (root = this, factory = () ->
             'muplayer/plugin/audioNode'
         ], factory)
     else
-        root._mu.Equalizer = factory()
+        root._mu.Equalizer = factory(
+            _mu.AudioNode
+        )

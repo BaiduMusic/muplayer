@@ -15,8 +15,9 @@
         </ul>
         <pre class="line-numbers"><code class="language-javascript">
 // 通过全局变量的方式初始化
-var player = window.player = new _mu.Player({
-        code: 'list',baseDir: 'dist'
+var player = new _mu.Player({
+        mode: 'list',
+        baseDir: 'dist'
     }),
     $pl = $('#playlist-demo'),
     reset = function() {

@@ -9,8 +9,13 @@ do (root = this, factory = () ->
             unless opts.input
                 return throw new Error('input是必填的初始化参数！')
 
-            @context = new AudioContext()
-            @input = opts.input
+            @context = context = new AudioContext()
+
+            input = opts.input
+            if input instanceof Audio
+                @input = context.createMediaElementSource(input)
+            else
+                @input = input
             @output = opts.output or context.destination
 
         connect: () ->
@@ -19,11 +24,11 @@ do (root = this, factory = () ->
         disconnect: () ->
             @output.disconnect(0)
 ) ->
-if typeof exports is 'object'
-    module.exports = factory()
-else if typeof define is 'function' and define.amd
-    define([
-        'muplayer/lib/AudioContextMonkeyPatch'
-    ], factory)
-else
-    root._mu.AudioNode = factory()
+    if typeof exports is 'object'
+        module.exports = factory()
+    else if typeof define is 'function' and define.amd
+        define([
+            'muplayer/lib/AudioContextMonkeyPatch'
+        ], factory)
+    else
+        root._mu.AudioNode = factory()

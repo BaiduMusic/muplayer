@@ -1,0 +1,50 @@
+@import base
+
+body
+    padding-top: 0
+
+#equalizer-demo
+    .frequency
+        +inline-block
+        width: 25px
+        text-align: center
+        position: relative
+        p
+            margin: 0
+        .ui-slider, .ui-slider-handle
+            background: $blue
+        .ui-slider
+            +size(200px, 8px)
+            position: relative
+            left: 50%
+            margin-left: -4px
+        .ui-slider-handle
+            +inline-block
+            +square(17px)
+            +border-radius(50%)
+            position: relative
+            left: -4px
+            top: -13px
+        .ui-slider-range
+            background: #eee
+    .song
+        +inline-block
+        +line-height(50px)
+        margin-bottom: 30px
+        width: 350px
+        position: relative
+        border: 1px solid #eee
+        cursor: pointer
+        .play-btn
+            +icon('play', 24px, 24px)
+            margin: 0 15px
+        &.playing
+            .play-btn
+                background-image: url($imgPath + 'pause.png')
+        .play-progress
+            +opacity(0.3)
+            +size(100%, 0)
+            position: absolute
+            left: 0
+            top: 0
+            background: $blue
