@@ -209,3 +209,131 @@ ul, ul li, ol, ol li {
 pre.language-javascript {
   font-size: 14px;
 }
+
+body {
+  padding-top: 0;
+}
+
+#equalizer-demo .song, #equalizer-demo .equalizer {
+  margin-bottom: 30px;
+}
+#equalizer-demo .song {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 50px;
+  line-height: 50px;
+  width: 350px;
+  position: relative;
+  border: 1px solid #eeeeee;
+  cursor: pointer;
+}
+#equalizer-demo .song .play-btn {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 12px;
+  width: 12px;
+  background: url("../img/play.png") no-repeat;
+  -webkit-background-size: 12px, 12px;
+  -moz-background-size: 12px, 12px;
+  -o-background-size: 12px, 12px;
+  background-size: 12px, 12px;
+  overflow: hidden;
+  margin: 0 15px;
+}
+#equalizer-demo .song.playing .play-btn {
+  background-image: url("../img/pause.png");
+}
+#equalizer-demo .song .play-progress {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=30);
+  opacity: 0.3;
+  height: 100%;
+  width: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #5bc0de;
+}
+#equalizer-demo .frequency {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  width: 25px;
+  text-align: center;
+  position: relative;
+}
+#equalizer-demo .frequency p {
+  margin: 0;
+}
+#equalizer-demo .frequency .ui-slider, #equalizer-demo .frequency .ui-slider-handle {
+  background: #5bc0de;
+}
+#equalizer-demo .frequency .ui-slider {
+  height: 200px;
+  width: 8px;
+  position: relative;
+  left: 50%;
+  margin-left: -4px;
+}
+#equalizer-demo .frequency .ui-slider-handle {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 17px;
+  width: 17px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  position: relative;
+  left: -4px;
+  top: -13px;
+}
+#equalizer-demo .frequency .ui-slider-range {
+  background: #eeeeee;
+}
+#equalizer-demo .effects {
+  *zoom: 1;
+  text-align: center;
+  margin-right: -10px;
+  margin-bottom: -10px;
+  width: 280px;
+  overflow: hidden;
+}
+#equalizer-demo .effects:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#equalizer-demo .effects li {
+  display: inline;
+  float: left;
+  width: 60px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+#equalizer-demo .effects li img {
+  height: 60px;
+  width: 60px;
+  margin-bottom: 5px;
+}
+#equalizer-demo .effects li.on {
+  color: #5bc0de;
+  font-weight: bold;
+}

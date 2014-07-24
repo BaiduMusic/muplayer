@@ -55,12 +55,14 @@ do (root = this, factory = (AudioNode) ->
             @filters = filters
             @filtersMap = filtersMap
 
-        setEffect: (type) ->
+        setEffect: (type, callback) ->
             effects = @opts.effects
             effect = effects[type]  or effects['reset']
 
             for filter, i in @filters
                 filter.gain.value = effect[i]
+
+            callback and callback(effect)
 
         setPreGainValue: (v) ->
             v = 0 unless -12 <= v <= 12

@@ -57,6 +57,41 @@
                     <p>16K</p>
                 </li>
             </ol>
+
+            <ul class="effects">
+                <li class="reset" data-effect="reset">
+                    <img alt="重置" src="img/equalizer/reset.png">
+                    <span>重置</span>
+                </li>
+                <li class="electronic" data-effect="electronic">
+                    <img alt="电子" src="img/equalizer/electronic.png">
+                    <span>电子</span>
+                </li>
+                <li class="classic" data-effect="classic">
+                    <img alt="古典" src="img/equalizer/classic.png">
+                    <span>古典</span>
+                </li>
+                <li class="jazz" data-effect="jazz">
+                    <img alt="爵士" src="img/equalizer/jazz.png">
+                    <span>爵士</span>
+                </li>
+                <li class="pop" data-effect="pop">
+                    <img alt="流行" src="img/equalizer/pop.png">
+                    <span>流行</span>
+                </li>
+                <li class="voice" data-effect="voice">
+                    <img alt="人声" src="img/equalizer/voice.png">
+                    <span>人声</span>
+                </li>
+                <li class="dance" data-effect="dance">
+                    <img alt="舞曲" src="img/equalizer/dance.png">
+                    <span>舞曲</span>
+                </li>
+                <li class="rock" data-effect="rock">
+                    <img alt="摇滚" src="img/equalizer/rock.png">
+                    <span>摇滚</span>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -86,7 +121,8 @@ var player = window.player = new _mu.Player({
     $demo = $('#equalizer-demo'),
     $song = $demo.find('.song'),
     $progress = $song.find('.play-progress'),
-    $equalizer = $demo.find('.equalizer');
+    $equalizer = $demo.find('.equalizer'),
+    $effects = $demo.find('.effects');
 
 player.on('playing pause', function() {
     $song.addClass(player.getState());
@@ -110,7 +146,9 @@ $equalizer.find('.bar').slider({
     max: 12,
     step: 0.1,
     range: 'max',
+    animate: 'fast',
     orientation: 'vertical',
+
     slide: function(e, ui) {
         var frequency = $(e.target).parents('.frequency').data('frequency');
         equalizer.setFilterValue(frequency, ui.value);
@@ -118,6 +156,17 @@ $equalizer.find('.bar').slider({
     stop: function(e, ui) {
         $(ui.handle).blur();
     }
+});
+
+$effects.on('click', 'li', function() {
+    var $this = $(this);
+    $effects.find('.on').removeClass('on');
+    $this.addClass('on');
+    equalizer.setEffect($this.data('effect'), function(effect) {
+        for (var i = 0, l = effect.length; i < l; i++) {
+            $equalizer.find('.ui-slider:eq(' + i + ')').slider('value', effect[i]);
+        }
+    });
 });
 </script>
 
@@ -132,7 +181,7 @@ $(function() {
     document.body.appendChild(script);
 
     setTimeout(function() {
-        $pdoc.find('#ifm-equalizer-demo').height($doc.height())
+        $pdoc.find('#ifm-equalizer-demo').height($doc.height());
     }, 0);
 });
 </script>
