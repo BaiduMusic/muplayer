@@ -34,6 +34,10 @@ iframe {
   width: 100%;
 }
 
+h1, h2 {
+  margin-top: 40px;
+}
+
 ul, ul li {
   list-style: none;
   padding: 0;
