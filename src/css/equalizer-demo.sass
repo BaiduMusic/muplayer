@@ -4,6 +4,30 @@ body
     padding-top: 0
 
 #equalizer-demo
+    .song, .equalizer
+        margin-bottom: 30px
+
+    .song
+        +inline-block
+        +line-height(50px)
+        width: 350px
+        position: relative
+        border: 1px solid #eee
+        cursor: pointer
+        .play-btn
+            +icon('play', 24px, 24px)
+            margin: 0 15px
+        &.playing
+            .play-btn
+                background-image: url($imgPath + 'pause.png')
+        .play-progress
+            +opacity(0.3)
+            +size(100%, 0)
+            position: absolute
+            left: 0
+            top: 0
+            background: $blue
+
     .frequency
         +inline-block
         width: 25px
@@ -27,24 +51,24 @@ body
             top: -13px
         .ui-slider-range
             background: #eee
-    .song
-        +inline-block
-        +line-height(50px)
-        margin-bottom: 30px
-        width: 350px
-        position: relative
-        border: 1px solid #eee
-        cursor: pointer
-        .play-btn
-            +icon('play', 24px, 24px)
-            margin: 0 15px
-        &.playing
-            .play-btn
-                background-image: url($imgPath + 'pause.png')
-        .play-progress
-            +opacity(0.3)
-            +size(100%, 0)
-            position: absolute
-            left: 0
-            top: 0
-            background: $blue
+
+    .effects
+        +pie-clearfix
+        text-align: center
+        margin-right: -10px
+        margin-bottom: -10px
+        width: 280px
+        overflow: hidden
+        li
+            +float-left
+            width: 60px
+            margin-right: 10px
+            margin-bottom: 10px
+            font-size: 14px
+            cursor: pointer
+            img
+                +square(60px)
+                margin-bottom: 5px
+            &.on
+                color: $blue
+                font-weight: bold
