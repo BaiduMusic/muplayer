@@ -42,7 +42,7 @@ require.config({
 require([
     'muplayer/player'
 ], function(Player) {
-    var player = window.player = new Player({
+    var player = new Player({
             baseDir: 'dist'
         }),
         $player = $('.player-widget'),
@@ -119,7 +119,7 @@ require([
     $volume.find('.bar').slider({
         value: player.getVolume(),
         range: 'min',
-        change: function(e, ui) {
+        slide: function(e, ui) {
             player.setVolume(ui.value);
         },
         stop: function(e, ui) {

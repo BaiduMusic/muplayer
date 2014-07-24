@@ -1,0 +1,138 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/prism/themes/prism.css">
+<link rel="stylesheet" href="bower_components/prism/plugins/line-numbers/prism-line-numbers.css">
+<link rel="stylesheet" href="css/equalizer-demo.css">
+
+<div class="mod">
+    <div class="hd">播放列表及交互</div>
+    <div class="bd">
+        <div id="equalizer-demo">
+            <div class="song" data-link="mp3/xihu.mp3">
+                <i class="play-btn"></i>
+                西湖 —— 崔晓
+                <div class="play-progress"></div>
+            </div>
+
+            <ol class="equalizer">
+                <li class="frequency" data-frequency="32">
+                    <div class="bar"></div>
+                    <p>32</p>
+                </li>
+                <li class="frequency" data-frequency="64">
+                    <div class="bar"></div>
+                    <p>64</p>
+                </li>
+                <li class="frequency" data-frequency="125">
+                    <div class="bar"></div>
+                    <p>125</p>
+                </li>
+                <li class="frequency" data-frequency="250">
+                    <div class="bar"></div>
+                    <p>250</p>
+                </li>
+                <li class="frequency" data-frequency="500">
+                    <div class="bar"></div>
+                    <p>500</p>
+                </li>
+                <li class="frequency" data-frequency="1000">
+                    <div class="bar"></div>
+                    <p>1K</p>
+                </li>
+                <li class="frequency" data-frequency="2000">
+                    <div class="bar"></div>
+                    <p>2K</p>
+                </li>
+                <li class="frequency" data-frequency="4000">
+                    <div class="bar"></div>
+                    <p>4K</p>
+                </li>
+                <li class="frequency" data-frequency="8000">
+                    <div class="bar"></div>
+                    <p>8K</p>
+                </li>
+                <li class="frequency" data-frequency="16000">
+                    <div class="bar"></div>
+                    <p>16K</p>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<script src="bower_components/jquery/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
+<script src="bower_components/prism/prism.js"></script>
+<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="dist/player.js"></script>
+<script src="dist/equalizer.js"></script>
+
+<script>
+var player = window.player = new _mu.Player({
+        baseDir: 'dist',
+        engines: [
+            {
+                constructor: 'AudioCore'
+            }
+        ]
+    }),
+
+    equalizer = window.equalizer = new _mu.Equalizer({
+        input: player.engine.curEngine.audio
+    }),
+
+    $demo = $('#equalizer-demo'),
+    $song = $demo.find('.song'),
+    $progress = $song.find('.play-progress'),
+    $equalizer = $demo.find('.equalizer');
+
+player.on('playing pause', function() {
+    $song.addClass(player.getState());
+}).on('timeupdate', function() {
+    $progress.width(player.curPos() / player.duration() * 100 + '%');
+});
+
+$song.click(function() {
+    if ($song.hasClass('playing')) {
+        $song.removeClass('playing');
+        player.pause();
+    } else {
+        $song.removeClass('playing pause');
+        player.reset().add($song.data('link')).play();
+    }
+});
+
+$equalizer.find('.bar').slider({
+    value: 0,
+    min: -12,
+    max: 12,
+    step: 0.1,
+    range: 'max',
+    orientation: 'vertical',
+    slide: function(e, ui) {
+        var frequency = $(e.target).parents('.frequency').data('frequency');
+        equalizer.setFilterValue(frequency, ui.value);
+    },
+    stop: function(e, ui) {
+        $(ui.handle).blur();
+    }
+});
+</script>
+
+<script>
+$(function() {
+    var $code = $('code'),
+        $doc = $(document),
+        $pdoc = $(window.parent.document),
+        script = document.createElement('script');
+
+    script.innerHTML = $code.text();
+    document.body.appendChild(script);
+
+    setTimeout(function() {
+        $pdoc.find('#ifm-equalizer-demo').height($doc.height())
+    }, 0);
+});
+</script>
