@@ -52,8 +52,8 @@ package {
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
             if (!canPlayThrough) {
-                var st = getState(),
-                    pos = sc.position;
+                var st:int = getState(),
+                    pos:uint = sc.position;
 
                 // 页面因网速较慢导致缓冲不够播放停止的情况
                 if (st === State.PLAYING && _position === pos) {
