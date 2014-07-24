@@ -197,3 +197,7 @@ ul, ul li {
 .bs-footer .copyright a {
   margin-left: 15px;
 }
+
+pre.language-javascript {
+  font-size: 14px;
+}

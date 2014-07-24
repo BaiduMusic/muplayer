@@ -5,6 +5,8 @@
     <title>MuPlayer『百度音乐播放内核』</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/prism/themes/prism.css">
+    <link rel="stylesheet" href="bower_components/prism/plugins/line-numbers/prism-line-numbers.css">
     <link rel="stylesheet" href="css/demo.css">
 </head>
 <body>
@@ -51,7 +53,22 @@
                 <p>
                     在网站加载jQuery类库的后面，引入MuPlayer。之后便可以初始化一个MuPlayer实例（ <code>baseDir</code> 是必填初始化参数，指向刚才签出的MuPlayer静态资源目录），添加一段mp3音频，开始播放：
                 </p>
-                <script src="https://gist.github.com/hustKiwi/f2d0436c807b3a45744c.js"></script>
+                <pre class="line-numbers"><code class="language-javascript">
+&lt;script src="http://code.jquery.com/jquery-1.11.0.min.js"&gt;&lt;/script&gt;
+&lt;!- 引入对应版本的MuPlayer，要置于jQuery之后。-&gt;
+&lt;script src="http://mu7.bdstatic.com/cms/app/muplayer/0_9_2/player.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+    // 初始化一个MuPlayer的实例。注意，我们默认使用了_mu全局命名空间。
+    var player = new _mu.Player({
+        // baseDir是必填初始化参数，指向刚才签出的MuPlayer静态资源目录
+        baseDir: 'http://mu7.bdstatic.com/cms/app/muplayer/0_9_1/'
+    });
+
+    // 通过add方法添加需要播放的音频，并调用play方法开始播放。
+    player.add('http://music.baidu.com/cms/app/muplayer/test_mp3/1.mp3').play();
+&lt;/script&gt;
+                </code></pre>
             </div>
         </div>
 
@@ -70,11 +87,16 @@
     </footer>
 
     <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/prism/prism.js"></script>
+    <script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
     <script>
     $(function() {
+        /*
         $('iframe').load(function() {
             $(this).height($(this).contents().height());
         });
+        */
     });
     </script>
 

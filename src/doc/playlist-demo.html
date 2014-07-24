@@ -1,4 +1,8 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/prism/themes/prism.css">
+<link rel="stylesheet" href="bower_components/prism/plugins/line-numbers/prism-line-numbers.css">
 <link rel="stylesheet" href="css/playlist-demo.css">
 
 <div class="mod">
@@ -9,17 +13,10 @@
             <li data-link="mp3/coins.m4a"><i class="play-btn"></i>钢蹦声(m4a)</li>
             <li data-link="mp3/walking.mp3"><i class="play-btn"></i>脚步声(mp3)</li>
         </ul>
-        <script src="https://gist.github.com/hustKiwi/d4cb4eab9402ff56e28f.js"></script>
-    </div>
-</div>
-
-<script src="bower_components/jquery/jquery.min.js"></script>
-<script src="dist/player.js"></script>
-<script>
+        <pre class="line-numbers"><code class="language-javascript">
 // 通过全局变量的方式初始化
 var player = window.player = new _mu.Player({
-        mode: 'list',
-        baseDir: 'dist'
+        code: 'list',baseDir: 'dist'
     }),
     $pl = $('#playlist-demo'),
     reset = function() {
@@ -31,7 +28,7 @@ var player = window.player = new _mu.Player({
         link = link.substring(link.indexOf('mp3/'));
         return $pl.find('[data-link="' + link + '"]');
     },
-    $time = $('<span class="time"></span>');
+    $time = $('&lt;span class="time"&gt;&lt;/span&gt;');
 
 $pl.on('click', '> li', function() {
     var $this = $(this);
@@ -47,5 +44,28 @@ player.on('playing pause', function() {
     findCurrItem().addClass(player.getState()).append($time);
 }).on('ended', reset).on('timeupdate', function() {
     $time.text(player.curPos(true) + ' / ' + player.duration(true));
+});
+        </code></pre>
+    </div>
+</div>
+
+<script src="bower_components/jquery/jquery.min.js"></script>
+<script src="bower_components/prism/prism.js"></script>
+<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="dist/player.js"></script>
+
+<script>
+$(function() {
+    var $code = $('code'),
+        $doc = $(document),
+        $pdoc = $(window.parent.document),
+        script = document.createElement('script');
+
+    script.innerHTML = $code.text();
+    document.body.appendChild(script);
+
+    setTimeout(function() {
+        $pdoc.find('#ifm-playlist-demo').height($doc.height())
+    }, 0);
 });
 </script>
