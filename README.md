@@ -3,60 +3,67 @@
 
 
 ## 安装
-
 你可以使用 [bower](https://github.com/bower/bower) 安装
-
-    bower install muplayer
+```
+bower install muplayer
+```
 
 或者到发布页面下载压缩文档：[Releases](https://github.com/Baidu-Music-FE/muplayer/releases)
 
 具体使用方法请参见文档部分。
 
+
 ## 文档
-
 ### 参见：[MuPlayer API](http://labs.music.baidu.com/demo/muplayer/doc/api.html)
-
 ### 示例：[Demo](http://labs.music.baidu.com/demo/muplayer/doc/demo.html)
 
 
 ## 为项目贡献代码
+1. 签出项目
+```
+git clone https://github.com/Baidu-Music-FE/muplayer.git
+cd muplayer
+```
 
- 1. 签出项目
+2. 如果你没有全局安装 [coffee](http://coffeescript.org/)，请先安装它
+```
+npm install -g coffee-script
+```
+安装依赖
+```
+npm install
+```
+这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。如果想自动选择默认项安装（安静模式），请运行 `quiet=true npm install`
 
-        git clone https://github.com/Baidu-Music-FE/muplayer.git
-        cd muplayer
-
- 2. 如果你没有全局安装 [coffee](http://coffeescript.org/)，请先安装它
-
-        npm install -g coffee-script
-
-    安装依赖
-
-        npm install
-
-    这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。如果想自动选择默认项安装（安静模式），请运行 `quiet=true npm install`
-
- 3. 编译
-
-        cake build
-
-    编译好的文件会保存到 `dist` 文件夹。
+3. 编译
+```
+cake build
+```
+编译好的文件会保存到 `dist` 文件夹。
 
 
 ## 修订文档
+1. 编译文档
+```
+cake doc
+```
 
- 1. 编译文档
+2. 预览文档需要启动本地服务器，启动后访问 http://127.0.0.1:8077
+```
+cake server
+```
+指定端口号
+```
+cake -p 8080 server
+```
 
-        cake doc
+## 使用案例
+`MuPlayer`本就源自百度音乐前端团队在产品开发上的积累，被用于多条在线产品及音乐服务上，如[百度音乐人](http://y.baidu.com)，[百度乐播](http://lebo.baidu.com)，及WebApp，是音乐前端的核心基础库之一。下面继续列举一些我们已知的第三方使用案例，以供参考：
+ 1. 百度个人中心的音乐随心听模块：http://i.baidu.com/#ibx-mod-music
 
- 2. 预览文档需要启动本地服务器，启动后访问 http://127.0.0.1:8077
+ 2. [@mozillazg](https://github.com/mozillazg) 实现的音乐FM：https://github.com/mozillazg/lark
 
-        cake server
-
-    指定端口号
-
-        cake -p 8080 server
-
+ 3. [@alankell](https://github.com/alankell) 的个人博客背景音播放：http://alankell.com/
 
 ## 许可
 
