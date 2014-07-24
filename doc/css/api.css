@@ -198,6 +198,10 @@ ul, ul li {
   margin-left: 15px;
 }
 
+pre.language-javascript {
+  font-size: 14px;
+}
+
 .bs-sidebar {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
