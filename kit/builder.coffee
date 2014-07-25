@@ -10,6 +10,7 @@ class Builder
         @require_temp_path = 'require_temp'
         @dist_path = 'dist'
         @lib_path = 'lib'
+        @doc_path = 'doc'
 
     start: ->
         @start_time = Date.now()
@@ -41,15 +42,13 @@ class Builder
                 console.log '>> Copy: '.cyan + from + ' -> '.green + @build_temp_path
         .then =>
             copy = (from, to) =>
-                from = "#{@lib_path}/#{from}"
                 to = "#{@dist_path}/#{to}"
-
                 os.copy(from, to).then =>
                     console.log '>> Copy: '.cyan + from + ' -> '.green + to
 
             Q.all([
-                copy 'expressInstall.swf', 'expressInstall.swf'
-                copy 'mp3/empty.mp3', 'empty.mp3'
+                copy "#{@lib_path}/expressInstall.swf", 'expressInstall.swf'
+                copy "#{@doc_path}/mp3/empty.mp3", 'empty.mp3'
             ])
 
     compile_all_coffee: ->
@@ -192,8 +191,6 @@ class Builder
             return
 
         compile = (src, dist) =>
-            bin_name = 'muplayer_mp3.swf'
-
             os.spawn flex_sdk.bin.mxmlc, [
                 '-optimize=true'
                 '-show-actionscript-warnings=true'

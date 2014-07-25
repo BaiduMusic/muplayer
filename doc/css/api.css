@@ -208,6 +208,14 @@ ul, ul li, ol, ol li {
 
 pre.language-javascript {
   font-size: 14px;
+  padding-bottom: 1.2em;
+}
+pre.language-javascript.hotfix {
+  padding-top: 1.8em;
+  padding-bottom: 1.8em;
+}
+pre.language-javascript.hotfix code {
+  top: -12px;
 }
 
 .bs-sidebar {

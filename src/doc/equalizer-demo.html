@@ -93,6 +93,7 @@
                 </li>
             </ul>
         </div>
+        <pre class="line-numbers hotfix"><code class="language-javascript"></code></pre>
     </div>
 </div>
 
@@ -103,8 +104,9 @@
 <script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
 <script src="dist/player.js"></script>
 <script src="dist/equalizer.js"></script>
+<script src="js/doc.js"></script>
 
-<script>
+<script id="code">
 var player = window.player = new _mu.Player({
         baseDir: 'dist',
         engines: [
@@ -172,16 +174,6 @@ $effects.on('click', 'li', function() {
 
 <script>
 $(function() {
-    var $code = $('code'),
-        $doc = $(document),
-        $pdoc = $(window.parent.document),
-        script = document.createElement('script');
-
-    script.innerHTML = $code.text();
-    document.body.appendChild(script);
-
-    setTimeout(function() {
-        $pdoc.find('#ifm-equalizer-demo').height($doc.height());
-    }, 0);
+    _mu.doc.init('equalizer');
 });
 </script>
