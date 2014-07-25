@@ -236,7 +236,7 @@ body {
   line-height: 50px;
   width: 350px;
   position: relative;
-  border: 1px solid #eeeeee;
+  border: 1px solid #5bc0de;
   cursor: pointer;
 }
 #equalizer-demo .song .play-btn {
