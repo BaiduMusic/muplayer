@@ -46,7 +46,8 @@ main = ->
                 Q.all [
                     os.symlink '../dist', 'doc/dist', 'dir'
                     os.symlink '../bower_components', 'doc/bower_components', 'dir'
-                    os.symlink '../lib/mp3', 'doc/mp3', 'dir'
+                    os.symlink '../src/doc/mp3', 'doc/mp3', 'dir'
+                    os.symlink '../src/doc/js', 'doc/js', 'dir'
                     os.symlink '../src/img/favicon.ico', 'doc/favicon.ico'
                     os.glob('src/doc/*.html').then (paths) ->
                         for p in paths

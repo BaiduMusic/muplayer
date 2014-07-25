@@ -13,7 +13,17 @@
             <li data-link="mp3/coins.m4a"><i class="play-btn"></i>钢蹦声(m4a)</li>
             <li data-link="mp3/walking.mp3"><i class="play-btn"></i>脚步声(mp3)</li>
         </ul>
-        <pre class="line-numbers"><code class="language-javascript">
+        <pre class="line-numbers hotfix"><code class="language-javascript"></code></pre>
+    </div>
+</div>
+
+<script src="bower_components/jquery/jquery.min.js"></script>
+<script src="bower_components/prism/prism.js"></script>
+<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="dist/player.js"></script>
+<script src="js/doc.js"></script>
+
+<script id="code">
 // 通过全局变量的方式初始化
 var player = new _mu.Player({
         mode: 'list',
@@ -29,7 +39,7 @@ var player = new _mu.Player({
         link = link.substring(link.indexOf('mp3/'));
         return $pl.find('[data-link="' + link + '"]');
     },
-    $time = $('&lt;span class="time"&gt;&lt;/span&gt;');
+    $time = $('<span class="time"></span>');
 
 $pl.on('click', '> li', function() {
     var $this = $(this);
@@ -46,27 +56,10 @@ player.on('playing pause', function() {
 }).on('ended', reset).on('timeupdate', function() {
     $time.text(player.curPos(true) + ' / ' + player.duration(true));
 });
-        </code></pre>
-    </div>
-</div>
-
-<script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/prism/prism.js"></script>
-<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
-<script src="dist/player.js"></script>
+</script>
 
 <script>
 $(function() {
-    var $code = $('code'),
-        $doc = $(document),
-        $pdoc = $(window.parent.document),
-        script = document.createElement('script');
-
-    script.innerHTML = $code.text();
-    document.body.appendChild(script);
-
-    setTimeout(function() {
-        $pdoc.find('#ifm-playlist-demo').height($doc.height());
-    }, 0);
+    _mu.doc.init('playlist');
 });
 </script>

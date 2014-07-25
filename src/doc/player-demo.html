@@ -31,7 +31,20 @@
                 <div class="progress-bar"></div>
             </div>
         </div>
-        <pre class="line-numbers"><code class="language-javascript">
+        <pre class="line-numbers hotfix"><code class="language-javascript"></code></pre>
+    </div>
+</div>
+
+<script src="bower_components/jquery/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
+<script src="bower_components/requirejs/require.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/prism/prism.js"></script>
+<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="js/doc.js"></script>
+
+<script id="code">
 require.config({
     paths: {
         muplayer: 'dist' // 须指向muplayer.js存放的目录
@@ -163,30 +176,10 @@ require([
         }
     });
 });
-        </code></pre>
-    </div>
-</div>
-
-<script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
-<script src="bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
-<script src="bower_components/requirejs/require.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="bower_components/prism/prism.js"></script>
-<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+</script>
 
 <script>
 $(function() {
-    var $code = $('code'),
-        $doc = $(document),
-        $pdoc = $(window.parent.document),
-        script = document.createElement('script');
-
-    script.innerHTML = $code.text();
-    document.body.appendChild(script);
-
-    setTimeout(function() {
-        $pdoc.find('#ifm-player-demo').height($doc.height());
-    }, 0);
+    _mu.doc.init('player');
 });
 </script>
