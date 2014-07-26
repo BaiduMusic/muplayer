@@ -5,6 +5,8 @@
 .sass-cache
 kit/setup.js
 kit/builder.js
+dist/*.swf.b
+dist/*.swf.cache
 
 # Dependencies #
 ################
