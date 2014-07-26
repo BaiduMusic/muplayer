@@ -192,7 +192,8 @@ class Builder
 
         compile = (src, dist) =>
             os.spawn flex_sdk.bin.mxmlc, [
-                '-optimize=true'
+                '-benchmark=false'
+                '-incremental=true'
                 '-show-actionscript-warnings=true'
                 '-static-link-runtime-shared-libraries=true'
                 '-o', "#{@dist_path}/#{dist}.swf"
