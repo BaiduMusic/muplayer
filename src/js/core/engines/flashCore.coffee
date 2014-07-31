@@ -5,6 +5,7 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
     # fmp.swf中约定的状态返回码。
     STATESCODE =
         '-1': STATES.NOT_INIT
+        '0': STATES.CANPLAYTHROUGH
         '1': STATES.PREBUFFER
         '2': STATES.BUFFERING
         '3': STATES.PLAYING
