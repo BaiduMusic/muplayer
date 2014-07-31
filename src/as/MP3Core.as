@@ -29,12 +29,12 @@ package {
 
         private function onLoadComplete(e:Event):void {
             _length = Math.ceil(s.length);
-            setState(isPlaying && State.PLAYING || State.CANPLAYTHROUGH);
+            setState(State.CANPLAYTHROUGH);
             canPlayThrough = true;
         }
 
         private function onProgress(e:ProgressEvent):void {
-            if (getState() !== State.PLAYING) {
+            if (!canPlayThrough && getState() !== State.PLAYING) {
                 setState(State.BUFFERING);
             }
 
@@ -51,16 +51,14 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
-            if (!canPlayThrough) {
-                var st:int = getState(),
-                    pos:uint = sc.position;
+            var st:int = getState(),
+                pos:uint = sc.position;
 
-                // 页面因网速较慢导致缓冲不够播放停止的情况
-                if (st === State.PLAYING && _position === pos) {
-                    setState(State.PAUSE);
-                } else if (st === State.BUFFERING && _position < pos) {
-                    setState(State.PLAYING);
-                }
+            // 页面因网速较慢导致缓冲不够播放停止的情况
+            if (st === State.PLAYING && _position === pos) {
+                setState(State.PAUSE);
+            } else if (st !== State.PLAYING && _position < pos) {
+                setState(State.PLAYING);
             }
 
             _position = sc.position;
@@ -145,6 +143,7 @@ package {
             if (sc) {
                 sc.stop();
             }
+            isPlaying = false;
         }
     }
 }

@@ -1589,6 +1589,7 @@ var __hasProp = {}.hasOwnProperty,
   timerResolution = cfg.timerResolution;
   STATESCODE = {
     '-1': STATES.NOT_INIT,
+    '0': STATES.CANPLAYTHROUGH,
     '1': STATES.PREBUFFER,
     '2': STATES.BUFFERING,
     '3': STATES.PLAYING,

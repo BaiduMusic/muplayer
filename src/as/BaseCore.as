@@ -188,6 +188,7 @@ package {
                 playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.start();
             }
+            setState(State.PLAYING);
         }
 
         public function f_pause():void {}
