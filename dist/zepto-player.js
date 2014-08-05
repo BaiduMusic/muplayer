@@ -330,11 +330,11 @@
       STATES: {
         NOT_INIT: 'not_init',
         CANPLAYTHROUGH: 'canplaythrough',
-        PREBUFFER: 'prebuffer',
-        BUFFERING: 'buffering',
+        PREBUFFER: 'waiting',
+        BUFFERING: 'loadeddata',
         PLAYING: 'playing',
         PAUSE: 'pause',
-        STOP: 'stop',
+        STOP: 'suspend',
         END: 'ended'
       },
       ERRCODE: {

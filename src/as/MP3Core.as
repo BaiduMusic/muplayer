@@ -56,7 +56,7 @@ package {
 
             // 页面因网速较慢导致缓冲不够播放停止的情况
             if (st === State.PLAYING && _position === pos) {
-                setState(State.PAUSE);
+                setState(State.PREBUFFER);
             } else if (st !== State.PLAYING && _position < pos) {
                 setState(State.PLAYING);
             }
