@@ -56,9 +56,9 @@ package {
         }
 
         protected function loadFlashVars(p:Object):void {
-            jsInstance = p['_instanceName'];
+            jsInstance = escape(p['_instanceName']);
             if (p['_buffertime']) {
-                _bufferTime = p['_buffertime'];
+                _bufferTime = ~~p['_buffertime'];
             }
         }
 
