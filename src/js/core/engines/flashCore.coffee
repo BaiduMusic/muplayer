@@ -5,13 +5,13 @@ do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
     # fmp.swf中约定的状态返回码。
     STATESCODE =
         '-1': STATES.NOT_INIT
-        '0': STATES.CANPLAYTHROUGH
-        '1': STATES.PREBUFFER
-        '2': STATES.BUFFERING
-        '3': STATES.PLAYING
-        '4': STATES.PAUSE
-        '5': STATES.STOP
-        '6': STATES.END
+        '1': STATES.CANPLAYTHROUGH
+        '2': STATES.PREBUFFER
+        '3': STATES.BUFFERING
+        '4': STATES.PLAYING
+        '5': STATES.PAUSE
+        '6': STATES.STOP
+        '7': STATES.END
 
     class FlashCore extends EngineCore
         @defaults:
