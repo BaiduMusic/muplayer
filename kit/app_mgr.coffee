@@ -1,4 +1,3 @@
-require 'coffee-script/register'
 require 'colors'
 os = require '../lib/os'
 Q = require 'q'
@@ -25,7 +24,6 @@ main = ->
                         '--css-dir', 'doc/css'
                         '--no-line-comments'
                     ])
-                    os.copy 'src/img', 'doc/img'
                     os.spawn(doxx_bin, [
                         '-d'
                         '-R', 'README.md'
@@ -46,6 +44,7 @@ main = ->
                 Q.all [
                     os.symlink '../dist', 'doc/dist', 'dir'
                     os.symlink '../bower_components', 'doc/bower_components', 'dir'
+                    os.symlink '../src/doc/img', 'doc/img', 'dir'
                     os.symlink '../src/doc/mp3', 'doc/mp3', 'dir'
                     os.symlink '../src/doc/js', 'doc/js', 'dir'
                     os.symlink '../src/img/favicon.ico', 'doc/favicon.ico'
