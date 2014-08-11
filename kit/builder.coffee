@@ -149,7 +149,7 @@ class Builder
 
     compress_js: ->
         compress = (path) ->
-            os.spawn 'node_modules/.bin/uglifyjs', [
+            os.spawn './node_modules/.bin/uglifyjs', [
                 '-mt'
                 '-o', path + '.min.js'
                 path + '.js'
