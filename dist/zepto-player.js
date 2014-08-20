@@ -1494,10 +1494,10 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.defaults = {
       engines: [
-                {
+                                {
                     constructor: AudioCore
                 }
-                            ]
+            ]
     };
 
     function Engine(options) {
