@@ -1975,16 +1975,16 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.defaults = {
       engines: [
+                                {
+                    constructor: FlashMP3Core
+                },
                 {
+                    constructor: FlashMP4Core
+                },
+                                {
                     constructor: AudioCore
                 }
-                                , {
-                    constructor: FlashMP3Core
-                }
-                , {
-                    constructor: FlashMP4Core
-                }
-                            ]
+            ]
     };
 
     function Engine(options) {
