@@ -127,7 +127,12 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 @trigger('player:play', startTime)
                 def.resolve()
 
-            if @getState() in [STATES.NOT_INIT, STATES.STOP, STATES.END]
+            st = @getState()
+            # 只有如下3种情况会触发_fetch选链：
+            # 1) 内核首次使用 (STATES.NOT_INIT) 或被reset过 (STATES.STOP)
+            # 2) 上一首歌播放完成自动触发下一首的播放 (STATES.END)
+            # 3) 某些移动浏览器无交互时不能触发自动播放 (会被卡在STATES.BUFFERING)
+            if st in [STATES.NOT_INIT, STATES.STOP, STATES.END] or st is STATES.BUFFERING and @curPos() is 0
                 # XXX: 应该在_fetch中决定是否发起选链。
                 # 即是否从cache中取, 是否setUrl都是依据_fetch的实现去决定。
                 # 如果继承时覆盖重写_fetch, 这些都要自己权衡。
