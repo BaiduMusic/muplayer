@@ -2354,7 +2354,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.play = function(startTime) {
-      var def, engine, play, _ref1;
+      var def, engine, play, st;
       startTime = ~~startTime;
       def = $.Deferred();
       engine = this.engine;
@@ -2369,7 +2369,8 @@ var __hasProp = {}.hasOwnProperty,
           return def.resolve();
         };
       })(this);
-      if ((_ref1 = this.getState()) === STATES.NOT_INIT || _ref1 === STATES.STOP || _ref1 === STATES.END) {
+      st = this.getState();
+      if ((st === STATES.NOT_INIT || st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
         this._fetch().done((function(_this) {
           return function() {
             return play();
