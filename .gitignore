@@ -1,10 +1,9 @@
-# Customized
+# Customized #
+##############
 *.swp
 *.swo
 .idea
 .sass-cache
-kit/setup.js
-kit/builder.js
 dist/*.swf.b
 dist/*.swf.cache
 
