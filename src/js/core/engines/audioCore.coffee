@@ -53,7 +53,9 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             if opts.needPlayEmpty
                 playEmpty = () =>
-                    @setUrl(opts.emptyMP3).play()
+                    # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
+                    if not @getUrl()
+                        @setUrl(opts.emptyMP3).play()
                     win.removeEventListener('touchstart', playEmpty, false)
                 win.addEventListener('touchstart', playEmpty, false)
 
