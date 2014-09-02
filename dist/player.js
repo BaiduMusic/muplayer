@@ -977,7 +977,9 @@ var __hasProp = {}.hasOwnProperty,
       if (opts.needPlayEmpty) {
         playEmpty = (function(_this) {
           return function() {
-            _this.setUrl(opts.emptyMP3).play();
+            if (!_this.getUrl()) {
+              _this.setUrl(opts.emptyMP3).play();
+            }
             return win.removeEventListener('touchstart', playEmpty, false);
           };
         })(this);

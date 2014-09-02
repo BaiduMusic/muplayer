@@ -54,7 +54,7 @@ do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
             if opts.needPlayEmpty
                 playEmpty = () =>
                     # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
-                    if not @getUrl()
+                    unless @getUrl()
                         @setUrl(opts.emptyMP3).play()
                     win.removeEventListener('touchstart', playEmpty, false)
                 win.addEventListener('touchstart', playEmpty, false)
