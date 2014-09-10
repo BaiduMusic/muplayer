@@ -2112,6 +2112,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype.setUrl = function(url) {
       this.engine.setUrl(url);
+      this.trigger('player:setUrl', url);
       return this;
     };
 
@@ -2132,7 +2133,9 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.setVolume = function(volume) {
-      return this.engine.setVolume(volume);
+      this.engine.setVolume(volume);
+      this.trigger('player:setVolume', volume);
+      return this;
     };
 
 
@@ -2154,6 +2157,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype.setMute = function(mute) {
       this.engine.setMute(mute);
+      this.trigger('player:setMute', mute);
       return this;
     };
 
@@ -2197,6 +2201,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype.setMode = function(mode) {
       this.playlist.setMode(mode);
+      this.trigger('player:setMode', mode);
       return this;
     };
 

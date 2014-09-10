@@ -295,6 +295,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         setUrl: (url) ->
             @engine.setUrl(url)
+            @trigger('player:setUrl', url)
             @
 
         ###*
@@ -310,6 +311,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         setVolume: (volume) ->
             @engine.setVolume(volume)
+            @trigger('player:setVolume', volume)
+            @
 
         ###*
          * 获取播放器音量。返回值范围：0 - 100
@@ -325,6 +328,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         setMute: (mute) ->
             @engine.setMute(mute)
+            @trigger('player:setMute', mute)
             @
 
         ###*
@@ -356,6 +360,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         setMode: (mode) ->
             @playlist.setMode(mode)
+            @trigger('player:setMode', mode)
             @
 
         ###*
