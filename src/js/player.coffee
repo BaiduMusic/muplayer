@@ -98,6 +98,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         _initEngine: (engine) ->
             @engine = engine.on(EVENTS.STATECHANGE, (e) =>
                 st = e.newState
+                @trigger('player:statechange', e)
                 @trigger(st)
                 if st is STATES.END
                     @next(true)
