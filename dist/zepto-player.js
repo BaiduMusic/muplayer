@@ -1841,6 +1841,7 @@ var __hasProp = {}.hasOwnProperty,
         return function(e) {
           var st;
           st = e.newState;
+          _this.trigger('player:statechange', e);
           _this.trigger(st);
           if (st === STATES.END) {
             return _this.next(true);
