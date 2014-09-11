@@ -1,4 +1,4 @@
-do (root = this, factory = (utils, Events) ->
+do (root = @, factory = (utils, Events) ->
     class Playlist
         constructor: (options) ->
             @opts = $.extend({}, @defaults, options)
@@ -70,7 +70,7 @@ do (root = this, factory = (utils, Events) ->
 
         prev: ->
             list = @list
-            i = $.inArray(this.cur, list)
+            i = $.inArray(@cur, list)
             l = list.length
             prev = i - 1
 
@@ -96,7 +96,7 @@ do (root = this, factory = (utils, Events) ->
 
         next: ->
             list = @list
-            i = $.inArray(this.cur, list)
+            i = $.inArray(@cur, list)
             l = list.length
             next = i + 1
 
@@ -120,10 +120,10 @@ do (root = this, factory = (utils, Events) ->
             @cur = list[next]
 
         setCur: (sid) ->
-            sid = sid + ''
+            sid = @_formatSid(sid)
             unless sid in @list
                 @add(sid)
-            @cur = '' + sid
+            @cur = sid
 
     Events.mixTo(Playlist)
     Playlist
