@@ -1,4 +1,4 @@
-do (root = this, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
+do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
     {EVENTS, STATES} = cfg.engine
     timerResolution = cfg.timerResolution
     extReg = /\.(\w+)(\?.*)?$/

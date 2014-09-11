@@ -1,4 +1,4 @@
-do (root = this, factory = (cfg) ->
+do (root = @, factory = (cfg) ->
     utils = {}
 
     StrProto = String.prototype

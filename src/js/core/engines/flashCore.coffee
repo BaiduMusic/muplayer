@@ -1,4 +1,4 @@
-do (root = this, factory = (cfg, utils, Timer, EngineCore) ->
+do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
     {EVENTS, STATES, ERRCODE} = cfg.engine
     timerResolution = cfg.timerResolution
 

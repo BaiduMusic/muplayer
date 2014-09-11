@@ -1,4 +1,4 @@
-do (root = this, factory = () ->
+do (root = @, factory = () ->
     class AudioNode
         constructor: (options) ->
             unless AudioContext
