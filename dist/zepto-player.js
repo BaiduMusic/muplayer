@@ -859,11 +859,11 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     Playlist.prototype.setCur = function(sid) {
-      sid = sid + '';
+      sid = this._formatSid(sid);
       if (__indexOf.call(this.list, sid) < 0) {
         this.add(sid);
       }
-      return this.cur = '' + sid;
+      return this.cur = sid;
     };
 
     return Playlist;
@@ -1957,7 +1957,7 @@ var __hasProp = {}.hasOwnProperty,
      * 播放下一首歌。参数auto是布尔值，代表是否是因自动切歌而触发的（比如因为一首歌播放完会自动触发next方法，这时auto为true，其他主动调用auto应为undefined）。
      * 会派发 <code>player:next</code> 事件，事件参数：
      * <pre>auto // 是否为自动切歌
-     * cur  // 调用next时正在播放的歌曲</pre>
+     * cur // 调用next时正在播放的歌曲</pre>
      * @return {player}
      */
 
