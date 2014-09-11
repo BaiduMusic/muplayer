@@ -1,5 +1,5 @@
-do (root = this, factory = () ->
-    root = this
+do (root = @, factory = () ->
+    root = @
 
     return $.extend({
         namespace: root._mu

@@ -1,4 +1,4 @@
-do (root = this, factory = (cfg, utils, EngineCore, Modernizr) ->
+do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
     win = window
     {TYPES, EVENTS, STATES, ERRCODE} = cfg.engine
 

@@ -1,4 +1,4 @@
-do (root = this, factory = (cfg, FlashCore) ->
+do (root = @, factory = (cfg, FlashCore) ->
     TYPES = cfg.engine.TYPES
 
     class FlashMP4Core extends FlashCore

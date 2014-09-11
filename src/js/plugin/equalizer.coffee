@@ -1,4 +1,4 @@
-do (root = this, factory = (AudioNode) ->
+do (root = @, factory = (AudioNode) ->
     mathPow = Math.pow
 
     # http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
