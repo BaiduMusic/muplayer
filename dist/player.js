@@ -2374,8 +2374,10 @@ var __hasProp = {}.hasOwnProperty,
       })(this);
       st = this.getState();
       if ((st === STATES.NOT_INIT || st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
+        this.trigger('player:fetch:start');
         this._fetch().done((function(_this) {
           return function() {
+            _this.trigger('player:fetch:done');
             return play();
           };
         })(this));
