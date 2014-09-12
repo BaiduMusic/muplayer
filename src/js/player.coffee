@@ -1,4 +1,4 @@
-do (root = @, factory = (cfg, utils, Events, Playlist, Engine) ->
+do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
     {EVENTS, STATES} = cfg.engine
     time2str = utils.time2str
 
@@ -137,7 +137,9 @@ do (root = @, factory = (cfg, utils, Events, Playlist, Engine) ->
                 # XXX: 应该在_fetch中决定是否发起选链。
                 # 即是否从cache中取, 是否setUrl都是依据_fetch的实现去决定。
                 # 如果继承时覆盖重写_fetch, 这些都要自己权衡。
+                @trigger('player:fetch:start')
                 @_fetch().done () =>
+                    @trigger('player:fetch:done')
                     play()
             else
                 play()
