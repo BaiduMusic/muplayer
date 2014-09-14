@@ -2,6 +2,27 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
     {EVENTS, STATES} = cfg.engine
     time2str = utils.time2str
 
+    ctrl = (fname, auto) ->
+        unless fname in ['prev', 'next']
+            return @
+
+        @stop()
+
+        pl = @playlist
+        play = =>
+            @trigger("player:#{fname}", {
+                cur: @getCur()
+            })
+            @play()
+
+        if @getSongsNum()
+            unless pl.cur
+                play()
+            else if pl[fname]()
+                play()
+
+        @
+
     ###*
      * muplayer的Player类（对应player.js）是对外暴露的接口，它封装了音频操作及播放列表（Playlist）逻辑，并屏蔽了对音频内核适配的细节对音频内核适配的细节。
      * <b>对一般应用场景，只需签出编译后的 <code>dist/js/player.min.js</code> 即可</b>。
@@ -177,14 +198,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         prev: () ->
-            cur = @getCur()
-            @stop()
-            if @getSongsNum() and @playlist.prev()
-                @trigger('player:prev', {
-                    cur: cur
-                })
-                @play()
-            @
+            ctrl.apply(@, ['prev', auto])
 
         ###*
          * 播放下一首歌。参数auto是布尔值，代表是否是因自动切歌而触发的（比如因为一首歌播放完会自动触发next方法，这时auto为true，其他主动调用auto应为undefined）。
@@ -194,15 +208,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         next: (auto) ->
-            cur = @getCur()
-            @stop()
-            if @getSongsNum() and @playlist.next()
-                @trigger('player:next', {
-                    auto: auto,
-                    cur: cur
-                })
-                @play()
-            @
+            ctrl.apply(@, ['next', auto])
 
         ###*
          * 获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。

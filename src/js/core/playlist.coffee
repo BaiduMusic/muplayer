@@ -79,7 +79,7 @@ do (root = @, factory = (utils, Events) ->
                 when 'random' then prev = utils.random(0, l - 1)
                 when 'list'
                     if i = 0
-                        @cur = list[0]
+                        @cur = ''
                         # false作为返回值以终止循环播放，详见player的next方法
                         return false
                 when 'list-random'
@@ -105,7 +105,7 @@ do (root = @, factory = (utils, Events) ->
                 when 'random' then next = utils.random(0, l - 1)
                 when 'list'
                     if i is l - 1
-                        @cur = list[0]
+                        @cur = ''
                         return false
                 when 'list-random'
                     i = @_listRandomIndex++
