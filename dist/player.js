@@ -513,7 +513,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           break;
         case 'list':
           if (i = 0) {
-            this.cur = list[0];
+            this.cur = '';
             return false;
           }
           break;
@@ -548,7 +548,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           break;
         case 'list':
           if (i === l - 1) {
-            this.cur = list[0];
+            this.cur = '';
             return false;
           }
           break;
@@ -2216,9 +2216,33 @@ var __hasProp = {}.hasOwnProperty,
     return root._mu.Player = factory(root._mu.cfg, root._mu.utils, root._mu.Events, root._mu.Playlist, root._mu.Engine);
   }
 })(this, function(cfg, utils, Events, Playlist, Engine) {
-  var EVENTS, Player, STATES, time2str, _ref;
+  var EVENTS, Player, STATES, ctrl, time2str, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   time2str = utils.time2str;
+  ctrl = function(fname, auto) {
+    var pl, play;
+    if (fname !== 'prev' && fname !== 'next') {
+      return this;
+    }
+    this.stop();
+    pl = this.playlist;
+    play = (function(_this) {
+      return function() {
+        _this.trigger("player:" + fname, {
+          cur: _this.getCur()
+        });
+        return _this.play();
+      };
+    })(this);
+    if (this.getSongsNum()) {
+      if (!pl.cur) {
+        play();
+      } else if (pl[fname]()) {
+        play();
+      }
+    }
+    return this;
+  };
 
   /**
    * muplayer的Player类（对应player.js）是对外暴露的接口，它封装了音频操作及播放列表（Playlist）逻辑，并屏蔽了对音频内核适配的细节对音频内核适配的细节。
@@ -2429,16 +2453,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.prev = function() {
-      var cur;
-      cur = this.getCur();
-      this.stop();
-      if (this.getSongsNum() && this.playlist.prev()) {
-        this.trigger('player:prev', {
-          cur: cur
-        });
-        this.play();
-      }
-      return this;
+      return ctrl.apply(this, ['prev', auto]);
     };
 
 
@@ -2451,17 +2466,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.next = function(auto) {
-      var cur;
-      cur = this.getCur();
-      this.stop();
-      if (this.getSongsNum() && this.playlist.next()) {
-        this.trigger('player:next', {
-          auto: auto,
-          cur: cur
-        });
-        this.play();
-      }
-      return this;
+      return ctrl.apply(this, ['next', auto]);
     };
 
 
