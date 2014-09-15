@@ -62,23 +62,23 @@ ul, ul li, ol, ol li {
   background-color: #28a1c5;
 }
 #header .navbar-toggle.collapsed .icon-bar {
-  background: white;
+  background: #fff;
 }
 #header .navbar-brand {
-  color: white;
+  color: #fff;
   font-weight: bold;
 }
 #header .navbar-brand:visited {
-  color: white;
+  color: #fff;
 }
 #header .navbar-brand:focus {
-  color: white;
+  color: #fff;
 }
 #header .navbar-brand:hover {
-  color: white;
+  color: #fff;
 }
 #header .navbar-brand:active {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav {
   height: 50px;
@@ -87,8 +87,8 @@ ul, ul li, ol, ol li {
   height: 50px;
   line-height: 50px;
   color: #d6eff6;
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   padding: 0 15px;
   background: transparent;
@@ -108,36 +108,36 @@ ul, ul li, ol, ol li {
 #header .navbar-nav a:hover {
   height: 51px;
   line-height: 51px;
-  color: white;
+  color: #fff;
   border-bottom: 3px solid #c7254e;
 }
 #header .navbar-nav a:hover:visited {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav a:hover:focus {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav a:hover:hover {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav a:hover:active {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav .active a {
-  color: white;
+  color: #fff;
   background: #28a1c5;
 }
 #header .navbar-nav .active a:visited {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav .active a:focus {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav .active a:hover {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav .active a:active {
-  color: white;
+  color: #fff;
 }
 #header .navbar-nav .active a:hover {
   border-bottom: none;
@@ -146,33 +146,31 @@ ul, ul li, ol, ol li {
   position: relative;
 }
 #header .github {
-  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  zoom: 1;
+  *zoom: 1;
   *display: inline;
   position: absolute;
   top: 50px;
   right: 15px;
   background: #c7254e;
-  color: white;
+  color: #fff;
   border-top: none;
   padding: 10px 15px;
 }
 #header .github i {
-  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  zoom: 1;
+  *zoom: 1;
   *display: inline;
   height: 16px;
   width: 16px;
   background: url("../img/github.png") no-repeat;
-  -webkit-background-size: 16px, 16px;
   -moz-background-size: 16px, 16px;
   -o-background-size: 16px, 16px;
+  -webkit-background-size: 16px, 16px;
   background-size: 16px, 16px;
   overflow: hidden;
   margin-right: 10px;
@@ -199,7 +197,7 @@ ul, ul li, ol, ol li {
   padding-top: 40px;
   padding-bottom: 30px;
   margin-top: 100px;
-  color: #666666;
+  color: #666;
   border-top: 1px solid #e5e5e5;
 }
 .bs-footer .copyright a {
@@ -219,30 +217,28 @@ pre.language-javascript.hotfix code {
 }
 
 .bs-sidebar {
-  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
-  text-shadow: 0 1px 0 white;
+  text-shadow: 0 1px 0 #fff;
   background-color: #eef8fb;
   display: none;
   padding: 10px 0;
 }
 .bs-sidebar a {
-  color: #666666;
+  color: #666;
 }
 .bs-sidebar a:visited {
-  color: #666666;
+  color: #666;
 }
 .bs-sidebar a:focus {
-  color: #666666;
+  color: #666;
 }
 .bs-sidebar a:hover {
-  color: #666666;
+  color: #666;
 }
 .bs-sidebar a:active {
-  color: #666666;
+  color: #666;
 }
 .bs-sidebar.affix {
   position: static;
@@ -252,7 +248,7 @@ pre.language-javascript.hotfix code {
 }
 .bs-sidebar .nav .active a, .bs-sidebar .nav .active:hover a, .bs-sidebar .nav .active:focus a {
   font-weight: bold;
-  color: #333333;
+  color: #333;
   background-color: transparent;
   border-right: 1px solid #28a1c5;
 }
