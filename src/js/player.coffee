@@ -141,7 +141,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             def = $.Deferred()
             engine = @engine
 
-            play = () =>
+            play = =>
                 if startTime
                     engine.setCurrentPosition(startTime)
                 else
@@ -159,7 +159,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 # 即是否从cache中取, 是否setUrl都是依据_fetch的实现去决定。
                 # 如果继承时覆盖重写_fetch, 这些都要自己权衡。
                 @trigger('player:fetch:start')
-                @_fetch().done () =>
+                @_fetch().done =>
                     @trigger('player:fetch:done')
                     play()
             else
@@ -197,7 +197,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * <pre>cur // 调用prev时正在播放的歌曲</pre>
          * @return {player}
         ###
-        prev: () ->
+        prev: ->
             ctrl.apply(@, ['prev', auto])
 
         ###*
@@ -215,7 +215,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * 如果之前没有主动执行过setCur，则认为播放列表的第一首歌是当前歌曲。
          * @return {String}
         ###
-        getCur: () ->
+        getCur: ->
             pl = @playlist
             cur = pl.cur
             if not cur and @getSongsNum()
@@ -283,7 +283,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * 如有特别需要可以自行扩展，比如通过监听 <code>player:reset</code> 来重置相关业务逻辑的标志位或事件等。
          * @return {player}
         ###
-        reset: () ->
+        reset: ->
             @playlist.reset()
             @engine.reset()
             @trigger('player:reset')
@@ -359,7 +359,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * 播放列表中的歌曲总数。这一个快捷方法，如有更多需求，可自行获取播放列表：player.playlist.list。
          * @return {Number}
         ###
-        getSongsNum: () ->
+        getSongsNum: ->
             @playlist.list.length
 
         ###*
@@ -376,18 +376,21 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * 获取列表播放的模式。
          * @return {String}
         ###
-        getMode: () ->
+        getMode: ->
             @playlist.mode
+
+        getEngineType: ->
+            @engine.curEngine.engineType
 
         # 在基类的默认实现中将_fetch设计成Promise模式的接口调用似乎没有必要,
         # 但对于依赖API远程调用进行歌曲异步选链的场景下, Promise的处理无疑更具灵活性。
         # XXX: 如要实现自己的API选链逻辑，请务必重写_fetch方法。
-        _fetch: () ->
+        _fetch: ->
             def = $.Deferred()
             if @getUrl() is @getCur()
                 def.resolve()
             else
-                setTimeout(() =>
+                setTimeout( =>
                     @setUrl(@getCur())
                     def.resolve()
                 , 0)

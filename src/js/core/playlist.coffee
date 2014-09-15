@@ -4,7 +4,7 @@ do (root = @, factory = (utils, Events) ->
             @opts = $.extend({}, @defaults, options)
             @reset()
 
-        reset: () ->
+        reset: ->
             @cur = ''
             if $.isArray(@list)
                 @list.length = 0

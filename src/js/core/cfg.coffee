@@ -1,4 +1,4 @@
-do (root = @, factory = () ->
+do (root = @, factory = ->
     root = @
 
     return $.extend({
