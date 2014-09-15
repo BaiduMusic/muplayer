@@ -56,7 +56,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             opts.$el.append(@flash)
             @_initEvents()
 
-        _test: () ->
+        _test: ->
             opts = @opts
             if not @flash or not $.flash.hasVersion(opts.flashVer)
                 return false
@@ -64,19 +64,19 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
 
         # TODO: 暂时通过轮询的方式派发加载、播放进度事件。
         # 这里需要注意性能, 看能否直接监听对应的flash事件。
-        _initEvents: () ->
+        _initEvents: ->
             # progressTimer记录加载进度。
             @progressTimer = new Timer(timerResolution)
             # positionTimer记录播放进度。
             @positionTimer = new Timer(timerResolution)
 
-            triggerProgress = () =>
+            triggerProgress = =>
                 per = @getLoadedPercent()
                 if @_lastPer isnt per
                     @_lastPer = per
                     @trigger(EVENTS.PROGRESS, per)
                 @progressTimer.stop() if per is 1
-            triggerPosition = () =>
+            triggerPosition = =>
                 pos = @getCurrentPosition()
                 if @_lastPos isnt pos
                     @_lastPos = pos
@@ -132,20 +132,20 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
         _pushQueue: (fn, args) ->
             @_queue.push([fn, args])
 
-        _fireQueue: () ->
+        _fireQueue: ->
             while @_queue.length
                 [fn, args] = @_queue.shift()
                 fn.apply(@, args)
 
-        play: () ->
+        play: ->
             @flash.f_play()
             @
 
-        pause: () ->
+        pause: ->
             @flash.f_pause()
             @
 
-        stop: () ->
+        stop: ->
             @flash.f_stop()
             @
 
@@ -157,11 +157,11 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                 @_setUrl(url)
                 # 检测后缀与实际资源不符的情况。
                 # 错误统一抛EVENTS.ERROR事件, 由调用方决定如何处理。
-                do () =>
+                do =>
                     checker = null
                     check = (e) =>
                         if e.newState is STATES.PLAYING and e.oldState is STATES.PREBUFFER
-                            checker = setTimeout(() =>
+                            checker = setTimeout(=>
                                 @off(EVENTS.STATECHANGE, check)
                                 if @getCurrentPosition() < 100
                                     @setState(STATES.END)
@@ -193,20 +193,20 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             @flash.f_play(ms)
             @
 
-        getCurrentPosition: () ->
+        getCurrentPosition: ->
             @flash.getData('position')
 
-        getLoadedPercent: () ->
+        getLoadedPercent: ->
             @flash.getData('loadedPct')
 
-        getTotalTime: () ->
+        getTotalTime: ->
             @flash.getData('length')
 
         # _swf前缀的都是AS的回调方法。
-        _swfOnLoad: () ->
+        _swfOnLoad: ->
             @_loaded = true
             # 加延时为0的setTimeout是为了防止_fireQueue时阻塞页面动画等效果。
-            setTimeout(() =>
+            setTimeout( =>
                 @_fireQueue()
             , 0)
 

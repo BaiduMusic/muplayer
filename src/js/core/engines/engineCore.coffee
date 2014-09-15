@@ -8,31 +8,31 @@ do (root = @, factory = (cfg, utils, Events) ->
     class EngineCore
         _supportedTypes: []
 
-        getSupportedTypes: () ->
+        getSupportedTypes: ->
             @_supportedTypes
 
         canPlayType: (type) ->
             return $.inArray(type, @getSupportedTypes()) isnt -1
 
-        reset: () ->
+        reset: ->
             @stop()
             @setUrl()
             @setState(STATES.NOT_INIT)
 
-        play: () ->
+        play: ->
             @
 
-        pause: () ->
+        pause: ->
             @
 
-        stop: () ->
+        stop: ->
             @
 
         setUrl: (url = '') ->
             @_url = url
             @
 
-        getUrl: () ->
+        getUrl: ->
             @_url
 
         setState: (st) ->
@@ -44,33 +44,33 @@ do (root = @, factory = (cfg, utils, Events) ->
                     newState: st
                 )
 
-        getState: () ->
+        getState: ->
             @_state
 
         setVolume: (volume) ->
             @_volume = volume
             @
 
-        getVolume: () ->
+        getVolume: ->
             @_volume
 
         setMute: (mute) ->
             @_mute = mute
             @
 
-        getMute: () ->
+        getMute: ->
             @_mute
 
         setCurrentPosition: (ms) ->
             @
 
-        getCurrentPosition: () ->
+        getCurrentPosition: ->
             0
 
-        getLoadedPercent: () ->
+        getLoadedPercent: ->
             0
 
-        getTotalTime: () ->
+        getTotalTime: ->
             0
 
     Events.mixTo(EngineCore)

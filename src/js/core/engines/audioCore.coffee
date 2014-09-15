@@ -52,20 +52,20 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             if opts.needPlayEmpty
-                playEmpty = () =>
+                playEmpty = =>
                     # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
                     unless @getUrl()
                         @setUrl(opts.emptyMP3).play()
                     win.removeEventListener('touchstart', playEmpty, false)
                 win.addEventListener('touchstart', playEmpty, false)
 
-        _test: () ->
+        _test: ->
             if not Modernizr.audio or not @_supportedTypes.length
                 return false
             true
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
-        _initEvents: () ->
+        _initEvents: ->
             trigger = @trigger
             @trigger = (type, listener) =>
                 trigger.call(@, type, listener) if @getUrl() isnt @opts.emptyMP3
@@ -75,27 +75,27 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 @trigger(EVENTS.PROGRESS, per or @getLoadedPercent())
 
             progressTimer = null
-            @audio.on('loadstart', () =>
+            @audio.on('loadstart', =>
                 audio = @audio
                 # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
-                progressTimer = setInterval(() ->
+                progressTimer = setInterval(->
                     return clearInterval(progressTimer) if audio.readyState > 1
                     buffer()
                 , 50)
                 @setState(STATES.PREBUFFER)
-            ).on('playing', () =>
+            ).on('playing', =>
                 @setState(STATES.PLAYING)
-            ).on('pause', () =>
+            ).on('pause', =>
                 @setState(@getCurrentPosition() and STATES.PAUSE or STATES.STOP)
-            ).on('ended', () =>
+            ).on('ended', =>
                 @setState(STATES.END)
-            ).on('error', () =>
+            ).on('error', =>
                 @setState(STATES.END)
                 @trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK)
-            ).on('waiting', () =>
+            ).on('waiting', =>
                 @setState(@getCurrentPosition() and STATES.BUFFERING or STATES.PREBUFFER)
-            ).on('timeupdate', () =>
+            ).on('timeupdate', =>
                 @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
             ).on('progress', (e) ->
                 clearInterval(progressTimer)
@@ -112,7 +112,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                     # 对应的编码含义见: http://www.w3schools.com/tags/av_prop_readystate.asp
                     # 小于3认为还没有加载足够数据去播放。
                     if audio.readyState < 3
-                        handle = () =>
+                        handle = =>
                             fn.apply(@, args)
                             audio.off('canplay', handle)
                         audio.on('canplay', handle)
@@ -120,15 +120,15 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                         fn.apply(@, args)
                     @
 
-        play: () ->
+        play: ->
             @audio.play()
             @
 
-        pause: () ->
+        pause: ->
             @audio.pause()
             @
 
-        stop: () ->
+        stop: ->
             # FIXED: https://github.com/Baidu-Music-FE/muplayer/issues/2
             # 不能用setCurrentPosition(0)，似乎是因为_needCanPlay包装器使
             # 该方法成为了非同步方法, 导致执行顺序和预期不符。
@@ -163,10 +163,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 @play()
             @
 
-        getCurrentPosition: () ->
+        getCurrentPosition: ->
             @audio.currentTime * 1000
 
-        getLoadedPercent: () ->
+        getLoadedPercent: ->
             be = @getBufferedEnd()
             duration = @getTotalTime() / 1000
 
@@ -174,7 +174,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             be = if be > duration then duration else be
             duration and (be / duration).toFixed(2) * 1 or 0
 
-        getBufferedEnd: () ->
+        getBufferedEnd: ->
             audio = @audio
             buffered = audio.buffered
             bl = buffered.length
@@ -188,7 +188,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
             be
 
-        getTotalTime: () ->
+        getTotalTime: ->
             duration = @audio.duration
             if isFinite(duration)
                 # loadstart前duration为NaN。

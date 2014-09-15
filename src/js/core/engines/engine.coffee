@@ -27,7 +27,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             @opts = $.extend({}, @defaults, options)
             @_initEngines()
 
-        _initEngines: () ->
+        _initEngines: ->
             @engines = []
             opts = @opts
             $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
@@ -96,7 +96,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
         canPlayType: (type) ->
             $.inArray(type, @getSupportedTypes()) isnt -1
 
-        getSupportedTypes: () ->
+        getSupportedTypes: ->
             types = []
             for engine in @engines
                 types = types.concat(engine.getSupportedTypes())
@@ -115,7 +115,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             unless match
                 @setEngine(@engines[0])
 
-        reset: () ->
+        reset: ->
             @curEngine.reset()
             @
 
@@ -131,19 +131,19 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             @curEngine.setUrl(url)
             @
 
-        getUrl: () ->
+        getUrl: ->
             @curEngine.getUrl()
 
-        play: () ->
+        play: ->
             @curEngine.play()
             @
 
-        pause: () ->
+        pause: ->
             @curEngine.pause()
             @setState(STATES.PAUSE)
             @
 
-        stop: () ->
+        stop: ->
             @curEngine.stop()
             @setState(STATES.STOP)
             @
@@ -152,14 +152,14 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             @curEngine.setState(st)
             @
 
-        getState: () ->
+        getState: ->
             @curEngine.getState()
 
         setMute: (mute) ->
             @curEngine.setMute(!!mute)
             @
 
-        getMute: () ->
+        getMute: ->
             @curEngine.getMute()
 
         # 0 <= volume <= 100
@@ -168,7 +168,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                 @curEngine.setVolume(volume)
             @
 
-        getVolume: () ->
+        getVolume: ->
             @curEngine.getVolume()
 
         # 设置播放进度(单位毫秒)
@@ -177,22 +177,22 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             @curEngine.setCurrentPosition(ms)
             @
 
-        getCurrentPosition: () ->
+        getCurrentPosition: ->
             @curEngine.getCurrentPosition()
 
         # 音频下载的百分比, 取值: 0 ~ 1
-        getLoadedPercent: () ->
+        getLoadedPercent: ->
             @curEngine.getLoadedPercent()
 
         # 音频总时长, 单位毫秒
-        getTotalTime: () ->
+        getTotalTime: ->
             @curEngine.getTotalTime()
 
-        getEngineType: () ->
+        getEngineType: ->
             @curEngine.engineType
 
         # 当前内核的播放状态: play, pause, pre-buffer等
-        getState: () ->
+        getState: ->
             @curEngine.getState()
 
     Events.mixTo(Engine)

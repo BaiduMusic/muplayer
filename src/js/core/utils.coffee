@@ -86,7 +86,7 @@ do (root = @, factory = (cfg) ->
         # 示例:
         #    Creates `_mu.property.package`.
         #    namespace('property.package');
-        namespace: () ->
+        namespace: ->
             a = arguments
             period = '.'
             for arg in a
@@ -105,7 +105,7 @@ do (root = @, factory = (cfg) ->
 
         # 参考underscore
         wrap: (func, wrapper) ->
-            () ->
+            ->
                 args = [func]
                 push.apply(args, arguments)
                 wrapper.apply(@, args)
