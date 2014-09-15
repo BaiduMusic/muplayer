@@ -2223,6 +2223,10 @@ var __hasProp = {}.hasOwnProperty,
       return this.playlist.mode;
     };
 
+    Player.prototype.getEngineType = function() {
+      return this.engine.curEngine.engineType;
+    };
+
     Player.prototype._fetch = function() {
       var def;
       def = $.Deferred();
