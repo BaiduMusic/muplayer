@@ -303,8 +303,9 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         setUrl: (url) ->
-            @engine.setUrl(url)
-            @trigger('player:setUrl', url)
+            if url
+                @engine.setUrl(url)
+                @trigger('player:setUrl', url)
             @
 
         ###*
@@ -387,11 +388,13 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         # XXX: 如要实现自己的API选链逻辑，请务必重写_fetch方法。
         _fetch: ->
             def = $.Deferred()
-            if @getUrl() is @getCur()
+            cur = @getCur()
+
+            if @getUrl() is cur
                 def.resolve()
             else
                 setTimeout( =>
-                    @setUrl(@getCur())
+                    @setUrl(cur)
                     def.resolve()
                 , 0)
             def.promise()
