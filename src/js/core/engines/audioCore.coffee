@@ -167,14 +167,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @audio.currentTime * 1000
 
         getLoadedPercent: ->
-            be = @getBufferedEnd()
-            duration = @getTotalTime() / 1000
-
-            # 修复部分浏览器出现buffered end > duration的异常。
-            be = if be > duration then duration else be
-            duration and (be / duration).toFixed(2) * 1 or 0
-
-        getBufferedEnd: ->
             audio = @audio
             buffered = audio.buffered
             bl = buffered.length
@@ -186,13 +178,20 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                     be = buffered.end(bl)
                     break
 
-            be
+            duration = @getTotalTime() / 1000
+
+            # 修复部分浏览器出现buffered end > duration的异常。
+            be = if be > duration then duration else be
+            duration and (be / duration).toFixed(2) * 1 or 0
 
         getTotalTime: ->
-            duration = @audio.duration
-            # loadstart前duration为NaN。
-            unless isFinite(duration)
-                duration = @getBufferedEnd()
+            {duration, buffered} = @audio
+            bl = buffered.length
+
+            # duration为NaN的情况。
+            if not isFinite(duration) and bl > 0
+                duration = buffered.end(--bl)
+
             duration and duration * 1000 or 0
 
     AudioCore
