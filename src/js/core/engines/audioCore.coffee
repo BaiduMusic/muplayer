@@ -90,9 +90,9 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 @setState(@getCurrentPosition() and STATES.PAUSE or STATES.STOP)
             ).on('ended', =>
                 @setState(STATES.END)
-            ).on('error', =>
+            ).on('error', (e) =>
+                @trigger(EVENTS.ERROR, e.target.error.code)
                 @setState(STATES.END)
-                @trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK)
             ).on('waiting', =>
                 @setState(@getCurrentPosition() and STATES.BUFFERING or STATES.PREBUFFER)
             ).on('timeupdate', =>
@@ -139,9 +139,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 @pause()
             @
 
-        setUrl: (url = '') ->
-            @audio.src = url
-            @audio.load()
+        setUrl: (url) ->
+            if url
+                @audio.src = url
+                @audio.load()
             super(url)
 
         setVolume: (volume) ->
