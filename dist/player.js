@@ -1164,10 +1164,10 @@ var __hasProp = {}.hasOwnProperty,
     AudioCore.prototype.getTotalTime = function() {
       var duration;
       duration = this.audio.duration;
-      if (isFinite(duration)) {
-        return duration && duration * 1000 || 0;
+      if (!isFinite(duration)) {
+        duration = this.getBufferedEnd();
       }
-      return this.getBufferedEnd();
+      return duration && duration * 1000 || 0;
     };
 
     return AudioCore;

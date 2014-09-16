@@ -190,10 +190,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
         getTotalTime: ->
             duration = @audio.duration
-            if isFinite(duration)
-                # loadstart前duration为NaN。
-                return duration and duration * 1000 or 0
-            @getBufferedEnd()
+            # loadstart前duration为NaN。
+            unless isFinite(duration)
+                duration = @getBufferedEnd()
+            duration and duration * 1000 or 0
 
     AudioCore
 ) ->
