@@ -1326,9 +1326,9 @@ var __hasProp = {}.hasOwnProperty,
           return _this.setState(STATES.END);
         };
       })(this)).on('error', (function(_this) {
-        return function() {
-          _this.setState(STATES.END);
-          return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_NETWORK);
+        return function(e) {
+          _this.trigger(EVENTS.ERROR, e.target.error.code);
+          return _this.setState(STATES.END);
         };
       })(this)).on('waiting', (function(_this) {
         return function() {
@@ -1395,11 +1395,10 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.setUrl = function(url) {
-      if (url == null) {
-        url = '';
+      if (url) {
+        this.audio.src = url;
+        this.audio.load();
       }
-      this.audio.src = url;
-      this.audio.load();
       return AudioCore.__super__.setUrl.call(this, url);
     };
 
@@ -1429,15 +1428,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.getLoadedPercent = function() {
-      var be, duration;
-      be = this.getBufferedEnd();
-      duration = this.getTotalTime() / 1000;
-      be = be > duration ? duration : be;
-      return duration && (be / duration).toFixed(2) * 1 || 0;
-    };
-
-    AudioCore.prototype.getBufferedEnd = function() {
-      var audio, be, bl, buffered, _ref1;
+      var audio, be, bl, buffered, duration, _ref1;
       audio = this.audio;
       buffered = audio.buffered;
       bl = buffered.length;
@@ -1448,14 +1439,17 @@ var __hasProp = {}.hasOwnProperty,
           break;
         }
       }
-      return be;
+      duration = this.getTotalTime() / 1000;
+      be = be > duration ? duration : be;
+      return duration && (be / duration).toFixed(2) * 1 || 0;
     };
 
     AudioCore.prototype.getTotalTime = function() {
-      var duration;
-      duration = this.audio.duration;
-      if (!isFinite(duration)) {
-        duration = this.getBufferedEnd();
+      var bl, buffered, duration, _ref1;
+      _ref1 = this.audio, duration = _ref1.duration, buffered = _ref1.buffered;
+      bl = buffered.length;
+      if (!isFinite(duration) && bl > 0) {
+        duration = buffered.end(--bl);
       }
       return duration && duration * 1000 || 0;
     };
