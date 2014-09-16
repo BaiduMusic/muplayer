@@ -2113,8 +2113,10 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.setUrl = function(url) {
-      this.engine.setUrl(url);
-      this.trigger('player:setUrl', url);
+      if (url) {
+        this.engine.setUrl(url);
+        this.trigger('player:setUrl', url);
+      }
       return this;
     };
 
@@ -2222,14 +2224,15 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Player.prototype._fetch = function() {
-      var def;
+      var cur, def;
       def = $.Deferred();
-      if (this.getUrl() === this.getCur()) {
+      cur = this.getCur();
+      if (this.getUrl() === cur) {
         def.resolve();
       } else {
         setTimeout((function(_this) {
           return function() {
-            _this.setUrl(_this.getCur());
+            _this.setUrl(cur);
             return def.resolve();
           };
         })(this), 0);
