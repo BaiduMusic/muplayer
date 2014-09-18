@@ -36,13 +36,18 @@ do (root = @, factory = (cfg, utils, Events) ->
             @_url
 
         setState: (st) ->
-            if st in availableStates and st isnt @_state
-                oldState = @_state
-                @_state = st
-                @trigger(EVENTS.STATECHANGE,
-                    oldState: oldState
-                    newState: st
-                )
+            if st not in availableStates or st is @_state
+                return
+
+            if st is STATES.BUFFERING and @_state in [STATES.END, STATES.PAUSE, STATES.STOP]
+                return
+
+            oldState = @_state
+            @_state = st
+            @trigger(EVENTS.STATECHANGE,
+                oldState: oldState
+                newState: st
+            )
 
         getState: ->
             @_state
