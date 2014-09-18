@@ -649,15 +649,19 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     EngineCore.prototype.setState = function(st) {
-      var oldState;
-      if (__indexOf.call(availableStates, st) >= 0 && st !== this._state) {
-        oldState = this._state;
-        this._state = st;
-        return this.trigger(EVENTS.STATECHANGE, {
-          oldState: oldState,
-          newState: st
-        });
+      var oldState, _ref1;
+      if (__indexOf.call(availableStates, st) < 0 || st === this._state) {
+        return;
       }
+      if (st === STATES.BUFFERING && ((_ref1 = this._state) === STATES.END || _ref1 === STATES.PAUSE || _ref1 === STATES.STOP)) {
+        return;
+      }
+      oldState = this._state;
+      this._state = st;
+      return this.trigger(EVENTS.STATECHANGE, {
+        oldState: oldState,
+        newState: st
+      });
     };
 
     EngineCore.prototype.getState = function() {
