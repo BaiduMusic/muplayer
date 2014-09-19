@@ -140,11 +140,13 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
 
         pause: ->
             @curEngine.pause()
+            @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
             @setState(STATES.PAUSE)
             @
 
         stop: ->
             @curEngine.stop()
+            @trigger(EVENTS.POSITIONCHANGE, 0)
             @setState(STATES.STOP)
             @
 

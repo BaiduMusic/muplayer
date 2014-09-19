@@ -911,6 +911,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.reset = function() {
       this.stop();
       this.setUrl();
+      this.trigger(EVENTS.POSITIONCHANGE, 0);
       return this.setState(STATES.NOT_INIT);
     };
 
@@ -1646,12 +1647,14 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.pause = function() {
       this.curEngine.pause();
+      this.trigger(EVENTS.POSITIONCHANGE, this.getCurrentPosition());
       this.setState(STATES.PAUSE);
       return this;
     };
 
     Engine.prototype.stop = function() {
       this.curEngine.stop();
+      this.trigger(EVENTS.POSITIONCHANGE, 0);
       this.setState(STATES.STOP);
       return this;
     };
