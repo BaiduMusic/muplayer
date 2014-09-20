@@ -10,9 +10,10 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
 
         pl = @playlist
         play = =>
-            @trigger("player:#{fname}", {
+            args =
                 cur: @getCur()
-            })
+            args.auto = auto if auto
+            @trigger "player:#{fname}", args
             @play()
 
         if @getSongsNum()
@@ -197,8 +198,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * <pre>cur // 调用prev时正在播放的歌曲</pre>
          * @return {player}
         ###
-        prev: (auto) ->
-            ctrl.apply(@, ['prev', auto])
+        prev:  ->
+            ctrl.apply @, ['prev']
 
         ###*
          * 播放下一首歌。参数auto是布尔值，代表是否是因自动切歌而触发的（比如因为一首歌播放完会自动触发next方法，这时auto为true，其他主动调用auto应为undefined）。
@@ -208,7 +209,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         next: (auto) ->
-            ctrl.apply(@, ['next', auto])
+            ctrl.apply @, ['next', auto]
 
         ###*
          * 获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。

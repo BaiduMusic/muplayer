@@ -2229,9 +2229,14 @@ var __hasProp = {}.hasOwnProperty,
     pl = this.playlist;
     play = (function(_this) {
       return function() {
-        _this.trigger("player:" + fname, {
+        var args;
+        args = {
           cur: _this.getCur()
-        });
+        };
+        if (auto) {
+          args.auto = auto;
+        }
+        _this.trigger("player:" + fname, args);
         return _this.play();
       };
     })(this);
@@ -2454,7 +2459,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.prev = function() {
-      return ctrl.apply(this, ['prev', auto]);
+      return ctrl.apply(this, ['prev']);
     };
 
 
