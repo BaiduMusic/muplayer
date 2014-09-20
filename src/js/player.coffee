@@ -197,7 +197,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * <pre>cur // 调用prev时正在播放的歌曲</pre>
          * @return {player}
         ###
-        prev: ->
+        prev: (auto) ->
             ctrl.apply(@, ['prev', auto])
 
         ###*
