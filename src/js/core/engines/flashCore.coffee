@@ -15,6 +15,8 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
 
     class FlashCore extends EngineCore
         @defaults:
+            # 单位毫秒，默认12小时
+            swfCacheTime: 12 * 3600 * 1000
             expressInstaller: 'expressInstall.swf'
 
         constructor: (options) ->
@@ -43,7 +45,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             instanceName = '_mu.engines.' + instanceName
 
             @flash = $.flash.create
-                swf: baseDir + opts.swf
+                swf: baseDir + opts.swf + '?t=' + opts.swfCacheTime
                 id: id
                 height: 1
                 width: 1

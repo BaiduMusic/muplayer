@@ -1602,6 +1602,7 @@ var __hasProp = {}.hasOwnProperty,
     __extends(FlashCore, _super);
 
     FlashCore.defaults = {
+      swfCacheTime: 12 * 3600 * 1000,
       expressInstaller: 'expressInstall.swf'
     };
 
@@ -1619,7 +1620,7 @@ var __hasProp = {}.hasOwnProperty,
       utils.namespace('engines')[instanceName] = this;
       instanceName = '_mu.engines.' + instanceName;
       this.flash = $.flash.create({
-        swf: baseDir + opts.swf,
+        swf: baseDir + opts.swf + '?t=' + opts.swfCacheTime,
         id: id,
         height: 1,
         width: 1,

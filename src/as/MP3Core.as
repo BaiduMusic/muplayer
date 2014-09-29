@@ -58,7 +58,7 @@ package {
             if (st === State.PLAYING && _position === pos) {
                 setState(State.PREBUFFER);
             } else if (st !== State.PLAYING && _position < pos) {
-                setState(State.PLAYING);
+                setState(st === State.PREBUFFER && State.BUFFERING || State.PLAYING);
             }
 
             _position = sc.position;
