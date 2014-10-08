@@ -68,7 +68,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         _initEvents: ->
             self = @
             { audio, trigger } = @
-            [ errorTimer, progressTimer, canPlayThrough ]  = [ null, null, false ]
+            [ errorTimer, progressTimer ]  = [ null, null ]
 
             @trigger = (type, listener) ->
                 trigger.call(self, type, listener) if self.getUrl() isnt self.opts.emptyMP3
@@ -77,7 +77,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 self.trigger(EVENTS.PROGRESS, per or self.getLoadedPercent())
 
             audio.on('loadstart', ->
-                canPlayThrough = false
                 # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
                 progressTimer = setInterval( ->
@@ -99,15 +98,9 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                     self.setState(STATES.END)
                 , 2000)
             ).on('waiting', ->
-                unless canPlayThrough
-                    self.setState(STATES.PREBUFFER)
+                self.setState(STATES.PREBUFFER)
             ).on('loadeddata', ->
-                unless canPlayThrough
-                    self.setState(STATES.BUFFERING)
-            ).on('canplaythrough', ->
-                unless canPlayThrough
-                    canPlayThrough = true
-                    self.setState(STATES.CANPLAYTHROUGH)
+                self.setState(STATES.BUFFERING)
             ).on('timeupdate', ->
                 self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition())
             ).on('progress', (e) ->
