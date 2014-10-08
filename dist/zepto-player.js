@@ -1290,10 +1290,10 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._initEvents = function() {
-      var audio, canPlayThrough, progress, progressTimer, self, trigger, _ref1;
+      var audio, canPlayThrough, errorTimer, progress, progressTimer, self, trigger, _ref1;
       self = this;
       audio = this.audio, trigger = this.trigger;
-      _ref1 = [null, false], progressTimer = _ref1[0], canPlayThrough = _ref1[1];
+      _ref1 = [null, null, false], errorTimer = _ref1[0], progressTimer = _ref1[1], canPlayThrough = _ref1[2];
       this.trigger = function(type, listener) {
         if (self.getUrl() !== self.opts.emptyMP3) {
           return trigger.call(self, type, listener);
@@ -1312,14 +1312,17 @@ var __hasProp = {}.hasOwnProperty,
         }, 50);
         return self.setState(STATES.PREBUFFER);
       }).on('playing', function() {
+        clearTimeout(errorTimer);
         return self.setState(STATES.PLAYING);
       }).on('pause', function() {
         return self.setState(self.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
       }).on('ended', function() {
         return self.setState(STATES.END);
       }).on('error', function(e) {
-        self.trigger(EVENTS.ERROR, e.target.error.code);
-        return self.setState(STATES.END);
+        return errorTimer = setTimeout(function() {
+          self.trigger(EVENTS.ERROR, e.target.error.code);
+          return self.setState(STATES.END);
+        }, 2000);
       }).on('waiting', function() {
         if (!canPlayThrough) {
           return self.setState(STATES.PREBUFFER);

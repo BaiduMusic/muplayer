@@ -68,7 +68,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         _initEvents: ->
             self = @
             { audio, trigger } = @
-            [progressTimer, canPlayThrough]  = [null, false]
+            [ errorTimer, progressTimer, canPlayThrough ]  = [ null, null, false ]
 
             @trigger = (type, listener) ->
                 trigger.call(self, type, listener) if self.getUrl() isnt self.opts.emptyMP3
@@ -87,14 +87,17 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 , 50)
                 self.setState(STATES.PREBUFFER)
             ).on('playing', ->
+                clearTimeout(errorTimer)
                 self.setState(STATES.PLAYING)
             ).on('pause', ->
                 self.setState(self.getCurrentPosition() and STATES.PAUSE or STATES.STOP)
             ).on('ended', ->
                 self.setState(STATES.END)
             ).on('error', (e) ->
-                self.trigger(EVENTS.ERROR, e.target.error.code)
-                self.setState(STATES.END)
+                errorTimer = setTimeout( ->
+                    self.trigger(EVENTS.ERROR, e.target.error.code)
+                    self.setState(STATES.END)
+                , 2000)
             ).on('waiting', ->
                 unless canPlayThrough
                     self.setState(STATES.PREBUFFER)
