@@ -1000,10 +1000,10 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._initEvents = function() {
-      var audio, errorTimer, progress, progressTimer, self, trigger, _ref1;
+      var audio, canPlayThrough, errorTimer, progress, progressTimer, self, trigger, _ref1;
       self = this;
       audio = this.audio, trigger = this.trigger;
-      _ref1 = [null, null], errorTimer = _ref1[0], progressTimer = _ref1[1];
+      _ref1 = [null, null, false], errorTimer = _ref1[0], progressTimer = _ref1[1], canPlayThrough = _ref1[2];
       this.trigger = function(type, listener) {
         if (self.getUrl() !== self.opts.emptyMP3) {
           return trigger.call(self, type, listener);
@@ -1013,6 +1013,7 @@ var __hasProp = {}.hasOwnProperty,
         return self.trigger(EVENTS.PROGRESS, per || self.getLoadedPercent());
       };
       return audio.on('loadstart', function() {
+        canPlayThrough = false;
         progressTimer = setInterval(function() {
           if (audio.readyState > 1) {
             return clearInterval(progressTimer);
@@ -1033,17 +1034,30 @@ var __hasProp = {}.hasOwnProperty,
           return self.setState(STATES.END);
         }, 2000);
       }).on('waiting', function() {
-        return self.setState(STATES.PREBUFFER);
+        if (!canPlayThrough) {
+          return self.setState(STATES.PREBUFFER);
+        }
       }).on('loadeddata', function() {
-        return self.setState(STATES.BUFFERING);
+        if (!canPlayThrough) {
+          return self.setState(STATES.BUFFERING);
+        }
+      }).on('canplaythrough', function() {
+        if (!canPlayThrough) {
+          canPlayThrough = true;
+          self.setState(STATES.CANPLAYTHROUGH);
+          clearInterval(progressTimer);
+          return progress(1);
+        }
       }).on('timeupdate', function() {
         return self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition());
       }).on('progress', function(e) {
         var loaded, total;
-        clearInterval(progressTimer);
-        loaded = e.loaded || 0;
-        total = e.total || 1;
-        return progress(loaded && (loaded / total).toFixed(2) * 1);
+        if (!canPlayThrough) {
+          clearInterval(progressTimer);
+          loaded = e.loaded || 0;
+          total = e.total || 1;
+          return progress(loaded && (loaded / total).toFixed(2) * 1);
+        }
       });
     };
 

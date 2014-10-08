@@ -68,7 +68,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         _initEvents: ->
             self = @
             { audio, trigger } = @
-            [ errorTimer, progressTimer ]  = [ null, null ]
+            [ errorTimer, progressTimer, canPlayThrough ]  = [ null, null, false ]
 
             @trigger = (type, listener) ->
                 trigger.call(self, type, listener) if self.getUrl() isnt self.opts.emptyMP3
@@ -77,6 +77,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 self.trigger(EVENTS.PROGRESS, per or self.getLoadedPercent())
 
             audio.on('loadstart', ->
+                canPlayThrough = false
                 # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
                 progressTimer = setInterval( ->
@@ -98,17 +99,26 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                     self.setState(STATES.END)
                 , 2000)
             ).on('waiting', ->
-                self.setState(STATES.PREBUFFER)
+                unless canPlayThrough
+                    self.setState(STATES.PREBUFFER)
             ).on('loadeddata', ->
-                self.setState(STATES.BUFFERING)
+                unless canPlayThrough
+                    self.setState(STATES.BUFFERING)
+            ).on('canplaythrough', ->
+                unless canPlayThrough
+                    canPlayThrough = true
+                    clearInterval(progressTimer)
+                    progress(1)
+                    self.setState(STATES.CANPLAYTHROUGH)
             ).on('timeupdate', ->
                 self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition())
             ).on('progress', (e) ->
-                clearInterval(progressTimer)
-                # firefox 3.6 implements e.loaded/total (bytes)
-                loaded = e.loaded or 0
-                total = e.total or 1
-                progress(loaded and (loaded / total).toFixed(2) * 1)
+                unless canPlayThrough
+                    clearInterval(progressTimer)
+                    # firefox 3.6 implements e.loaded/total (bytes)
+                    loaded = e.loaded or 0
+                    total = e.total or 1
+                    progress(loaded and (loaded / total).toFixed(2) * 1)
             )
 
         _needCanPlay: (fnames) ->
