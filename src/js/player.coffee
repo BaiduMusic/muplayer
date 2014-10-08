@@ -143,10 +143,11 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             engine = @engine
 
             play = =>
-                if startTime
-                    engine.setCurrentPosition(startTime)
-                else
-                    engine.play()
+                if @getUrl()
+                    if startTime
+                        engine.setCurrentPosition(startTime)
+                    else
+                        engine.play()
                 @trigger('player:play', startTime)
                 def.resolve()
 
@@ -304,9 +305,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         setUrl: (url) ->
-            if url
-                @engine.setUrl(url)
-                @trigger('player:setUrl', url)
+            @engine.setUrl(url)
+            @trigger('player:setUrl', url)
             @
 
         ###*

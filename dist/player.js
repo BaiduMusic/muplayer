@@ -621,6 +621,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.reset = function() {
       this.stop();
       this.setUrl();
+      this.trigger(EVENTS.PROGRESS, 0);
       this.trigger(EVENTS.POSITIONCHANGE, 0);
       return this.setState(STATES.NOT_INIT);
     };
@@ -1044,9 +1045,9 @@ var __hasProp = {}.hasOwnProperty,
       }).on('canplaythrough', function() {
         if (!canPlayThrough) {
           canPlayThrough = true;
-          self.setState(STATES.CANPLAYTHROUGH);
           clearInterval(progressTimer);
-          return progress(1);
+          progress(1);
+          return self.setState(STATES.CANPLAYTHROUGH);
         }
       }).on('timeupdate', function() {
         return self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition());
@@ -2393,10 +2394,12 @@ var __hasProp = {}.hasOwnProperty,
       engine = this.engine;
       play = (function(_this) {
         return function() {
-          if (startTime) {
-            engine.setCurrentPosition(startTime);
-          } else {
-            engine.play();
+          if (_this.getUrl()) {
+            if (startTime) {
+              engine.setCurrentPosition(startTime);
+            } else {
+              engine.play();
+            }
           }
           _this.trigger('player:play', startTime);
           return def.resolve();
@@ -2612,10 +2615,8 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.setUrl = function(url) {
-      if (url) {
-        this.engine.setUrl(url);
-        this.trigger('player:setUrl', url);
-      }
+      this.engine.setUrl(url);
+      this.trigger('player:setUrl', url);
       return this;
     };
 
