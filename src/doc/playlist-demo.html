@@ -47,6 +47,8 @@ $pl.on('click', '> li', function() {
 
     if ($this.hasClass('playing')) {
         player.pause();
+    } else if ($this.hasClass('pause')) {
+        player.play();
     } else {
         sids = $this.parent().find('> li').map(function() {
             return $(this).data('link');
