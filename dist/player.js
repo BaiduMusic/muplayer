@@ -1039,8 +1039,10 @@ var __hasProp = {}.hasOwnProperty,
           return self.setState(STATES.BUFFERING);
         }
       }).on('canplaythrough', function() {
-        canPlayThrough = true;
-        return self.setState(STATES.CANPLAYTHROUGH);
+        if (!canPlayThrough) {
+          canPlayThrough = true;
+          return self.setState(STATES.CANPLAYTHROUGH);
+        }
       }).on('timeupdate', function() {
         return self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition());
       }).on('progress', function(e) {

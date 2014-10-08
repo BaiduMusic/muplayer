@@ -102,8 +102,9 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 unless canPlayThrough
                     self.setState(STATES.BUFFERING)
             ).on('canplaythrough', ->
-                canPlayThrough = true
-                self.setState(STATES.CANPLAYTHROUGH)
+                unless canPlayThrough
+                    canPlayThrough = true
+                    self.setState(STATES.CANPLAYTHROUGH)
             ).on('timeupdate', ->
                 self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition())
             ).on('progress', (e) ->
