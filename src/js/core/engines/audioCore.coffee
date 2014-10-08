@@ -66,43 +66,52 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
         _initEvents: ->
-            trigger = @trigger
-            @trigger = (type, listener) =>
-                trigger.call(@, type, listener) if @getUrl() isnt @opts.emptyMP3
+            self = @
+            { audio, trigger } = @
+            [progressTimer, canPlayThrough]  = [null, false]
 
-            buffer = (per) =>
-                @setState(STATES.BUFFERING)
-                @trigger(EVENTS.PROGRESS, per or @getLoadedPercent())
+            @trigger = (type, listener) ->
+                trigger.call(self, type, listener) if self.getUrl() isnt self.opts.emptyMP3
 
-            progressTimer = null
-            @audio.on('loadstart', =>
-                audio = @audio
+            progress = (per) ->
+                self.trigger(EVENTS.PROGRESS, per or self.getLoadedPercent())
+
+            audio.on('loadstart', ->
+                canPlayThrough = false
                 # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
-                progressTimer = setInterval(->
-                    return clearInterval(progressTimer) if audio.readyState > 1
-                    buffer()
+                progressTimer = setInterval( ->
+                    if audio.readyState > 1
+                        return clearInterval(progressTimer)
+                    progress()
                 , 50)
-                @setState(STATES.PREBUFFER)
-            ).on('playing', =>
-                @setState(STATES.PLAYING)
-            ).on('pause', =>
-                @setState(@getCurrentPosition() and STATES.PAUSE or STATES.STOP)
-            ).on('ended', =>
-                @setState(STATES.END)
-            ).on('error', (e) =>
-                @trigger(EVENTS.ERROR, e.target.error.code)
-                @setState(STATES.END)
-            ).on('waiting', =>
-                @setState(@getCurrentPosition() and STATES.BUFFERING or STATES.PREBUFFER)
-            ).on('timeupdate', =>
-                @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
+                self.setState(STATES.PREBUFFER)
+            ).on('playing', ->
+                self.setState(STATES.PLAYING)
+            ).on('pause', ->
+                self.setState(self.getCurrentPosition() and STATES.PAUSE or STATES.STOP)
+            ).on('ended', ->
+                self.setState(STATES.END)
+            ).on('error', (e) ->
+                self.trigger(EVENTS.ERROR, e.target.error.code)
+                self.setState(STATES.END)
+            ).on('waiting', ->
+                unless canPlayThrough
+                    self.setState(STATES.PREBUFFER)
+            ).on('loadeddata', ->
+                unless canPlayThrough
+                    self.setState(STATES.BUFFERING)
+            ).on('canplaythrough', ->
+                canPlayThrough = true
+                self.setState(STATES.CANPLAYTHROUGH)
+            ).on('timeupdate', ->
+                self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition())
             ).on('progress', (e) ->
                 clearInterval(progressTimer)
                 # firefox 3.6 implements e.loaded/total (bytes)
                 loaded = e.loaded or 0
                 total = e.total or 1
-                buffer(loaded and (loaded / total).toFixed(2) * 1)
+                progress(loaded and (loaded / total).toFixed(2) * 1)
             )
 
         _needCanPlay: (fnames) ->
