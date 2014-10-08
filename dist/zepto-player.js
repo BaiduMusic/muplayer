@@ -1290,65 +1290,55 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._initEvents = function() {
-      var buffer, progressTimer, trigger;
-      trigger = this.trigger;
-      this.trigger = (function(_this) {
-        return function(type, listener) {
-          if (_this.getUrl() !== _this.opts.emptyMP3) {
-            return trigger.call(_this, type, listener);
+      var audio, canPlayThrough, progress, progressTimer, self, trigger, _ref1;
+      self = this;
+      audio = this.audio, trigger = this.trigger;
+      _ref1 = [null, false], progressTimer = _ref1[0], canPlayThrough = _ref1[1];
+      this.trigger = function(type, listener) {
+        if (self.getUrl() !== self.opts.emptyMP3) {
+          return trigger.call(self, type, listener);
+        }
+      };
+      progress = function(per) {
+        return self.trigger(EVENTS.PROGRESS, per || self.getLoadedPercent());
+      };
+      return audio.on('loadstart', function() {
+        canPlayThrough = false;
+        progressTimer = setInterval(function() {
+          if (audio.readyState > 1) {
+            return clearInterval(progressTimer);
           }
-        };
-      })(this);
-      buffer = (function(_this) {
-        return function(per) {
-          _this.setState(STATES.BUFFERING);
-          return _this.trigger(EVENTS.PROGRESS, per || _this.getLoadedPercent());
-        };
-      })(this);
-      progressTimer = null;
-      return this.audio.on('loadstart', (function(_this) {
-        return function() {
-          var audio;
-          audio = _this.audio;
-          progressTimer = setInterval(function() {
-            if (audio.readyState > 1) {
-              return clearInterval(progressTimer);
-            }
-            return buffer();
-          }, 50);
-          return _this.setState(STATES.PREBUFFER);
-        };
-      })(this)).on('playing', (function(_this) {
-        return function() {
-          return _this.setState(STATES.PLAYING);
-        };
-      })(this)).on('pause', (function(_this) {
-        return function() {
-          return _this.setState(_this.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
-        };
-      })(this)).on('ended', (function(_this) {
-        return function() {
-          return _this.setState(STATES.END);
-        };
-      })(this)).on('error', (function(_this) {
-        return function(e) {
-          _this.trigger(EVENTS.ERROR, e.target.error.code);
-          return _this.setState(STATES.END);
-        };
-      })(this)).on('waiting', (function(_this) {
-        return function() {
-          return _this.setState(_this.getCurrentPosition() && STATES.BUFFERING || STATES.PREBUFFER);
-        };
-      })(this)).on('timeupdate', (function(_this) {
-        return function() {
-          return _this.trigger(EVENTS.POSITIONCHANGE, _this.getCurrentPosition());
-        };
-      })(this)).on('progress', function(e) {
+          return progress();
+        }, 50);
+        return self.setState(STATES.PREBUFFER);
+      }).on('playing', function() {
+        return self.setState(STATES.PLAYING);
+      }).on('pause', function() {
+        return self.setState(self.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
+      }).on('ended', function() {
+        return self.setState(STATES.END);
+      }).on('error', function(e) {
+        self.trigger(EVENTS.ERROR, e.target.error.code);
+        return self.setState(STATES.END);
+      }).on('waiting', function() {
+        if (!canPlayThrough) {
+          return self.setState(STATES.PREBUFFER);
+        }
+      }).on('loadeddata', function() {
+        if (!canPlayThrough) {
+          return self.setState(STATES.BUFFERING);
+        }
+      }).on('canplaythrough', function() {
+        canPlayThrough = true;
+        return self.setState(STATES.CANPLAYTHROUGH);
+      }).on('timeupdate', function() {
+        return self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition());
+      }).on('progress', function(e) {
         var loaded, total;
         clearInterval(progressTimer);
         loaded = e.loaded || 0;
         total = e.total || 1;
-        return buffer(loaded && (loaded / total).toFixed(2) * 1);
+        return progress(loaded && (loaded / total).toFixed(2) * 1);
       });
     };
 
