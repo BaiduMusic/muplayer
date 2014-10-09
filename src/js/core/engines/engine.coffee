@@ -126,7 +126,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             if @canPlayType(ext)
                 @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
             else
-                throw "Can not play with: #{ext}"
+                throw new Error("Can not play with: #{ext}")
 
             @curEngine.setUrl(url)
             @

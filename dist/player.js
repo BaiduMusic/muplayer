@@ -2118,7 +2118,7 @@ var __hasProp = {}.hasOwnProperty,
           this.switchEngineByType(ext);
         }
       } else {
-        throw "Can not play with: " + ext;
+        throw new Error("Can not play with: " + ext);
       }
       this.curEngine.setUrl(url);
       return this;
@@ -2615,6 +2615,9 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.setUrl = function(url) {
+      if (!url) {
+        return this;
+      }
       this.engine.setUrl(url);
       this.trigger('player:setUrl', url);
       return this;

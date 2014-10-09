@@ -305,6 +305,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         setUrl: (url) ->
+            return @ unless url
             @engine.setUrl(url)
             @trigger('player:setUrl', url)
             @
