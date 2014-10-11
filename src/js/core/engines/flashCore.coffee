@@ -4,7 +4,6 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
 
     # fmp.swf中约定的状态返回码。
     STATESCODE =
-        '-1': STATES.NOT_INIT
         '1': STATES.CANPLAYTHROUGH
         '2': STATES.PREBUFFER
         '3': STATES.BUFFERING
@@ -22,7 +21,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
         constructor: (options) ->
             @opts = opts = $.extend({}, FlashCore.defaults, @defaults, options)
 
-            @_state = STATES.NOT_INIT
+            @_state = STATES.STOP
             @_loaded = false
             @_queue = []
 

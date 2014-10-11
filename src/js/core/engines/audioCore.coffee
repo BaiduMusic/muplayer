@@ -47,7 +47,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @_needCanPlay([
                 'play', 'setCurrentPosition'
             ])
-            @setState(STATES.NOT_INIT)
+            @setState(STATES.STOP)
             @_initEvents()
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
