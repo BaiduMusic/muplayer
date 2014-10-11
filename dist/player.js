@@ -38,7 +38,6 @@
         INIT_FAIL: 'engine:init_fail'
       },
       STATES: {
-        NOT_INIT: 'not_init',
         CANPLAYTHROUGH: 'canplaythrough',
         PREBUFFER: 'waiting',
         BUFFERING: 'loadeddata',
@@ -977,7 +976,7 @@ var __hasProp = {}.hasOwnProperty,
       })(this);
       this.audio = audio;
       this._needCanPlay(['play', 'setCurrentPosition']);
-      this.setState(STATES.NOT_INIT);
+      this.setState(STATES.STOP);
       this._initEvents();
       if (opts.needPlayEmpty) {
         playEmpty = (function(_this) {
@@ -1010,14 +1009,18 @@ var __hasProp = {}.hasOwnProperty,
         }
       };
       progress = function(per) {
-        return self.trigger(EVENTS.PROGRESS, per || self.getLoadedPercent());
+        per = per || self.getLoadedPercent();
+        self.trigger(EVENTS.PROGRESS, per);
+        if (per === 1) {
+          clearInterval(progressTimer);
+          canPlayThrough = true;
+          return self.setState(STATES.CANPLAYTHROUGH);
+        }
       };
       return audio.on('loadstart', function() {
         canPlayThrough = false;
+        clearInterval(progressTimer);
         progressTimer = setInterval(function() {
-          if (audio.readyState > 1) {
-            return clearInterval(progressTimer);
-          }
           return progress();
         }, 50);
         return self.setState(STATES.PREBUFFER);
@@ -1029,31 +1032,21 @@ var __hasProp = {}.hasOwnProperty,
       }).on('ended', function() {
         return self.setState(STATES.END);
       }).on('error', function(e) {
+        clearTimeout(errorTimer);
         return errorTimer = setTimeout(function() {
           self.trigger(EVENTS.ERROR, e.target.error.code);
           return self.setState(STATES.END);
         }, 2000);
       }).on('waiting', function() {
-        if (!canPlayThrough) {
-          return self.setState(STATES.PREBUFFER);
-        }
+        return self.setState(STATES.PREBUFFER);
       }).on('loadeddata', function() {
-        if (!canPlayThrough) {
-          return self.setState(STATES.BUFFERING);
-        }
-      }).on('canplaythrough', function() {
-        if (!canPlayThrough) {
-          canPlayThrough = true;
-          clearInterval(progressTimer);
-          progress(1);
-          return self.setState(STATES.CANPLAYTHROUGH);
-        }
+        return self.setState(STATES.BUFFERING);
       }).on('timeupdate', function() {
         return self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition());
       }).on('progress', function(e) {
         var loaded, total;
+        clearInterval(progressTimer);
         if (!canPlayThrough) {
-          clearInterval(progressTimer);
           loaded = e.loaded || 0;
           total = e.total || 1;
           return progress(loaded && (loaded / total).toFixed(2) * 1);
@@ -1588,7 +1581,6 @@ var __hasProp = {}.hasOwnProperty,
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
   timerResolution = cfg.timerResolution;
   STATESCODE = {
-    '-1': STATES.NOT_INIT,
     '1': STATES.CANPLAYTHROUGH,
     '2': STATES.PREBUFFER,
     '3': STATES.BUFFERING,
@@ -1608,7 +1600,7 @@ var __hasProp = {}.hasOwnProperty,
     function FlashCore(options) {
       var baseDir, id, instanceName, opts;
       this.opts = opts = $.extend({}, FlashCore.defaults, this.defaults, options);
-      this._state = STATES.NOT_INIT;
+      this._state = STATES.STOP;
       this._loaded = false;
       this._queue = [];
       this._needFlashReady(['play', 'pause', 'stop', 'setCurrentPosition', '_setUrl', '_setVolume', '_setMute']);
@@ -2409,7 +2401,7 @@ var __hasProp = {}.hasOwnProperty,
         };
       })(this);
       st = this.getState();
-      if ((st === STATES.NOT_INIT || st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
+      if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
         this.trigger('player:fetch:start');
         this._fetch().done((function(_this) {
           return function() {

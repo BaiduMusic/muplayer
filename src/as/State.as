@@ -1,7 +1,6 @@
 package {
     // 标识歌曲播放状态的静态类
     public final class State {
-        public static const NOT_INIT:int = -1;
         public static const CANPLAYTHROUGH:int = 1;
         public static const PREBUFFER:int = 2;
         public static const BUFFERING:int = 3;
