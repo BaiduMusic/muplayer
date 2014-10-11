@@ -912,8 +912,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       this.stop();
       this.setUrl();
       this.trigger(EVENTS.PROGRESS, 0);
-      this.trigger(EVENTS.POSITIONCHANGE, 0);
-      return this.setState(STATES.NOT_INIT);
+      return this.trigger(EVENTS.POSITIONCHANGE, 0);
     };
 
     EngineCore.prototype.play = function() {

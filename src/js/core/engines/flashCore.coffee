@@ -174,8 +174,8 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                     @off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check)
             super(url)
 
-        getState: (code) ->
-            STATESCODE[code] or @_state
+        getState: () ->
+            @_state
 
         _setVolume: (volume) ->
             @flash.setData('volume', volume)
@@ -213,7 +213,8 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             , 0)
 
         _swfOnStateChange: (code) ->
-            @setState(@getState(code))
+            st = STATESCODE[code]
+            @setState(st) if st
 
         _swfOnErr: (e) ->
             @setState(STATES.END)

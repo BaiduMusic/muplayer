@@ -622,8 +622,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       this.stop();
       this.setUrl();
       this.trigger(EVENTS.PROGRESS, 0);
-      this.trigger(EVENTS.POSITIONCHANGE, 0);
-      return this.setState(STATES.NOT_INIT);
+      return this.trigger(EVENTS.POSITIONCHANGE, 0);
     };
 
     EngineCore.prototype.play = function() {
@@ -1805,8 +1804,8 @@ var __hasProp = {}.hasOwnProperty,
       return FlashCore.__super__.setUrl.call(this, url);
     };
 
-    FlashCore.prototype.getState = function(code) {
-      return STATESCODE[code] || this._state;
+    FlashCore.prototype.getState = function() {
+      return this._state;
     };
 
     FlashCore.prototype._setVolume = function(volume) {
@@ -1854,7 +1853,11 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype._swfOnStateChange = function(code) {
-      return this.setState(this.getState(code));
+      var st;
+      st = STATESCODE[code];
+      if (st) {
+        return this.setState(st);
+      }
     };
 
     FlashCore.prototype._swfOnErr = function(e) {
