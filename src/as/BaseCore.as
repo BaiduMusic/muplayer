@@ -16,7 +16,7 @@ package {
         // 实例属性
         protected var _volume:uint = 80;               // 音量(0-100)，默认80
         protected var _mute:Boolean = false;           // 静音状态，默认flase
-        protected var _state:int = State.NOT_INIT;     // 播放状态
+        protected var _state:int = State.STOP;         // 播放状态
         protected var _muteVolume:uint;                // 静音时的音量
         protected var _url:String;                     // 外部文件地址
         protected var _length:uint;                    // 音频总长度(ms)
@@ -65,7 +65,7 @@ package {
         protected function onPlayComplete(e:Event = null):void {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
-            f_stop();
+            f_pause()
             setState(State.END);
         }
 

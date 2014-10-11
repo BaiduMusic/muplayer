@@ -26,10 +26,8 @@ do (root = @, factory = ->
                 INIT_FAIL: 'engine:init_fail'           # 播放器初始化失败时的事件
 
             # 状态影响EVENTS.STATECHANGE派发的事件，原则上派发的事件应保持和HTML5 Audio规范一致。
-            # 但也有些标注播放器状态的特殊事件，如NOT_INIT。
             # HTML5 Audio相关事件可参考: http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#mediaevents
             STATES:
-                NOT_INIT: 'not_init'
                 CANPLAYTHROUGH: 'canplaythrough'
                 PREBUFFER: 'waiting'
                 BUFFERING: 'loadeddata'
