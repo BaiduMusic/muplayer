@@ -74,15 +74,19 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 trigger.call(self, type, listener) if self.getUrl() isnt self.opts.emptyMP3
 
             progress = (per) ->
-                self.trigger(EVENTS.PROGRESS, per or self.getLoadedPercent())
+                per = per or self.getLoadedPercent()
+                self.trigger(EVENTS.PROGRESS, per)
+                if per is 1
+                    clearInterval(progressTimer)
+                    canPlayThrough = true
+                    self.setState(STATES.CANPLAYTHROUGH)
 
             audio.on('loadstart', ->
                 canPlayThrough = false
                 # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
+                clearInterval(progressTimer)
                 progressTimer = setInterval( ->
-                    if audio.readyState > 1
-                        return clearInterval(progressTimer)
                     progress()
                 , 50)
                 self.setState(STATES.PREBUFFER)
@@ -94,27 +98,20 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             ).on('ended', ->
                 self.setState(STATES.END)
             ).on('error', (e) ->
+                clearTimeout(errorTimer)
                 errorTimer = setTimeout( ->
                     self.trigger(EVENTS.ERROR, e.target.error.code)
                     self.setState(STATES.END)
                 , 2000)
             ).on('waiting', ->
-                unless canPlayThrough
-                    self.setState(STATES.PREBUFFER)
+                self.setState(STATES.PREBUFFER)
             ).on('loadeddata', ->
-                unless canPlayThrough
-                    self.setState(STATES.BUFFERING)
-            ).on('canplaythrough', ->
-                unless canPlayThrough
-                    canPlayThrough = true
-                    clearInterval(progressTimer)
-                    progress(1)
-                    self.setState(STATES.CANPLAYTHROUGH)
+                self.setState(STATES.BUFFERING)
             ).on('timeupdate', ->
                 self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition())
             ).on('progress', (e) ->
+                clearInterval(progressTimer)
                 unless canPlayThrough
-                    clearInterval(progressTimer)
                     # firefox 3.6 implements e.loaded/total (bytes)
                     loaded = e.loaded or 0
                     total = e.total or 1
@@ -202,7 +199,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             duration and (be / duration).toFixed(2) * 1 or 0
 
         getTotalTime: ->
-            {duration, buffered} = @audio
+            { duration, buffered } = @audio
             bl = buffered.length
 
             # duration为NaN的情况。
