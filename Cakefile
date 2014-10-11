@@ -9,5 +9,5 @@ task 'doc', 'Build doc.', ->
     os.spawn coffee_bin, ['kit/app_mgr.coffee', 'doc']
 
 option '-p', '--port [port]', 'Which port to listen to. Example: cake -p 8080 server'
-task 'server', 'Start test server.', (opts) ->
+task 'server', 'Run a dev server.', (opts) ->
     os.spawn coffee_bin, ['kit/app_mgr.coffee', 'server', opts.port or 8077]
