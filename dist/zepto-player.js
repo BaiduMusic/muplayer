@@ -1892,32 +1892,31 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.play = function(startTime) {
-      var def, engine, play, st;
-      startTime = ~~startTime;
-      def = $.Deferred();
+      var def, engine, play, self, st;
+      self = this;
       engine = this.engine;
-      play = (function(_this) {
-        return function() {
-          if (_this.getUrl()) {
+      def = $.Deferred();
+      startTime = ~~startTime;
+      play = function() {
+        return setTimeout(function() {
+          if (self.getUrl()) {
             if (startTime) {
               engine.setCurrentPosition(startTime);
             } else {
               engine.play();
             }
           }
-          _this.trigger('player:play', startTime);
+          self.trigger('player:play', startTime);
           return def.resolve();
-        };
-      })(this);
+        }, 0);
+      };
       st = this.getState();
       if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
         this.trigger('player:fetch:start');
-        this._fetch().done((function(_this) {
-          return function() {
-            _this.trigger('player:fetch:done');
-            return play();
-          };
-        })(this));
+        this._fetch().done(function() {
+          self.trigger('player:fetch:done');
+          return play();
+        });
       } else {
         play();
       }

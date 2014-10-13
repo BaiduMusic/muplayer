@@ -138,18 +138,21 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         play: (startTime) ->
-            startTime = ~~startTime
-            def = $.Deferred()
+            self = @
             engine = @engine
+            def = $.Deferred()
+            startTime = ~~startTime
 
-            play = =>
-                if @getUrl()
-                    if startTime
-                        engine.setCurrentPosition(startTime)
-                    else
-                        engine.play()
-                @trigger('player:play', startTime)
-                def.resolve()
+            play = ->
+                setTimeout( ->
+                    if self.getUrl()
+                        if startTime
+                            engine.setCurrentPosition(startTime)
+                        else
+                            engine.play()
+                    self.trigger('player:play', startTime)
+                    def.resolve()
+                , 0)
 
             st = @getState()
             # 只有如下3种情况会触发_fetch选链：
@@ -161,8 +164,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 # 即是否从cache中取, 是否setUrl都是依据_fetch的实现去决定。
                 # 如果继承时覆盖重写_fetch, 这些都要自己权衡。
                 @trigger('player:fetch:start')
-                @_fetch().done =>
-                    @trigger('player:fetch:done')
+                @_fetch().done ->
+                    self.trigger('player:fetch:done')
                     play()
             else
                 play()
