@@ -13,8 +13,6 @@ class Builder
         @doc_path = 'doc'
 
     start: ->
-        @start_time = Date.now()
-
         Q.fcall =>
             @update_build_dir()
         .then =>
