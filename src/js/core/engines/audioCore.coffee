@@ -181,16 +181,19 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @audio.currentTime * 1000
 
         getLoadedPercent: ->
+            # buffered end
             audio = @audio
+            be = audio.currentTime
             buffered = audio.buffered
-            bl = buffered.length
-            be = 0 # buffered end
 
-            # 有多个缓存区间时, 查找当前缓冲使用的区间, 浏览器会自动合并缓冲区间。
-            while bl--
-                if buffered.start(bl) <= audio.currentTime <= buffered.end(bl)
-                    be = buffered.end(bl)
-                    break
+            if $.isArray(buffered)
+                bl = buffered.length
+
+                # 有多个缓存区间时, 查找当前缓冲使用的区间, 浏览器会自动合并缓冲区间。
+                while bl--
+                    if buffered.start(bl) <= audio.currentTime <= buffered.end(bl)
+                        be = buffered.end(bl)
+                        break
 
             duration = @getTotalTime() / 1000
 
@@ -199,12 +202,15 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             duration and (be / duration).toFixed(2) * 1 or 0
 
         getTotalTime: ->
-            { duration, buffered } = @audio
-            bl = buffered.length
+            { duration, buffered, currentTime } = @audio
 
-            # duration为NaN的情况。
-            if not isFinite(duration) and bl > 0
-                duration = buffered.end(--bl)
+            duration = ~~duration
+            if duration is 0 and $.isArray(buffered)
+                bl = buffered.length
+                if bl > 0
+                    duration = buffered.end(--bl)
+                else
+                    duration = currentTime
 
             duration and duration * 1000 or 0
 
