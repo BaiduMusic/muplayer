@@ -40,6 +40,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             singleton: true
             absoluteUrl: true
             maxRetryTimes: 1
+            maxWaitingTime: 3 * 1000
             recoverMethodWhenWaitingTimeout: 'retry'
 
         ###*
@@ -120,28 +121,42 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             @setVolume(opts.volume)
             @reset()
 
+        _clearTimeout: (name) ->
+            tid = ~~@[name]
+            if tid
+                clearTimeout(tid)
+                delete @[name]
+
         _initEngine: (engine) ->
             self = @
-            recover = @opts.recoverMethodWhenWaitingTimeout
+            opts = @opts
+            recover = opts.recoverMethodWhenWaitingTimeout
 
             @engine = engine.on(EVENTS.STATECHANGE, (e) ->
                 st = e.newState
+
                 self.trigger('player:statechange', e)
                 self.trigger(st)
+
+                if st in [STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END]
+                    self._clearTimeout(self.waitingTimer)
+
                 if st is STATES.END
                     self.next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 self.trigger('timeupdate', pos)
+                self._clearTimeout(self.waitingTimer)
+                self.waitingTimer = setTimeout( ->
+                    self.trigger(EVENTS.WAITING_TIMEOUT)
+                    self._clearTimeout(self.waitingTimer)
+                , opts.maxWaitingTime)
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) ->
-                console?.error?(e)
+                console?.error?('error: ', e)
                 self.trigger('error', e)
                 self.retry()
             ).on(EVENTS.WAITING_TIMEOUT, ->
-                # TODO: 因FlashCore卡断率明显偏高，
-                # 暂时只对FlashCore做了卡断重试等处理，
-                # 之后再评估是否还需对AudioCore做类似处理。
                 tryRecover = false
                 if recover in ['retry', 'next']
                     self[recover]()
@@ -150,12 +165,13 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             )
 
         retry: ->
-            if @retryTimes < @opts.maxRetryTimes
-                @retryTimes++
+            console.log 'in retry', @_retryTimes, @opts.maxRetryTimes
+            if @_retryTimes < @opts.maxRetryTimes
+                @_retryTimes++
                 url = @getUrl()
                 ms = @engine.getCurrentPosition()
-                @pause().setUrl(url).play(ms)
-                @trigger('player:retry', @retryTimes)
+                @pause().setUrl(url).engine.setCurrentPosition(ms)
+                @trigger('player:retry', @_retryTimes)
             else
                 @trigger('player:retry:max')
             @

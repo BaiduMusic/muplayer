@@ -36,10 +36,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             audio.autoplay = opts.autoplay
             audio.loop = false
             # event listener封装, 支持链式调用。
-            audio.on = (type, listener) =>
+            audio.on = (type, listener) ->
                 audio.addEventListener(type, listener, false)
                 audio
-            audio.off = (type, listener) =>
+            audio.off = (type, listener) ->
                 audio.removeEventListener(type, listener, false)
                 audio
             @audio = audio
@@ -101,7 +101,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 clearTimeout(errorTimer)
                 errorTimer = setTimeout( ->
                     self.trigger(EVENTS.ERROR, e)
-                    self.setState(STATES.END)
                 , 2000)
             ).on('waiting', ->
                 self.setState(STATES.PREBUFFER)
@@ -119,19 +118,20 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             )
 
         _needCanPlay: (fnames) ->
+            self = @
             audio = @audio
             for name in fnames
-                @[name] = utils.wrap @[name], (fn, args...) =>
+                @[name] = utils.wrap @[name], (fn, args...) ->
                     # 对应的编码含义见: http://www.w3schools.com/tags/av_prop_readystate.asp
                     # 小于3认为还没有加载足够数据去播放。
                     if audio.readyState < 3
-                        handle = =>
-                            fn.apply(@, args)
+                        handle = ->
+                            fn.apply(self, args)
                             audio.off('canplay', handle)
                         audio.on('canplay', handle)
                     else
-                        fn.apply(@, args)
-                    @
+                        fn.apply(self, args)
+                    self
 
         play: ->
             @audio.play()
