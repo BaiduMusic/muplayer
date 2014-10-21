@@ -17,7 +17,6 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             # 单位毫秒，默认12小时
             swfCacheTime: 12 * 3600 * 1000
             expressInstaller: 'expressInstall.swf'
-            maxWaitingTime: 3 * 1000
 
         constructor: (options) ->
             @opts = opts = $.extend({}, FlashCore.defaults, @defaults, options)
@@ -59,8 +58,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             @_initEvents()
 
         _test: ->
-            opts = @opts
-            if not @flash or not $.flash.hasVersion(opts.flashVer)
+            if not @flash or not $.flash.hasVersion(@opts.flashVer)
                 return false
             true
 
@@ -68,10 +66,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
         # 这里需要注意性能, 看能否直接监听对应的flash事件。
         _initEvents: ->
             self = @
-            opts = @opts
 
-            # 发生卡断（waiting）时的计时器
-            @waitingTimer = null
             # progressTimer记录加载进度。
             @progressTimer = new Timer(timerResolution)
             # positionTimer记录播放进度。
@@ -88,21 +83,12 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                 if self._lastPos isnt pos
                     self._lastPos = pos
                     self.trigger(EVENTS.POSITIONCHANGE, pos)
-                else
-                    # 发生卡顿的情况
-                    self.waitingTimer = setTimeout( ->
-                        self.trigger(EVENTS.WAITING_TIMEOUT)
-                        clearTimeout(self.waitingTimer)
-                    , opts.maxWaitingTime)
 
             @progressTimer.every('100 ms', triggerProgress)
             @positionTimer.every('100 ms', triggerPosition)
 
             @on EVENTS.STATECHANGE, (e) ->
                 st = e.newState
-
-                if st in [STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END]
-                    clearTimeout(self.waitingTimer)
 
                 # 将progressTimer和positionTimer的状态机制分离在两个
                 # switch中会更灵活, 即便逻辑基本一致也不要混在一起,
