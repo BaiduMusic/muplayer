@@ -68,7 +68,7 @@ do (root = @, factory = (utils, Events) ->
             @trigger('playlist:remove', sid)
             @_resetListRandom()
 
-        prev: ->
+        prev: =>
             list = @list
             i = $.inArray(@cur, list)
             l = list.length
@@ -94,7 +94,7 @@ do (root = @, factory = (utils, Events) ->
 
             @cur = list[prev]
 
-        next: ->
+        next: =>
             list = @list
             i = $.inArray(@cur, list)
             l = list.length
