@@ -17,6 +17,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             # 单位毫秒，默认12小时
             swfCacheTime: 12 * 3600 * 1000
             expressInstaller: 'expressInstall.swf'
+            maxWaitingTime: 3 * 1000
 
         constructor: (options) ->
             @opts = opts = $.extend({}, FlashCore.defaults, @defaults, options)
@@ -66,49 +67,63 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
         # TODO: 暂时通过轮询的方式派发加载、播放进度事件。
         # 这里需要注意性能, 看能否直接监听对应的flash事件。
         _initEvents: ->
+            self = @
+            opts = @opts
+
+            # 发生卡断（waiting）时的计时器
+            @waitingTimer = null
             # progressTimer记录加载进度。
             @progressTimer = new Timer(timerResolution)
             # positionTimer记录播放进度。
             @positionTimer = new Timer(timerResolution)
 
-            triggerProgress = =>
-                per = @getLoadedPercent()
-                if @_lastPer isnt per
-                    @_lastPer = per
-                    @trigger(EVENTS.PROGRESS, per)
-                @progressTimer.stop() if per is 1
-            triggerPosition = =>
-                pos = @getCurrentPosition()
-                if @_lastPos isnt pos
-                    @_lastPos = pos
-                    @trigger(EVENTS.POSITIONCHANGE, pos)
+            triggerProgress = ->
+                per = self.getLoadedPercent()
+                if self._lastPer isnt per
+                    self._lastPer = per
+                    self.trigger(EVENTS.PROGRESS, per)
+                self.progressTimer.stop() if per is 1
+            triggerPosition = ->
+                pos = self.getCurrentPosition()
+                if self._lastPos isnt pos
+                    self._lastPos = pos
+                    self.trigger(EVENTS.POSITIONCHANGE, pos)
+                else
+                    # 发生卡顿的情况
+                    self.waitingTimer = setTimeout( ->
+                        self.trigger(EVENTS.WAITING_TIMEOUT)
+                        clearTimeout(self.waitingTimer)
+                    , opts.maxWaitingTime)
 
             @progressTimer.every('100 ms', triggerProgress)
             @positionTimer.every('100 ms', triggerPosition)
 
-            @on EVENTS.STATECHANGE, (e) =>
+            @on EVENTS.STATECHANGE, (e) ->
                 st = e.newState
+
+                if st in [STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END]
+                    clearTimeout(self.waitingTimer)
 
                 # 将progressTimer和positionTimer的状态机制分离在两个
                 # switch中会更灵活, 即便逻辑基本一致也不要混在一起,
                 # 后续好扩展。
                 switch st
                     when STATES.PREBUFFER, STATES.PLAYING
-                        @progressTimer.start()
+                        self.progressTimer.start()
                     when STATES.PAUSE, STATES.STOP
-                        @progressTimer.stop()
+                        self.progressTimer.stop()
                     when STATES.END
-                        @progressTimer.reset()
+                        self.progressTimer.reset()
 
                 switch st
                     when STATES.PLAYING
-                        @positionTimer.start()
+                        self.positionTimer.start()
                     when STATES.PAUSE, STATES.STOP
-                        @positionTimer.stop()
+                        self.positionTimer.stop()
                         # 防止轮询延迟, 暂停时主动trigger, 保证进度准确。
                         triggerPosition()
                     when STATES.END
-                        @positionTimer.reset()
+                        self.positionTimer.reset()
 
         # 需要依赖flash加载后执行的方法包装器。
         # 更优雅的方式应该是用类似Java的annotation语法。

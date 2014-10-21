@@ -54,35 +54,40 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                 @setEngine(new EngineCore)
 
         setEngine: (engine) ->
+            self = @
             # HACK: 怀疑aralejs事件库有潜在bug, 内核切换时（比如从FlashMP4Core切到FlashMP3Core），
             # statechangeHandle有可能派发连续的重复事件，导致STATES.END被重复触发引发跳歌。
             # 升级事件库后有其他问题，暂时通过lastE标记解决。后续可以更新事件库或深入研究下。
             @_lastE = {}
 
-            statechangeHandle = (e) =>
-                if e.oldState is @_lastE.oldState and e.newState is @_lastE.newState
+            statechangeHandle = (e) ->
+                if e.oldState is self._lastE.oldState and e.newState is self._lastE.newState
                     return
-                @_lastE =
+                self._lastE =
                     oldState: e.oldState
                     newState: e.newState
-                @trigger(EVENTS.STATECHANGE, e)
-            positionHandle = (pos) =>
-                @trigger(EVENTS.POSITIONCHANGE, pos)
-            progressHandle = (progress) =>
-                @trigger(EVENTS.PROGRESS, progress)
-            errorHandle = (e) =>
-                @trigger(EVENTS.ERROR, e)
+                self.trigger(EVENTS.STATECHANGE, e)
+            waitingTimeoutHandle = ->
+                self.trigger(EVENTS.WAITING_TIMEOUT)
+            positionHandle = (pos) ->
+                self.trigger(EVENTS.POSITIONCHANGE, pos)
+            progressHandle = (progress) ->
+                self.trigger(EVENTS.PROGRESS, progress)
+            errorHandle = (err) ->
+                self.trigger(EVENTS.ERROR, err)
 
             bindEvents = (engine) ->
                 engine.on(EVENTS.STATECHANGE, statechangeHandle)
+                    .on(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle)
                     .on(EVENTS.POSITIONCHANGE, positionHandle)
                     .on(EVENTS.PROGRESS, progressHandle)
                     .on(EVENTS.ERROR, errorHandle)
             unbindEvents = (engine) ->
                 engine.off(EVENTS.STATECHANGE, statechangeHandle)
+                    .off(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle)
                     .off(EVENTS.POSITIONCHANGE, positionHandle)
                     .off(EVENTS.PROGRESS, progressHandle)
-                    .on(EVENTS.ERROR, errorHandle)
+                    .off(EVENTS.ERROR, errorHandle)
 
             unless @curEngine
                 @curEngine = bindEvents(engine)

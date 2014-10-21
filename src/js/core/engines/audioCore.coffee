@@ -100,7 +100,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             ).on('error', (e) ->
                 clearTimeout(errorTimer)
                 errorTimer = setTimeout( ->
-                    self.trigger(EVENTS.ERROR, e.target.error.code)
+                    self.trigger(EVENTS.ERROR, e)
                     self.setState(STATES.END)
                 , 2000)
             ).on('waiting', ->
@@ -181,8 +181,8 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @audio.currentTime * 1000
 
         getLoadedPercent: ->
-            # buffered end
             audio = @audio
+            # buffered end
             be = audio.currentTime
             buffered = audio.buffered
 
