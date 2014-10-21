@@ -35,7 +35,8 @@
         PROGRESS: 'engine:progress',
         ERROR: 'engine:error',
         INIT: 'engine:init',
-        INIT_FAIL: 'engine:init_fail'
+        INIT_FAIL: 'engine:init_fail',
+        WAITING_TIMEOUT: 'engine:waiting_timeout'
       },
       STATES: {
         CANPLAYTHROUGH: 'canplaythrough',
@@ -962,18 +963,14 @@ var __hasProp = {}.hasOwnProperty,
       audio.preload = opts.preload;
       audio.autoplay = opts.autoplay;
       audio.loop = false;
-      audio.on = (function(_this) {
-        return function(type, listener) {
-          audio.addEventListener(type, listener, false);
-          return audio;
-        };
-      })(this);
-      audio.off = (function(_this) {
-        return function(type, listener) {
-          audio.removeEventListener(type, listener, false);
-          return audio;
-        };
-      })(this);
+      audio.on = function(type, listener) {
+        audio.addEventListener(type, listener, false);
+        return audio;
+      };
+      audio.off = function(type, listener) {
+        audio.removeEventListener(type, listener, false);
+        return audio;
+      };
       this.audio = audio;
       this._needCanPlay(['play', 'setCurrentPosition']);
       this.setState(STATES.STOP);
@@ -1034,8 +1031,7 @@ var __hasProp = {}.hasOwnProperty,
       }).on('error', function(e) {
         clearTimeout(errorTimer);
         return errorTimer = setTimeout(function() {
-          self.trigger(EVENTS.ERROR, e.target.error.code);
-          return self.setState(STATES.END);
+          return self.trigger(EVENTS.ERROR, e);
         }, 2000);
       }).on('waiting', function() {
         return self.setState(STATES.PREBUFFER);
@@ -1055,27 +1051,26 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._needCanPlay = function(fnames) {
-      var audio, name, _i, _len, _results;
+      var audio, name, self, _i, _len, _results;
+      self = this;
       audio = this.audio;
       _results = [];
       for (_i = 0, _len = fnames.length; _i < _len; _i++) {
         name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], (function(_this) {
-          return function() {
-            var args, fn, handle;
-            fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-            if (audio.readyState < 3) {
-              handle = function() {
-                fn.apply(_this, args);
-                return audio.off('canplay', handle);
-              };
-              audio.on('canplay', handle);
-            } else {
-              fn.apply(_this, args);
-            }
-            return _this;
-          };
-        })(this)));
+        _results.push(this[name] = utils.wrap(this[name], function() {
+          var args, fn, handle;
+          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+          if (audio.readyState < 3) {
+            handle = function() {
+              fn.apply(self, args);
+              return audio.off('canplay', handle);
+            };
+            audio.on('canplay', handle);
+          } else {
+            fn.apply(self, args);
+          }
+          return self;
+        }));
       }
       return _results;
     };
@@ -1137,13 +1132,15 @@ var __hasProp = {}.hasOwnProperty,
     AudioCore.prototype.getLoadedPercent = function() {
       var audio, be, bl, buffered, duration, _ref1;
       audio = this.audio;
+      be = audio.currentTime;
       buffered = audio.buffered;
-      bl = buffered.length;
-      be = 0;
-      while (bl--) {
-        if ((buffered.start(bl) <= (_ref1 = audio.currentTime) && _ref1 <= buffered.end(bl))) {
-          be = buffered.end(bl);
-          break;
+      if ($.isArray(buffered)) {
+        bl = buffered.length;
+        while (bl--) {
+          if ((buffered.start(bl) <= (_ref1 = audio.currentTime) && _ref1 <= buffered.end(bl))) {
+            be = buffered.end(bl);
+            break;
+          }
         }
       }
       duration = this.getTotalTime() / 1000;
@@ -1152,11 +1149,16 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.getTotalTime = function() {
-      var bl, buffered, duration, _ref1;
-      _ref1 = this.audio, duration = _ref1.duration, buffered = _ref1.buffered;
-      bl = buffered.length;
-      if (!isFinite(duration) && bl > 0) {
-        duration = buffered.end(--bl);
+      var bl, buffered, currentTime, duration, _ref1;
+      _ref1 = this.audio, duration = _ref1.duration, buffered = _ref1.buffered, currentTime = _ref1.currentTime;
+      duration = ~~duration;
+      if (duration === 0 && $.isArray(buffered)) {
+        bl = buffered.length;
+        if (bl > 0) {
+          duration = buffered.end(--bl);
+        } else {
+          duration = currentTime;
+        }
       }
       return duration && duration * 1000 || 0;
     };
@@ -1628,71 +1630,64 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     FlashCore.prototype._test = function() {
-      var opts;
-      opts = this.opts;
-      if (!this.flash || !$.flash.hasVersion(opts.flashVer)) {
+      if (!this.flash || !$.flash.hasVersion(this.opts.flashVer)) {
         return false;
       }
       return true;
     };
 
     FlashCore.prototype._initEvents = function() {
-      var triggerPosition, triggerProgress;
+      var self, triggerPosition, triggerProgress;
+      self = this;
       this.progressTimer = new Timer(timerResolution);
       this.positionTimer = new Timer(timerResolution);
-      triggerProgress = (function(_this) {
-        return function() {
-          var per;
-          per = _this.getLoadedPercent();
-          if (_this._lastPer !== per) {
-            _this._lastPer = per;
-            _this.trigger(EVENTS.PROGRESS, per);
-          }
-          if (per === 1) {
-            return _this.progressTimer.stop();
-          }
-        };
-      })(this);
-      triggerPosition = (function(_this) {
-        return function() {
-          var pos;
-          pos = _this.getCurrentPosition();
-          if (_this._lastPos !== pos) {
-            _this._lastPos = pos;
-            return _this.trigger(EVENTS.POSITIONCHANGE, pos);
-          }
-        };
-      })(this);
+      triggerProgress = function() {
+        var per;
+        per = self.getLoadedPercent();
+        if (self._lastPer !== per) {
+          self._lastPer = per;
+          self.trigger(EVENTS.PROGRESS, per);
+        }
+        if (per === 1) {
+          return self.progressTimer.stop();
+        }
+      };
+      triggerPosition = function() {
+        var pos;
+        pos = self.getCurrentPosition();
+        if (self._lastPos !== pos) {
+          self._lastPos = pos;
+          return self.trigger(EVENTS.POSITIONCHANGE, pos);
+        }
+      };
       this.progressTimer.every('100 ms', triggerProgress);
       this.positionTimer.every('100 ms', triggerPosition);
-      return this.on(EVENTS.STATECHANGE, (function(_this) {
-        return function(e) {
-          var st;
-          st = e.newState;
-          switch (st) {
-            case STATES.PREBUFFER:
-            case STATES.PLAYING:
-              _this.progressTimer.start();
-              break;
-            case STATES.PAUSE:
-            case STATES.STOP:
-              _this.progressTimer.stop();
-              break;
-            case STATES.END:
-              _this.progressTimer.reset();
-          }
-          switch (st) {
-            case STATES.PLAYING:
-              return _this.positionTimer.start();
-            case STATES.PAUSE:
-            case STATES.STOP:
-              _this.positionTimer.stop();
-              return triggerPosition();
-            case STATES.END:
-              return _this.positionTimer.reset();
-          }
-        };
-      })(this));
+      return this.on(EVENTS.STATECHANGE, function(e) {
+        var st;
+        st = e.newState;
+        switch (st) {
+          case STATES.PREBUFFER:
+          case STATES.PLAYING:
+            self.progressTimer.start();
+            break;
+          case STATES.PAUSE:
+          case STATES.STOP:
+            self.progressTimer.stop();
+            break;
+          case STATES.END:
+            self.progressTimer.reset();
+        }
+        switch (st) {
+          case STATES.PLAYING:
+            return self.positionTimer.start();
+          case STATES.PAUSE:
+          case STATES.STOP:
+            self.positionTimer.stop();
+            return triggerPosition();
+          case STATES.END:
+            return self.positionTimer.reset();
+        }
+      });
     };
 
     FlashCore.prototype._needFlashReady = function(fnames) {
@@ -2021,40 +2016,36 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setEngine = function(engine) {
-      var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, statechangeHandle, unbindEvents;
+      var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents, waitingTimeoutHandle;
+      self = this;
       this._lastE = {};
-      statechangeHandle = (function(_this) {
-        return function(e) {
-          if (e.oldState === _this._lastE.oldState && e.newState === _this._lastE.newState) {
-            return;
-          }
-          _this._lastE = {
-            oldState: e.oldState,
-            newState: e.newState
-          };
-          return _this.trigger(EVENTS.STATECHANGE, e);
+      statechangeHandle = function(e) {
+        if (e.oldState === self._lastE.oldState && e.newState === self._lastE.newState) {
+          return;
+        }
+        self._lastE = {
+          oldState: e.oldState,
+          newState: e.newState
         };
-      })(this);
-      positionHandle = (function(_this) {
-        return function(pos) {
-          return _this.trigger(EVENTS.POSITIONCHANGE, pos);
-        };
-      })(this);
-      progressHandle = (function(_this) {
-        return function(progress) {
-          return _this.trigger(EVENTS.PROGRESS, progress);
-        };
-      })(this);
-      errorHandle = (function(_this) {
-        return function(e) {
-          return _this.trigger(EVENTS.ERROR, e);
-        };
-      })(this);
+        return self.trigger(EVENTS.STATECHANGE, e);
+      };
+      waitingTimeoutHandle = function() {
+        return self.trigger(EVENTS.WAITING_TIMEOUT);
+      };
+      positionHandle = function(pos) {
+        return self.trigger(EVENTS.POSITIONCHANGE, pos);
+      };
+      progressHandle = function(progress) {
+        return self.trigger(EVENTS.PROGRESS, progress);
+      };
+      errorHandle = function(err) {
+        return self.trigger(EVENTS.ERROR, err);
+      };
       bindEvents = function(engine) {
-        return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
+        return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
       };
       unbindEvents = function(engine) {
-        return engine.off(EVENTS.STATECHANGE, statechangeHandle).off(EVENTS.POSITIONCHANGE, positionHandle).off(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
+        return engine.off(EVENTS.STATECHANGE, statechangeHandle).off(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle).off(EVENTS.POSITIONCHANGE, positionHandle).off(EVENTS.PROGRESS, progressHandle).off(EVENTS.ERROR, errorHandle);
       };
       if (!this.curEngine) {
         return this.curEngine = bindEvents(engine);
@@ -2262,7 +2253,10 @@ var __hasProp = {}.hasOwnProperty,
       mute: false,
       volume: 80,
       singleton: true,
-      absoluteUrl: true
+      absoluteUrl: true,
+      maxRetryTimes: 1,
+      maxWaitingTime: 3 * 1000,
+      recoverMethodWhenWaitingTimeout: 'retry'
     };
 
 
@@ -2347,32 +2341,75 @@ var __hasProp = {}.hasOwnProperty,
       }));
       this.setMute(opts.mute);
       this.setVolume(opts.volume);
+      this.reset();
     }
 
+    Player.prototype._clearTimeout = function(name) {
+      var tid;
+      tid = ~~this[name];
+      if (tid) {
+        clearTimeout(tid);
+        return delete this[name];
+      }
+    };
+
     Player.prototype._initEngine = function(engine) {
-      return this.engine = engine.on(EVENTS.STATECHANGE, (function(_this) {
-        return function(e) {
-          var st;
-          st = e.newState;
-          _this.trigger('player:statechange', e);
-          _this.trigger(st);
-          if (st === STATES.END) {
-            return _this.next(true);
+      var opts, recover, self;
+      self = this;
+      opts = this.opts;
+      recover = opts.recoverMethodWhenWaitingTimeout;
+      return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
+        var st;
+        st = e.newState;
+        self.trigger('player:statechange', e);
+        self.trigger(st);
+        if (st === STATES.PLAYING || st === STATES.PAUSE || st === STATES.STOP || st === STATES.END) {
+          self._clearTimeout(self.waitingTimer);
+        }
+        if (st === STATES.END) {
+          return self.next(true);
+        }
+      }).on(EVENTS.POSITIONCHANGE, function(pos) {
+        self.trigger('timeupdate', pos);
+        self._clearTimeout(self.waitingTimer);
+        return self.waitingTimer = setTimeout(function() {
+          self.trigger(EVENTS.WAITING_TIMEOUT);
+          return self._clearTimeout(self.waitingTimer);
+        }, opts.maxWaitingTime);
+      }).on(EVENTS.PROGRESS, function(progress) {
+        return self.trigger('progress', progress);
+      }).on(EVENTS.ERROR, function(e) {
+        if (typeof console !== "undefined" && console !== null) {
+          if (typeof console.error === "function") {
+            console.error('error: ', e);
           }
-        };
-      })(this)).on(EVENTS.POSITIONCHANGE, (function(_this) {
-        return function(pos) {
-          return _this.trigger('timeupdate', pos);
-        };
-      })(this)).on(EVENTS.PROGRESS, (function(_this) {
-        return function(progress) {
-          return _this.trigger('progress', progress);
-        };
-      })(this)).on(EVENTS.ERROR, (function(_this) {
-        return function(e) {
-          return _this.trigger('error', e);
-        };
-      })(this));
+        }
+        self.trigger('error', e);
+        return self.retry();
+      }).on(EVENTS.WAITING_TIMEOUT, function() {
+        var tryRecover;
+        tryRecover = false;
+        if (recover === 'retry' || recover === 'next') {
+          self[recover]();
+          tryRecover = true;
+        }
+        return self.trigger('player:waiting_timeout', tryRecover);
+      });
+    };
+
+    Player.prototype.retry = function() {
+      var ms, url;
+      console.log('in retry', this._retryTimes, this.opts.maxRetryTimes);
+      if (this._retryTimes < this.opts.maxRetryTimes) {
+        this._retryTimes++;
+        url = this.getUrl();
+        ms = this.engine.getCurrentPosition();
+        this.pause().setUrl(url).engine.setCurrentPosition(ms);
+        this.trigger('player:retry', this._retryTimes);
+      } else {
+        this.trigger('player:retry:max');
+      }
+      return this;
     };
 
 
@@ -2584,6 +2621,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.reset = function() {
+      this._retryTimes = 0;
       this.playlist.reset();
       this.engine.reset();
       this.trigger('player:reset');
