@@ -39,6 +39,8 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             volume: 80
             singleton: true
             absoluteUrl: true
+            maxRetryTimes: 1
+            recoverMethodWhenWaitingTimeout: 'retry'
 
         ###*
          * Player初始化方法
@@ -116,21 +118,47 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             ))
             @setMute(opts.mute)
             @setVolume(opts.volume)
+            @reset()
 
         _initEngine: (engine) ->
-            @engine = engine.on(EVENTS.STATECHANGE, (e) =>
+            self = @
+            recover = @opts.recoverMethodWhenWaitingTimeout
+
+            @engine = engine.on(EVENTS.STATECHANGE, (e) ->
                 st = e.newState
-                @trigger('player:statechange', e)
-                @trigger(st)
+                self.trigger('player:statechange', e)
+                self.trigger(st)
                 if st is STATES.END
-                    @next(true)
-            ).on(EVENTS.POSITIONCHANGE, (pos) =>
-                @trigger('timeupdate', pos)
-            ).on(EVENTS.PROGRESS, (progress) =>
-                @trigger('progress', progress)
-            ).on(EVENTS.ERROR, (e) =>
-                @trigger('error', e)
+                    self.next(true)
+            ).on(EVENTS.POSITIONCHANGE, (pos) ->
+                self.trigger('timeupdate', pos)
+            ).on(EVENTS.PROGRESS, (progress) ->
+                self.trigger('progress', progress)
+            ).on(EVENTS.ERROR, (e) ->
+                console?.error?(e)
+                self.trigger('error', e)
+                self.retry()
+            ).on(EVENTS.WAITING_TIMEOUT, ->
+                # TODO: 因FlashCore卡断率明显偏高，
+                # 暂时只对FlashCore做了卡断重试等处理，
+                # 之后再评估是否还需对AudioCore做类似处理。
+                tryRecover = false
+                if recover in ['retry', 'next']
+                    self[recover]()
+                    tryRecover = true
+                self.trigger('player:waiting_timeout', tryRecover)
             )
+
+        retry: ->
+            if @retryTimes < @opts.maxRetryTimes
+                @retryTimes++
+                url = @getUrl()
+                ms = @engine.getCurrentPosition()
+                @pause().setUrl(url).play(ms)
+                @trigger('player:retry', @retryTimes)
+            else
+                @trigger('player:retry:max')
+            @
 
         ###*
          * 若播放列表中有歌曲就开始播放。会派发 <code>player:play</code> 事件。
@@ -289,6 +317,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
          * @return {player}
         ###
         reset: ->
+            @_retryTimes = 0
             @playlist.reset()
             @engine.reset()
             @trigger('player:reset')
