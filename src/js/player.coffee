@@ -165,7 +165,6 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             )
 
         retry: ->
-            console.log 'in retry', @_retryTimes, @opts.maxRetryTimes
             if @_retryTimes < @opts.maxRetryTimes
                 @_retryTimes++
                 url = @getUrl()
