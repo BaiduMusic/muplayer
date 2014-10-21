@@ -395,7 +395,8 @@
   return Events
 });
 
-var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -409,6 +410,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
   var Playlist;
   Playlist = (function() {
     function Playlist(options) {
+      this.next = __bind(this.next, this);
+      this.prev = __bind(this.prev, this);
       this.opts = $.extend({}, this.defaults, options);
       this.reset();
     }
@@ -2399,7 +2402,6 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype.retry = function() {
       var ms, url;
-      console.log('in retry', this._retryTimes, this.opts.maxRetryTimes);
       if (this._retryTimes < this.opts.maxRetryTimes) {
         this._retryTimes++;
         url = this.getUrl();
