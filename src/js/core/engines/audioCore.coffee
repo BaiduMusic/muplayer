@@ -171,6 +171,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         # 因此需要_needCanPlay的包装。
         setCurrentPosition: (ms) ->
             try
+                # XXX: 即便做了canplay的事件判断，
+                # 如果server端没有正确处理response header，
+                # 依然可能无法成功设置播放进度。相关讨论见：
+                # https://github.com/videojs/video.js/issues/792
                 @audio.currentTime = ms / 1000
             catch
             finally
