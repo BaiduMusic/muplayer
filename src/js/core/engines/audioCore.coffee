@@ -188,9 +188,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             audio = @audio
             # buffered end
             be = audio.currentTime
+            # buffered是一个Buffer实例
             buffered = audio.buffered
 
-            if $.isArray(buffered)
+            if buffered
                 bl = buffered.length
 
                 # 有多个缓存区间时, 查找当前缓冲使用的区间, 浏览器会自动合并缓冲区间。
@@ -209,7 +210,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             { duration, buffered, currentTime } = @audio
 
             duration = ~~duration
-            if duration is 0 and $.isArray(buffered)
+            if duration is 0 and buffered
                 bl = buffered.length
                 if bl > 0
                     duration = buffered.end(--bl)

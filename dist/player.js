@@ -1137,7 +1137,7 @@ var __hasProp = {}.hasOwnProperty,
       audio = this.audio;
       be = audio.currentTime;
       buffered = audio.buffered;
-      if ($.isArray(buffered)) {
+      if (buffered) {
         bl = buffered.length;
         while (bl--) {
           if ((buffered.start(bl) <= (_ref1 = audio.currentTime) && _ref1 <= buffered.end(bl))) {
@@ -1155,7 +1155,7 @@ var __hasProp = {}.hasOwnProperty,
       var bl, buffered, currentTime, duration, _ref1;
       _ref1 = this.audio, duration = _ref1.duration, buffered = _ref1.buffered, currentTime = _ref1.currentTime;
       duration = ~~duration;
-      if (duration === 0 && $.isArray(buffered)) {
+      if (duration === 0 && buffered) {
         bl = buffered.length;
         if (bl > 0) {
           duration = buffered.end(--bl);
