@@ -135,6 +135,9 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             @engine = engine.on(EVENTS.STATECHANGE, (e) ->
                 st = e.newState
 
+                if st in [STATES.PLAYING, STATES.END]
+                    self._retryTimes = 0
+
                 self.trigger('player:statechange', e)
                 self.trigger(st)
 
