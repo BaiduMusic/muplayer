@@ -2354,15 +2354,20 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Player.prototype._initEngine = function(engine) {
-      var opts, recover, self;
+      var opts, pass, recover, self;
       self = this;
       opts = this.opts;
       recover = opts.recoverMethodWhenWaitingTimeout;
+      pass = function() {
+        var _ref1;
+        return (_ref1 = self.getState()) === STATES.PLAYING || _ref1 === STATES.PAUSE || _ref1 === STATES.STOP || _ref1 === STATES.END;
+      };
       return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
         st = e.newState;
-        if (st === STATES.PLAYING || st === STATES.END) {
+        if (pass()) {
           self._retryTimes = 0;
+          self._clearTimeout('waitingTimer');
         }
         self.trigger('player:statechange', e);
         self.trigger(st);
@@ -2370,12 +2375,13 @@ var __hasProp = {}.hasOwnProperty,
           return self.next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
-        var _ref1;
         self.trigger('timeupdate', pos);
-        if (self.getUrl() && ((_ref1 = self.getState()) !== STATES.PLAYING && _ref1 !== STATES.PAUSE && _ref1 !== STATES.STOP && _ref1 !== STATES.END)) {
+        if (self.getUrl() && !pass()) {
           self._clearTimeout('waitingTimer');
           return self.waitingTimer = setTimeout(function() {
-            engine.trigger(EVENTS.WAITING_TIMEOUT);
+            if (!pass()) {
+              engine.trigger(EVENTS.WAITING_TIMEOUT);
+            }
             return self._clearTimeout('waitingTimer');
           }, opts.maxWaitingTime);
         }
@@ -2387,8 +2393,7 @@ var __hasProp = {}.hasOwnProperty,
             console.error('error: ', e);
           }
         }
-        self.trigger('error', e);
-        return self.retry();
+        return self.trigger('error', e);
       }).on(EVENTS.WAITING_TIMEOUT, function() {
         if (recover === 'retry' || recover === 'next') {
           self[recover]();

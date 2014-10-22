@@ -132,11 +132,17 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             opts = @opts
             recover = opts.recoverMethodWhenWaitingTimeout
 
+            pass = ->
+                self.getState() in [
+                    STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END
+                ]
+
             @engine = engine.on(EVENTS.STATECHANGE, (e) ->
                 st = e.newState
 
-                if st in [STATES.PLAYING, STATES.END]
+                if pass()
                     self._retryTimes = 0
+                    self._clearTimeout('waitingTimer')
 
                 self.trigger('player:statechange', e)
                 self.trigger(st)
@@ -146,12 +152,11 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 self.trigger('timeupdate', pos)
 
-                if self.getUrl() and self.getState() not in [
-                    STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END
-                ]
+                if self.getUrl() and not pass()
                     self._clearTimeout('waitingTimer')
                     self.waitingTimer = setTimeout( ->
-                        engine.trigger(EVENTS.WAITING_TIMEOUT)
+                        unless pass()
+                            engine.trigger(EVENTS.WAITING_TIMEOUT)
                         self._clearTimeout('waitingTimer')
                     , opts.maxWaitingTime)
             ).on(EVENTS.PROGRESS, (progress) ->
@@ -159,7 +164,6 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             ).on(EVENTS.ERROR, (e) ->
                 console?.error?('error: ', e)
                 self.trigger('error', e)
-                self.retry()
             ).on(EVENTS.WAITING_TIMEOUT, ->
                 if recover in ['retry', 'next']
                     self[recover]()
