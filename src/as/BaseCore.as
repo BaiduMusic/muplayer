@@ -9,6 +9,7 @@ package {
         // JS回调
         private var jsInstance:String = '';
         private var errTimes:int = 0;
+        private var canPlayThrough:Boolean = false;
 
         protected var playerTimer:Timer;
         protected var stf:SoundTransform;
@@ -103,6 +104,14 @@ package {
 
         public function setState(st:int):void {
             if (_state !== st && State.validate(st)) {
+                if (canPlayThrough && (st === State.PREBUFFER || st === State.BUFFERING)) {
+                    return;
+                }
+
+                if (st === State.CANPLAYTHROUGH) {
+                    canPlayThrough = true;
+                }
+
                 _state = st;
                 callJS(Consts.SWF_ON_STATE_CHANGE, st);
             }
