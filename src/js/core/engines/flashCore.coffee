@@ -219,7 +219,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
         _swfOnErr: (e) ->
             @setState(STATES.END)
             @trigger(EVENTS.ERROR)
-            console?.error(e)
+            console?.error?(e)
 
     FlashCore
 ) ->

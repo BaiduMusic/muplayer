@@ -1535,7 +1535,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.setEngine = function(engine) {
-      var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents, waitingTimeoutHandle;
+      var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents;
       self = this;
       this._lastE = {};
       statechangeHandle = function(e) {
@@ -1548,9 +1548,6 @@ var __hasProp = {}.hasOwnProperty,
         };
         return self.trigger(EVENTS.STATECHANGE, e);
       };
-      waitingTimeoutHandle = function() {
-        return self.trigger(EVENTS.WAITING_TIMEOUT);
-      };
       positionHandle = function(pos) {
         return self.trigger(EVENTS.POSITIONCHANGE, pos);
       };
@@ -1561,10 +1558,10 @@ var __hasProp = {}.hasOwnProperty,
         return self.trigger(EVENTS.ERROR, err);
       };
       bindEvents = function(engine) {
-        return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
+        return engine.on(EVENTS.STATECHANGE, statechangeHandle).on(EVENTS.POSITIONCHANGE, positionHandle).on(EVENTS.PROGRESS, progressHandle).on(EVENTS.ERROR, errorHandle);
       };
       unbindEvents = function(engine) {
-        return engine.off(EVENTS.STATECHANGE, statechangeHandle).off(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle).off(EVENTS.POSITIONCHANGE, positionHandle).off(EVENTS.PROGRESS, progressHandle).off(EVENTS.ERROR, errorHandle);
+        return engine.off(EVENTS.STATECHANGE, statechangeHandle).off(EVENTS.POSITIONCHANGE, positionHandle).off(EVENTS.PROGRESS, progressHandle).off(EVENTS.ERROR, errorHandle);
       };
       if (!this.curEngine) {
         return this.curEngine = bindEvents(engine);
@@ -1882,19 +1879,19 @@ var __hasProp = {}.hasOwnProperty,
         st = e.newState;
         self.trigger('player:statechange', e);
         self.trigger(st);
-        if (st === STATES.PLAYING || st === STATES.PAUSE || st === STATES.STOP || st === STATES.END) {
-          self._clearTimeout(self.waitingTimer);
-        }
         if (st === STATES.END) {
           return self.next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
+        var _ref1;
         self.trigger('timeupdate', pos);
-        self._clearTimeout(self.waitingTimer);
-        return self.waitingTimer = setTimeout(function() {
-          self.trigger(EVENTS.WAITING_TIMEOUT);
-          return self._clearTimeout(self.waitingTimer);
-        }, opts.maxWaitingTime);
+        if (self.getUrl() && ((_ref1 = self.getState()) !== STATES.PLAYING && _ref1 !== STATES.PAUSE && _ref1 !== STATES.STOP && _ref1 !== STATES.END)) {
+          self._clearTimeout('waitingTimer');
+          return self.waitingTimer = setTimeout(function() {
+            engine.trigger(EVENTS.WAITING_TIMEOUT);
+            return self._clearTimeout('waitingTimer');
+          }, opts.maxWaitingTime);
+        }
       }).on(EVENTS.PROGRESS, function(progress) {
         return self.trigger('progress', progress);
       }).on(EVENTS.ERROR, function(e) {
@@ -1906,13 +1903,10 @@ var __hasProp = {}.hasOwnProperty,
         self.trigger('error', e);
         return self.retry();
       }).on(EVENTS.WAITING_TIMEOUT, function() {
-        var tryRecover;
-        tryRecover = false;
         if (recover === 'retry' || recover === 'next') {
           self[recover]();
-          tryRecover = true;
         }
-        return self.trigger('player:waiting_timeout', tryRecover);
+        return self.trigger('player:waiting_timeout');
       });
     };
 
