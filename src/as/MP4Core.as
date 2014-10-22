@@ -67,6 +67,10 @@ package {
             _bytesLoaded = ns.bytesLoaded;
             _loadedPct = Math.round(100 * _bytesLoaded / _bytesTotal) / 100;
 
+            if (_loadedPct === 1) {
+                setState(State.CANPLAYTHROUGH);
+            }
+
             if (!_length) {
                 // 估算的音频时长，精确值在onMetaData中获得
                 _length = Math.ceil(ns.time * 1000 / _bytesLoaded * _bytesTotal);

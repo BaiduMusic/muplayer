@@ -11,7 +11,6 @@ package {
         private var s:Sound;
         private var sc:SoundChannel;
         private var isPlaying:Boolean;
-        private var canPlayThrough:Boolean;
 
         override public function init():void {
             super.init();
@@ -30,11 +29,10 @@ package {
         private function onLoadComplete(e:Event):void {
             _length = Math.ceil(s.length);
             setState(State.CANPLAYTHROUGH);
-            canPlayThrough = true;
         }
 
         private function onProgress(e:ProgressEvent):void {
-            if (!canPlayThrough && getState() !== State.PLAYING) {
+            if (getState() !== State.PLAYING) {
                 setState(State.BUFFERING);
             }
 
