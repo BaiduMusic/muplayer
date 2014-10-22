@@ -2361,6 +2361,9 @@ var __hasProp = {}.hasOwnProperty,
       return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
         st = e.newState;
+        if (st === STATES.PLAYING || st === STATES.END) {
+          self._retryTimes = 0;
+        }
         self.trigger('player:statechange', e);
         self.trigger(st);
         if (st === STATES.END) {
