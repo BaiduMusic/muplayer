@@ -67,8 +67,6 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                     oldState: e.oldState
                     newState: e.newState
                 self.trigger(EVENTS.STATECHANGE, e)
-            waitingTimeoutHandle = ->
-                self.trigger(EVENTS.WAITING_TIMEOUT)
             positionHandle = (pos) ->
                 self.trigger(EVENTS.POSITIONCHANGE, pos)
             progressHandle = (progress) ->
@@ -78,13 +76,11 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
 
             bindEvents = (engine) ->
                 engine.on(EVENTS.STATECHANGE, statechangeHandle)
-                    .on(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle)
                     .on(EVENTS.POSITIONCHANGE, positionHandle)
                     .on(EVENTS.PROGRESS, progressHandle)
                     .on(EVENTS.ERROR, errorHandle)
             unbindEvents = (engine) ->
                 engine.off(EVENTS.STATECHANGE, statechangeHandle)
-                    .off(EVENTS.WAITING_TIMEOUT, waitingTimeoutHandle)
                     .off(EVENTS.POSITIONCHANGE, positionHandle)
                     .off(EVENTS.PROGRESS, progressHandle)
                     .off(EVENTS.ERROR, errorHandle)

@@ -138,18 +138,19 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 self.trigger('player:statechange', e)
                 self.trigger(st)
 
-                if st in [STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END]
-                    self._clearTimeout(self.waitingTimer)
-
                 if st is STATES.END
                     self.next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 self.trigger('timeupdate', pos)
-                self._clearTimeout(self.waitingTimer)
-                self.waitingTimer = setTimeout( ->
-                    self.trigger(EVENTS.WAITING_TIMEOUT)
-                    self._clearTimeout(self.waitingTimer)
-                , opts.maxWaitingTime)
+
+                if self.getUrl() and self.getState() not in [
+                    STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END
+                ]
+                    self._clearTimeout('waitingTimer')
+                    self.waitingTimer = setTimeout( ->
+                        engine.trigger(EVENTS.WAITING_TIMEOUT)
+                        self._clearTimeout('waitingTimer')
+                    , opts.maxWaitingTime)
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) ->
@@ -157,11 +158,9 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 self.trigger('error', e)
                 self.retry()
             ).on(EVENTS.WAITING_TIMEOUT, ->
-                tryRecover = false
                 if recover in ['retry', 'next']
                     self[recover]()
-                    tryRecover = true
-                self.trigger('player:waiting_timeout', tryRecover)
+                self.trigger('player:waiting_timeout')
             )
 
         retry: ->
