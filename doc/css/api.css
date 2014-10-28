@@ -206,6 +206,52 @@ ul, ul li, ol, ol li {
   margin-left: 15px;
 }
 
+.simple-player {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 50px;
+  line-height: 50px;
+  margin-bottom: 30px;
+  width: 350px;
+  position: relative;
+  border: 1px solid #5bc0de;
+  cursor: pointer;
+}
+.simple-player .play-btn {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  height: 12px;
+  width: 12px;
+  background: url("../img/play.png") no-repeat;
+  -webkit-background-size: 12px, 12px;
+  -moz-background-size: 12px, 12px;
+  -o-background-size: 12px, 12px;
+  background-size: 12px, 12px;
+  overflow: hidden;
+  margin: 0 15px;
+}
+.simple-player.playing .play-btn {
+  background-image: url("../img/pause.png");
+}
+.simple-player .play-progress {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=30);
+  opacity: 0.3;
+  height: 100%;
+  width: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #5bc0de;
+}
+
 pre.language-javascript {
   font-size: 14px;
   padding-bottom: 1.2em;
