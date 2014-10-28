@@ -1,0 +1,97 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/prism/themes/prism.css">
+<link rel="stylesheet" href="bower_components/prism/plugins/line-numbers/prism-line-numbers.css">
+<link rel="stylesheet" href="css/lrc-demo.css">
+
+<div class="mod">
+    <div class="hd">歌词组件</div>
+    <div class="bd">
+        <div id="lrc-demo">
+            <div class="song simple-player" data-link="mp3/xihu.mp3">
+                <i class="play-btn"></i>
+                小苹果 —— 筷子兄弟
+                <div class="play-progress"></div>
+            </div>
+            <div class="lrc-panel"></div>
+        </div>
+        <pre class="line-numbers hotfix"><code class="language-javascript"></code></pre>
+    </div>
+</div>
+
+<script src="bower_components/lodash/dist/lodash.min.js"></script>
+<script src="bower_components/jquery/jquery.min.js"></script>
+<script src="bower_components/prism/prism.js"></script>
+<script src="bower_components/prism/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="dist/player.js"></script>
+<script src="dist/lrc.js"></script>
+<script src="js/doc.js"></script>
+
+<script id="code">
+var player = window.player = new _mu.Player({
+        baseDir: 'dist',
+        engines: [
+            {
+                constructor: 'AudioCore'
+            }
+        ]
+    }),
+
+    lrcStr = '\n[00:00.91]小苹果\n[00:01.75]作词：王太利 作曲：王太利\n'
+        + '[00:02.47]演唱：筷子兄弟\n[00:03.32]\n[00:17.40]我种下一颗种子\n'
+        + '[00:19.12]终于长出了果实\n[00:21.04]今天是个伟大日子\n'
+        + '[00:25.10]摘下星星送给你\n[00:26.79]拽下月亮送给你\n'
+        + '[00:28.77]让太阳每天为你升起\n[00:31.25]\n[00:32.67]变成蜡烛燃烧自己\n'
+        + '[00:34.47]只为照亮你\n[00:36.44]把我一切都献给你\n[00:38.22]只要你欢喜\n'
+        + '[00:40.19]你让我每个明天都\n[00:42.15]变得有意义\n[00:44.04]生命虽短爱你永远\n'
+        + '[00:46.08]不离不弃\n[00:47.81]\n[00:48.15]你是我的小呀小苹果儿\n'
+        + '[00:51.92]怎么爱你都不嫌多\n[00:55.26]红红的小脸儿温暖我的心窝\n'
+        + '[00:59.33]点亮我生命的火  火火火火\n[01:03.45]你是我的小呀小苹果儿\n'
+        + '[01:07.06]就像天边最美的云朵\n[01:10.61]春天又来到了花开满山坡\n'
+        + '[01:14.70]种下希望就会收获\n[01:18.70]\n[01:34.12]从不觉得你讨厌\n'
+        + '[01:35.92]你的一切都喜欢\n[01:37.89]有你的每天都新鲜\n[01:41.84]有你阳光更灿烂\n'
+        + '[01:43.58]有你黑夜不黑暗\n[01:45.50]你是白云我是蓝天\n[01:48.09]\n'
+        + '[01:49.42]春天和你漫步在盛开的 花丛间\n[01:53.23]夏天夜晚陪你一起看 星星眨眼\n'
+        + '[01:57.04]秋天黄昏与你徜徉在 金色麦田\n[02:00.92]冬天雪花飞舞有你 更加温暖\n'
+        + '[02:04.66]\n[02:04.96]你是我的小呀小苹果儿\n[02:08.49]怎么爱你都不嫌多\n'
+        + '[02:12.02]红红的小脸儿温暖我的心窝\n[02:16.15]点亮我生命的火  火火火火\n'
+        + '[02:20.22]你是我的小呀小苹果儿\n[02:23.88]就像天边最美的云朵\n'
+        + '[02:27.19]春天又来到了花开满山坡\n[02:31.45]种下希望就会收获\n'
+        + '[02:35.14]\n[02:50.98]你是我的小呀小苹果儿\n[02:54.56]怎么爱你都不嫌多\n'
+        + '[02:57.93]红红的小脸儿温暖我的心窝\n[03:02.18]点亮我生命的火  火火火火\n'
+        + '[03:06.15]你是我的小呀小苹果儿\n[03:09.93]就像天边最美的云朵\n'
+        + '[03:13.27]春天又来到了花开满山坡\n[03:17.52]种下希望就会收获\n[03:21.43]',
+
+    lrc = window.lrc = new _mu.Lrc({
+        el: '.lrc-panel'
+        lrc: lrcStr
+    });
+
+    $demo = $('#lrc-demo'),
+    $song = $demo.find('.song'),
+    $progress = $song.find('.play-progress');
+
+player.on('playing pause', function() {
+    $song.addClass(player.getState());
+}).on('timeupdate', function() {
+    $progress.width(player.curPos() / player.duration() * 100 + '%');
+    lrc.scrollTo()
+});
+
+$song.click(function() {
+     if ($song.hasClass('playing')) {
+        $song.removeClass('playing');
+        player.pause();
+    } else {
+        $song.removeClass('playing pause');
+        player.reset().add($song.data('link')).play();
+    }
+});
+</script>
+
+<script>
+$(function() {
+    _mu.doc.init('lrc');
+});
+</script>

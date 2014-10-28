@@ -7,27 +7,6 @@ body
     .song, .equalizer
         margin-bottom: 30px
 
-    .song
-        +inline-block
-        +line-height(50px)
-        width: 350px
-        position: relative
-        border: 1px solid $blue
-        cursor: pointer
-        .play-btn
-            +icon('play', 24px, 24px)
-            margin: 0 15px
-        &.playing
-            .play-btn
-                background-image: url($imgPath + 'pause.png')
-        .play-progress
-            +opacity(0.3)
-            +size(100%, 0)
-            position: absolute
-            left: 0
-            top: 0
-            background: $blue
-
     .frequency
         +inline-block
         width: 25px
