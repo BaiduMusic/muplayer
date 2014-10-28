@@ -30,7 +30,7 @@ class Builder
         .done ->
             console.log '>> Build done.'.yellow
 
-    copy_to_dist: (from, to) ->
+    copy_to_dist: (from, to) =>
         to = "#{@dist_path}/#{to}"
         os.copy(from, to).then ->
             console.log '>> Copy: '.cyan + from + ' -> '.green + to
