@@ -30,32 +30,36 @@ class Builder
         .done ->
             console.log '>> Build done.'.yellow
 
-    update_build_dir: ->
-        # Delete old build first.
-        Q.fcall =>
-            os.remove @build_temp_path
-        .then =>
-            from = 'src/js'
-            os.copy(from, @build_temp_path + '/js').then =>
-                console.log '>> Copy: '.cyan + from + ' -> '.green + @build_temp_path
-        .then =>
-            copy = (from, to) =>
-                to = "#{@dist_path}/#{to}"
-                os.copy(from, to).then =>
-                    console.log '>> Copy: '.cyan + from + ' -> '.green + to
+    copy_to_dist: (from, to) ->
+        to = "#{@dist_path}/#{to}"
+        os.copy(from, to).then ->
+            console.log '>> Copy: '.cyan + from + ' -> '.green + to
 
+    update_build_dir: ->
+        self = @
+        copy_to_dist = @copy_to_dist
+
+        # Delete old build first.
+        Q.fcall ->
+            os.remove self.build_temp_path
+        .then ->
+            from = 'src/js'
+            os.copy(from, self.build_temp_path + '/js').then =>
+                console.log '>> Copy: '.cyan + from + ' -> '.green + self.build_temp_path
+        .then ->
             Q.all([
-                copy "#{@lib_path}/expressInstall.swf", 'expressInstall.swf'
-                copy "#{@doc_path}/mp3/empty.mp3", 'empty.mp3'
+                copy_to_dist "#{self.lib_path}/expressInstall.swf", 'expressInstall.swf'
+                copy_to_dist "#{self.doc_path}/mp3/empty.mp3", 'empty.mp3'
             ])
 
     compile_all_coffee: ->
+        self = @
         coffee = require 'coffee-script'
 
-        Q.fcall =>
-            os.glob os.path.join(@build_temp_path, '**', '*.coffee')
-        .then (coffee_list) =>
-            Q.all coffee_list.map (path) =>
+        Q.fcall ->
+            os.glob os.path.join(self.build_temp_path, '**', '*.coffee')
+        .then (coffee_list) ->
+            Q.all coffee_list.map (path) ->
                 js_path = path.replace(/(\.coffee)$/, '') + '.js'
 
                 Q.fcall =>
@@ -75,60 +79,66 @@ class Builder
                         console.log '>> Compiled: '.cyan + path
 
     combine_js: (opts) ->
+        self = @
+        { copy_to_dist, require_temp_path } = @
+
         console.log '>> Compile client js with requirejs ...'.cyan
 
         requirejs = require 'requirejs'
 
         deferred = Q.defer()
 
-        opts_pc = {
-            appDir: @build_temp_path,
-            baseUrl: 'js/',
-            dir: @require_temp_path,
+        opts_pc =
+            appDir: @build_temp_path
+            baseUrl: 'js/'
+            dir: require_temp_path
 
-            optimize: 'none',
-            optimizeCss: 'standard',
+            optimize: 'none'
+            optimizeCss: 'standard'
             modules: [
                 {
                     name: 'muplayer/player'
+                },
+                {
+                    name: 'muplayer/plugin/equalizer'
+                },
+                {
+                    name: 'muplayer/plugin/lrc'
                 }
-            ],
-            fileExclusionRegExp: /^\./,
-            removeCombined: true,
-            pragmas: {
+            ]
+            fileExclusionRegExp: /^\./
+            removeCombined: true
+            pragmas:
                 FlashCoreExclude: false
-            },
             # 为映射muplayer这个namespace
-            paths: {
+            paths:
                 'muplayer': '.'
-            }
-        }
 
         # PC
-        requirejs.optimize(opts_pc, (buildResponse) =>
+        requirejs.optimize(opts_pc, (buildResponse) ->
             console.log ">> r.js for PC".cyan
             console.log buildResponse
-            Q.fcall =>
-                os.copy @require_temp_path + '/js/player.js', @dist_path + '/player.js'
-            .then =>
+            Q.fcall ->
+                copy_to_dist require_temp_path + '/js/player.js', 'player.js'
+            .then ->
                 opts_webapp = _.cloneDeep opts_pc
                 opts_webapp.pragmas.FlashCoreExclude = true
-                opts_webapp.modules.push({
-                    name: 'muplayer/plugin/equalizer'
-                })
 
                 # Webapp
-                requirejs.optimize(opts_webapp, (buildResponse) =>
+                requirejs.optimize(opts_webapp, (buildResponse) ->
                     console.log ">> r.js for WebApp".cyan
                     console.log buildResponse
-                    Q.fcall =>
-                        os.glob os.path.join(@require_temp_path + '/js/lib/zepto', '**', '*.js')
-                    .then (file_list) =>
-                        file_list.push(@require_temp_path + '/js/player.js')
-                        os.concat @require_temp_path + '/js/zepto-player.js', file_list
-                    .then =>
-                        os.copy @require_temp_path + '/js/zepto-player.js', @dist_path + '/zepto-player.js'
-                        os.copy @require_temp_path + '/js/plugin/equalizer.js', @dist_path + '/equalizer.js'
+                    Q.fcall ->
+                        os.glob os.path.join(require_temp_path + '/js/lib/zepto', '**', '*.js')
+                    .then (file_list) ->
+                        file_list.push(require_temp_path + '/js/player.js')
+                        os.concat require_temp_path + '/js/zepto-player.js', file_list
+                    .then ->
+                        Q.all([
+                            copy_to_dist require_temp_path + '/js/zepto-player.js', 'zepto-player.js'
+                            copy_to_dist require_temp_path + '/js/plugin/equalizer.js', 'equalizer.js'
+                            copy_to_dist require_temp_path + '/js/plugin/lrc.js', 'lrc.js'
+                        ])
                     .then ->
                         console.log ">> Compile client js done.".cyan
                         deferred.resolve buildResponse
@@ -143,7 +153,7 @@ class Builder
             deferred.reject err
         )
 
-        return deferred.promise
+        deferred.promise
 
     compress_js: ->
         compress = (path) ->
@@ -185,8 +195,7 @@ class Builder
         try
             flex_sdk = require 'flex-sdk'
         catch e
-            console.log ">> Warn: ".yellow + e.message
-            return
+            return console.log ">> Warn: ".yellow + e.message
 
         compile = (src, dist) =>
             os.spawn flex_sdk.bin.mxmlc, [
