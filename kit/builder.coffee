@@ -54,7 +54,7 @@ class Builder
 
     compile_all_coffee: ->
         self = @
-        coffee = require 'coffee-script'
+        coffeescript = require 'coffee-script'
 
         Q.fcall ->
             os.glob os.path.join(self.build_temp_path, '**', '*.coffee')
@@ -62,18 +62,18 @@ class Builder
             Q.all coffee_list.map (path) ->
                 js_path = path.replace(/(\.coffee)$/, '') + '.js'
 
-                Q.fcall =>
+                Q.fcall ->
                     os.readFile(path, 'utf8')
                 .then (str) ->
                     try
-                        return coffee.compile(str, { bare: true })
+                        return coffeescript.compile(str, { bare: true })
                     catch e
                         console.log ">> Error: #{path} \n#{e}".red
                         throw e
-                .then (code) =>
-                    Q.fcall =>
+                .then (code) ->
+                    Q.fcall ->
                         os.outputFile(js_path, code)
-                    .then =>
+                    .then ->
                         os.remove(path)
                     .then ->
                         console.log '>> Compiled: '.cyan + path
@@ -192,19 +192,21 @@ class Builder
                     os.outputFile el, info + str
 
     complie_as: ->
+        { src_path, dist_path } = @
+
         try
             flex_sdk = require 'flex-sdk'
         catch e
             return console.log ">> Warn: ".yellow + e.message
 
-        compile = (src, dist) =>
+        compile = (src, dist) ->
             os.spawn flex_sdk.bin.mxmlc, [
                 '-benchmark=false'
                 '-incremental=true'
                 '-show-actionscript-warnings=true'
                 '-static-link-runtime-shared-libraries=true'
-                '-o', "#{@dist_path}/#{dist}.swf"
-                "#{@src_path}/as/#{src}.as"
+                '-o', "#{dist_path}/#{dist}.swf"
+                "#{src_path}/as/#{src}.as"
             ], (err, stdout, stderr) ->
                 if err
                     console.error err

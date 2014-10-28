@@ -62,23 +62,23 @@ ul, ul li, ol, ol li {
   background-color: #28a1c5;
 }
 #header .navbar-toggle.collapsed .icon-bar {
-  background: #fff;
+  background: white;
 }
 #header .navbar-brand {
-  color: #fff;
+  color: white;
   font-weight: bold;
 }
 #header .navbar-brand:visited {
-  color: #fff;
+  color: white;
 }
 #header .navbar-brand:focus {
-  color: #fff;
+  color: white;
 }
 #header .navbar-brand:hover {
-  color: #fff;
+  color: white;
 }
 #header .navbar-brand:active {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav {
   height: 50px;
@@ -87,8 +87,8 @@ ul, ul li, ol, ol li {
   height: 50px;
   line-height: 50px;
   color: #d6eff6;
-  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   padding: 0 15px;
   background: transparent;
@@ -108,36 +108,36 @@ ul, ul li, ol, ol li {
 #header .navbar-nav a:hover {
   height: 51px;
   line-height: 51px;
-  color: #fff;
+  color: white;
   border-bottom: 3px solid #c7254e;
 }
 #header .navbar-nav a:hover:visited {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav a:hover:focus {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav a:hover:hover {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav a:hover:active {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav .active a {
-  color: #fff;
+  color: white;
   background: #28a1c5;
 }
 #header .navbar-nav .active a:visited {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav .active a:focus {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav .active a:hover {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav .active a:active {
-  color: #fff;
+  color: white;
 }
 #header .navbar-nav .active a:hover {
   border-bottom: none;
@@ -146,31 +146,33 @@ ul, ul li, ol, ol li {
   position: relative;
 }
 #header .github {
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  *zoom: 1;
+  zoom: 1;
   *display: inline;
   position: absolute;
   top: 50px;
   right: 15px;
   background: #c7254e;
-  color: #fff;
+  color: white;
   border-top: none;
   padding: 10px 15px;
 }
 #header .github i {
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  *zoom: 1;
+  zoom: 1;
   *display: inline;
   height: 16px;
   width: 16px;
   background: url("../img/github.png") no-repeat;
+  -webkit-background-size: 16px, 16px;
   -moz-background-size: 16px, 16px;
   -o-background-size: 16px, 16px;
-  -webkit-background-size: 16px, 16px;
   background-size: 16px, 16px;
   overflow: hidden;
   margin-right: 10px;
@@ -197,7 +199,7 @@ ul, ul li, ol, ol li {
   padding-top: 40px;
   padding-bottom: 30px;
   margin-top: 100px;
-  color: #666;
+  color: #666666;
   border-top: 1px solid #e5e5e5;
 }
 .bs-footer .copyright a {
@@ -224,10 +226,11 @@ body {
   margin-bottom: 30px;
 }
 #equalizer-demo .song {
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  *zoom: 1;
+  zoom: 1;
   *display: inline;
   height: 50px;
   line-height: 50px;
@@ -237,17 +240,18 @@ body {
   cursor: pointer;
 }
 #equalizer-demo .song .play-btn {
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  *zoom: 1;
+  zoom: 1;
   *display: inline;
   height: 12px;
   width: 12px;
   background: url("../img/play.png") no-repeat;
+  -webkit-background-size: 12px, 12px;
   -moz-background-size: 12px, 12px;
   -o-background-size: 12px, 12px;
-  -webkit-background-size: 12px, 12px;
   background-size: 12px, 12px;
   overflow: hidden;
   margin: 0 15px;
@@ -266,10 +270,11 @@ body {
   background: #5bc0de;
 }
 #equalizer-demo .frequency {
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  *zoom: 1;
+  zoom: 1;
   *display: inline;
   width: 25px;
   text-align: center;
@@ -289,22 +294,25 @@ body {
   margin-left: -4px;
 }
 #equalizer-demo .frequency .ui-slider-handle {
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  *zoom: 1;
+  zoom: 1;
   *display: inline;
   height: 17px;
   width: 17px;
-  -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
   border-radius: 50%;
   position: relative;
   left: -4px;
   top: -13px;
 }
 #equalizer-demo .frequency .ui-slider-range {
-  background: #eee;
+  background: #eeeeee;
 }
 #equalizer-demo .effects {
   *zoom: 1;
@@ -319,6 +327,7 @@ body {
   clear: both;
 }
 #equalizer-demo .effects li {
+  display: inline;
   float: left;
   width: 60px;
   margin: 10px 10px 0 0;
