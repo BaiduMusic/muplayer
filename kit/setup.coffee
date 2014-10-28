@@ -7,7 +7,7 @@ class Setup
     start: ->
         Q.fcall ->
             os.spawn 'node_modules/.bin/bower', ['install']
-        .then =>
+        .then ->
             if process.env.quiet == 'true'
                 return { install_flex_sdk: 'no' }
 
