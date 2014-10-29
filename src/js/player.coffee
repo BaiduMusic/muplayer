@@ -134,7 +134,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
 
             pass = ->
                 self.getState() in [
-                    STATES.PLAYING, STATES.PAUSE, STATES.STOP, STATES.END
+                    STATES.PAUSE, STATES.STOP, STATES.END
                 ]
 
             @engine = engine.on(EVENTS.STATECHANGE, (e) ->
