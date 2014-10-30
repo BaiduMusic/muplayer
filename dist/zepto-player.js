@@ -1882,7 +1882,6 @@ var __hasProp = {}.hasOwnProperty,
         var st;
         st = e.newState;
         if (pass()) {
-          self._retryTimes = 0;
           self._clearTimeout('waitingTimer');
         }
         self.trigger('player:statechange', e);
@@ -1892,7 +1891,7 @@ var __hasProp = {}.hasOwnProperty,
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
         self.trigger('timeupdate', pos);
-        if (self.getUrl() && !pass()) {
+        if (self.getUrl()) {
           self._clearTimeout('waitingTimer');
           return self.waitingTimer = setTimeout(function() {
             if (!pass()) {
