@@ -141,7 +141,6 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 st = e.newState
 
                 if pass()
-                    self._retryTimes = 0
                     self._clearTimeout('waitingTimer')
 
                 self.trigger('player:statechange', e)
@@ -152,7 +151,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 self.trigger('timeupdate', pos)
 
-                if self.getUrl() and not pass()
+                if self.getUrl()
                     self._clearTimeout('waitingTimer')
                     self.waitingTimer = setTimeout( ->
                         unless pass()
