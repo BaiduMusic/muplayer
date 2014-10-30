@@ -89,7 +89,7 @@ do (root = @, factory = ->
             line = @findLine(ms)
             if line is -1
                 return $el.scrollTop(0)
-            else line is @_curLine
+            else if line is @_curLine
                 return
             @_curLine = line
 

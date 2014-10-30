@@ -34,11 +34,12 @@
   Lrc = (function() {
     Lrc.prototype.defaults = {
       lrc: '',
-      el: '<div></div>',
+      el: '',
       ul: '<ul></ul>',
-      itemSelector: 'li',
-      tmpl: _.template('<li lang="<%- time %>"><%= txt && _.escape(txt) || "&nbsp;" %></li>'),
-      cls: 'ui-lrc',
+      itemTmpl: _.template('<li class="<%- cls %>" lang="<%- time %>"><%= txt && _.escape(txt) || "&nbsp;" %></li>'),
+      cls: 'muui-lrc',
+      itemCls: 'muui-lrc-item',
+      scrollingCls: 'muui-lrc-scrolling',
       duration: 500,
       offset: 0
     };
@@ -46,25 +47,80 @@
     function Lrc(options) {
       var opts;
       this.opts = opts = $.extend({}, this.defaults, options);
+      if (!opts.el) {
+        throw new Error('el cannot be empty.');
+      }
       this.$el = $(opts.el).addClass(opts.cls);
       this.$ul = $(opts.ul).appendTo(this.$el);
-      this.parse();
-      this.render();
+      this.create(opts.lrc);
     }
 
-    Lrc.prototype.render = function() {
-      var $el, $ul, opts;
-      $el = this.$el, $ul = this.$ul, opts = this.opts;
-      return console.log(this._parsed);
+    Lrc.prototype.create = function(lrc) {
+      delete this._curLine;
+      this.lrc = lrc;
+      this.parse();
+      return this.render();
     };
+
+    Lrc.prototype.render = function() {
+      var $el, $ul, item, itemCls, itemTmpl, scrollingCls, _i, _len, _ref, _ref1;
+      $el = this.$el, $ul = this.$ul, (_ref = this.opts, itemTmpl = _ref.itemTmpl, scrollingCls = _ref.scrollingCls, itemCls = _ref.itemCls);
+      _ref1 = this._parsed;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        item = _ref1[_i];
+        $ul.append(itemTmpl({
+          cls: itemsCls,
+          time: item[0],
+          txt: item[1]
+        }));
+      }
+      $el.on('scroll', function() {
+        $el.addClass(scrollingCls);
+        return _.debounce(function() {
+          return $el.removeClass(scrollingCls);
+        }, 1000);
+      }).html($ul);
+      return this.$item = $el.find("." + itemsCls);
+    };
+
+    Lrc.prototype.scrollTo = _.throttle(function(ms) {
+      var $el, $item, duration, line, offset, opts, scrollingCls, top, _ref;
+      ms = ~~ms;
+      if (!ms || this.getState() !== 'lrc') {
+        return;
+      }
+      $el = this.$el, $item = this.$item, opts = this.opts, (_ref = this.opts, scrollingCls = _ref.scrollingCls, offset = _ref.offset, duration = _ref.duration);
+      if ($el.hasClass(scrollingCls)) {
+        return;
+      }
+      $item.removeClass('on');
+      line = this.findLine(ms);
+      if (line === -1) {
+        return $el.scrollTop(0);
+      } else if (line === this._curLine) {
+        return;
+      }
+      this._curLine = line;
+      top = $item.eq(line).addClass('on').position().top - $el.height() / 2 + offset;
+      if (top < 0) {
+        top = 0;
+      }
+      return $el.stop(true).animate({
+        scrollTop: top
+      }, duration);
+    }, 500);
 
     Lrc.prototype.isLrc = function(lrc) {
       return timeReg.test(lrc);
     };
 
-    Lrc.prototype.setStatus = function(st) {
-      this.status = st;
+    Lrc.prototype.setState = function(st) {
+      this._state = st;
       return this.$el.addClass(st);
+    };
+
+    Lrc.prototype.getState = function() {
+      return this._state;
     };
 
     Lrc.prototype.parseLrc = function(lrc) {
@@ -91,9 +147,9 @@
         this._parsed = r.sort(function(a, b) {
           return a[0] - b[0];
         });
-        return this.setStatus('lrc');
+        return this.setState('lrc');
       } else {
-        return this.setStatus('no-lrc');
+        return this.setState('no-lrc');
       }
     };
 
@@ -110,17 +166,17 @@
       }
       if (r.length) {
         this._parsed = r;
-        return this.setStatus('txt-lrc');
+        return this.setState('txt-lrc');
       } else {
-        return this.setStatus('no-lrc');
+        return this.setState('no-lrc');
       }
     };
 
     Lrc.prototype.parse = function() {
       var lrc;
-      lrc = this.opts.lrc;
+      lrc = this.lrc;
       if (!_.isString(lrc) || !(lrc = $.trim(lrc))) {
-        return this.setStatus('no-lrc');
+        return this.setState('no-lrc');
       }
       if (this.isLrc(lrc)) {
         return this.parseLrc(lrc);
