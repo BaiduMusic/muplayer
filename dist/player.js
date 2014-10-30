@@ -2360,7 +2360,7 @@ var __hasProp = {}.hasOwnProperty,
       recover = opts.recoverMethodWhenWaitingTimeout;
       pass = function() {
         var _ref1;
-        return (_ref1 = self.getState()) === STATES.PLAYING || _ref1 === STATES.PAUSE || _ref1 === STATES.STOP || _ref1 === STATES.END;
+        return (_ref1 = self.getState()) === STATES.PAUSE || _ref1 === STATES.STOP || _ref1 === STATES.END;
       };
       return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
