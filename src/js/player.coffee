@@ -1,5 +1,8 @@
-do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
-    {EVENTS, STATES} = cfg.engine
+do (root = this, factory = (
+    cfg, utils, Timer, Events, Playlist, Engine
+) ->
+    { EVENTS, STATES } = cfg.engine
+
     time2str = utils.time2str
 
     ctrl = (fname, auto) ->
@@ -40,7 +43,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             singleton: true
             absoluteUrl: true
             maxRetryTimes: 1
-            maxWaitingTime: 3 * 1000
+            maxWaitingTime: 4 * 1000
             recoverMethodWhenWaitingTimeout: 'retry'
 
         ###*
@@ -97,6 +100,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         ###
         constructor: (options) ->
             @opts = opts = $.extend({}, Player.defaults, options)
+            @waitingTimer = new Timer(100)
 
             baseDir = opts.baseDir
             if baseDir is false
@@ -121,12 +125,6 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
             @setVolume(opts.volume)
             @reset()
 
-        _clearTimeout: (name) ->
-            tid = ~~@[name]
-            if tid
-                clearTimeout(tid)
-                delete @[name]
-
         _initEngine: (engine) ->
             self = @
             opts = @opts
@@ -141,7 +139,7 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 st = e.newState
 
                 if pass()
-                    self._clearTimeout('waitingTimer')
+                    self.waitingTimer.reset()
 
                 self.trigger('player:statechange', e)
                 self.trigger(st)
@@ -152,12 +150,10 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
                 self.trigger('timeupdate', pos)
 
                 if self.getUrl()
-                    self._clearTimeout('waitingTimer')
-                    self.waitingTimer = setTimeout( ->
+                    self.waitingTimer.clear().after(opts.maxWaitingTime, ->
                         unless pass()
                             engine.trigger(EVENTS.WAITING_TIMEOUT)
-                        self._clearTimeout('waitingTimer')
-                    , opts.maxWaitingTime)
+                    ).start()
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) ->
@@ -462,15 +458,17 @@ do (root = this, factory = (cfg, utils, Events, Playlist, Engine) ->
         define([
             'muplayer/core/cfg'
             'muplayer/core/utils'
+            'muplayer/lib/Timer'
             'muplayer/lib/events'
             'muplayer/core/playlist'
             'muplayer/core/engines/engine'
         ], factory)
     else
         root._mu.Player = factory(
-            root._mu.cfg
-            root._mu.utils
-            root._mu.Events
-            root._mu.Playlist
-            root._mu.Engine
+            _mu.cfg
+            _mu.utils
+            _mu.Timer
+            _mu.Events
+            _mu.Playlist
+            _mu.Engine
         )
