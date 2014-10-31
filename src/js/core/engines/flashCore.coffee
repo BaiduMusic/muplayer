@@ -49,11 +49,12 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                 height: 1
                 width: 1
                 allowscriptaccess: 'always'
-                wmode : 'transparent'
+                wmode: 'transparent'
                 expressInstaller: baseDir + opts.expressInstaller
                 flashvars:
                     _instanceName: instanceName
                     _buffertime: 5000
+            @flash.tabIndex = -1
             opts.$el.append(@flash)
             @_initEvents()
 

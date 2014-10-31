@@ -1598,7 +1598,7 @@ var __hasProp = {}.hasOwnProperty,
     __extends(FlashCore, _super);
 
     FlashCore.defaults = {
-      swfCacheTime: 12 * 3600 * 1000,
+      swfCacheTime: .5 * 3600 * 1000,
       expressInstaller: 'expressInstall.swf'
     };
 
@@ -1616,7 +1616,7 @@ var __hasProp = {}.hasOwnProperty,
       utils.namespace('engines')[instanceName] = this;
       instanceName = '_mu.engines.' + instanceName;
       this.flash = $.flash.create({
-        swf: baseDir + opts.swf + '?t=' + opts.swfCacheTime,
+        swf: baseDir + opts.swf + '?t=' + Math.floor(+new Date() / opts.swfCacheTime),
         id: id,
         height: 1,
         width: 1,
@@ -1628,6 +1628,7 @@ var __hasProp = {}.hasOwnProperty,
           _buffertime: 5000
         }
       });
+      this.flash.tabIndex = -1;
       opts.$el.append(this.flash);
       this._initEvents();
     }
@@ -1768,28 +1769,28 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype.setUrl = function(url) {
+      var self;
+      self = this;
       if (url) {
         this._setUrl(url);
-        (function(_this) {
-          return (function() {
-            var check, checker;
-            checker = null;
-            check = function(e) {
-              if (e.newState === STATES.PLAYING && e.oldState === STATES.PREBUFFER) {
-                return checker = setTimeout(function() {
-                  _this.off(EVENTS.STATECHANGE, check);
-                  if (_this.getCurrentPosition() < 100) {
-                    _this.setState(STATES.END);
-                    return _this.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
-                  }
-                }, 2000);
-              } else {
-                return clearTimeout(checker);
-              }
-            };
-            return _this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
-          });
-        })(this)();
+        (function() {
+          var check, checker;
+          checker = null;
+          check = function(e) {
+            if (e.newState === STATES.PLAYING && e.oldState === STATES.PREBUFFER) {
+              return checker = setTimeout(function() {
+                self.off(EVENTS.STATECHANGE, check);
+                if (self.getCurrentPosition() < 100) {
+                  self.setState(STATES.END);
+                  return self.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
+                }
+              }, 2000);
+            } else {
+              return clearTimeout(checker);
+            }
+          };
+          return this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
+        })();
       }
       return FlashCore.__super__.setUrl.call(this, url);
     };
