@@ -173,7 +173,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                             , 2000)
                         else
                             clearTimeout(checker)
-                    @off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check)
+                    self.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check)
             super(url)
 
         getState: () ->

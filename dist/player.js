@@ -1789,7 +1789,7 @@ var __hasProp = {}.hasOwnProperty,
               return clearTimeout(checker);
             }
           };
-          return this.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
+          return self.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
         })();
       }
       return FlashCore.__super__.setUrl.call(this, url);
