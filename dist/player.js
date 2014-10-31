@@ -2035,7 +2035,9 @@ var __hasProp = {}.hasOwnProperty,
         return self.trigger(EVENTS.STATECHANGE, e);
       };
       positionHandle = function(pos) {
-        return self.trigger(EVENTS.POSITIONCHANGE, pos);
+        if (self.getState() === STATES.PLAYING) {
+          return self.trigger(EVENTS.POSITIONCHANGE, pos);
+        }
       };
       progressHandle = function(progress) {
         return self.trigger(EVENTS.PROGRESS, progress);
