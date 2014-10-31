@@ -574,6 +574,7 @@
                         }
                     }
                     if (self._running) {
+                        clearTimeout(self._timer);
                         self._timer = setTimeout(loopsyloop, self._resolution + self._drift);
                         self._drift = 0;
                     }
