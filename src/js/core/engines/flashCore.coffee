@@ -14,8 +14,8 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
 
     class FlashCore extends EngineCore
         @defaults:
-            # 单位毫秒，默认12小时
-            swfCacheTime: 12 * 3600 * 1000
+            # swf文件的缓存时间，单位毫秒，默认半小时。
+            swfCacheTime: .5 * 3600 * 1000
             expressInstaller: 'expressInstall.swf'
 
         constructor: (options) ->
@@ -44,7 +44,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             instanceName = '_mu.engines.' + instanceName
 
             @flash = $.flash.create
-                swf: baseDir + opts.swf + '?t=' + opts.swfCacheTime
+                swf: baseDir + opts.swf + '?t=' + Math.floor(+new Date() / opts.swfCacheTime)
                 id: id
                 height: 1
                 width: 1
@@ -155,19 +155,20 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             @flash.f_load(url)
 
         setUrl: (url) ->
+            self = @
             if url
                 @_setUrl(url)
                 # 检测后缀与实际资源不符的情况。
                 # 错误统一抛EVENTS.ERROR事件, 由调用方决定如何处理。
-                do =>
+                do ->
                     checker = null
-                    check = (e) =>
+                    check = (e) ->
                         if e.newState is STATES.PLAYING and e.oldState is STATES.PREBUFFER
-                            checker = setTimeout(=>
-                                @off(EVENTS.STATECHANGE, check)
-                                if @getCurrentPosition() < 100
-                                    @setState(STATES.END)
-                                    @trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED)
+                            checker = setTimeout( ->
+                                self.off(EVENTS.STATECHANGE, check)
+                                if self.getCurrentPosition() < 100
+                                    self.setState(STATES.END)
+                                    self.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED)
                             , 2000)
                         else
                             clearTimeout(checker)
