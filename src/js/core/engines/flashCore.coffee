@@ -1,5 +1,5 @@
 do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
-    {EVENTS, STATES, ERRCODE} = cfg.engine
+    { EVENTS, STATES, ERRCODE } = cfg.engine
     timerResolution = cfg.timerResolution
 
     # fmp.swf中约定的状态返回码。

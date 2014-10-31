@@ -1,5 +1,5 @@
 do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
-    {EVENTS, STATES} = cfg.engine
+    { EVENTS, STATES } = cfg.engine
     timerResolution = cfg.timerResolution
     extReg = /\.(\w+)(\?.*)?$/
 
@@ -68,7 +68,10 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                     newState: e.newState
                 self.trigger(EVENTS.STATECHANGE, e)
             positionHandle = (pos) ->
-                self.trigger(EVENTS.POSITIONCHANGE, pos)
+                # 保证只在playing状态下才派发timeupdate事件，
+                # 不影响waiting timeout的重试判断。
+                if self.getState() is STATES.PLAYING
+                    self.trigger(EVENTS.POSITIONCHANGE, pos)
             progressHandle = (progress) ->
                 self.trigger(EVENTS.PROGRESS, progress)
             errorHandle = (err) ->
