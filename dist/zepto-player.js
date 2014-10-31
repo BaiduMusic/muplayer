@@ -2025,7 +2025,7 @@ var __hasProp = {}.hasOwnProperty,
         var st;
         st = e.newState;
         if (pass()) {
-          self.waitingTimer.reset();
+          self.waitingTimer.clear();
         }
         self.trigger('player:statechange', e);
         self.trigger(st);
@@ -2310,7 +2310,7 @@ var __hasProp = {}.hasOwnProperty,
       if (!url) {
         return this;
       }
-      this.engine.setUrl(url);
+      this.stop().engine.setUrl(url);
       this.trigger('player:setUrl', url);
       return this;
     };

@@ -139,7 +139,7 @@ do (root = this, factory = (
                 st = e.newState
 
                 if pass()
-                    self.waitingTimer.reset()
+                    self.waitingTimer.clear()
 
                 self.trigger('player:statechange', e)
                 self.trigger(st)
@@ -354,7 +354,7 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @engine.setUrl(url)
+            @stop().engine.setUrl(url)
             @trigger('player:setUrl', url)
             @
 
