@@ -61,12 +61,15 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             @_lastE = {}
 
             statechangeHandle = (e) ->
-                if e.oldState is self._lastE.oldState and e.newState is self._lastE.newState
+                { newState, oldState } = e
+                if oldState is self._lastE.oldState and newState is self._lastE.newState
                     return
                 self._lastE =
-                    oldState: e.oldState
-                    newState: e.newState
+                    oldState: oldState
+                    newState: newState
                 self.trigger(EVENTS.STATECHANGE, e)
+                if newState is STATES.CANPLAYTHROUGH and oldEngine in [STATES.PLAYING, STATES.PAUSE]
+                    self.setState(oldState)
             positionHandle = (pos) ->
                 self.trigger(EVENTS.POSITIONCHANGE, pos)
             progressHandle = (progress) ->
