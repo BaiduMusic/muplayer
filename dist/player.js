@@ -2025,14 +2025,19 @@ var __hasProp = {}.hasOwnProperty,
       self = this;
       this._lastE = {};
       statechangeHandle = function(e) {
-        if (e.oldState === self._lastE.oldState && e.newState === self._lastE.newState) {
+        var newState, oldState;
+        newState = e.newState, oldState = e.oldState;
+        if (oldState === self._lastE.oldState && newState === self._lastE.newState) {
           return;
         }
         self._lastE = {
-          oldState: e.oldState,
-          newState: e.newState
+          oldState: oldState,
+          newState: newState
         };
-        return self.trigger(EVENTS.STATECHANGE, e);
+        self.trigger(EVENTS.STATECHANGE, e);
+        if (newState === STATES.CANPLAYTHROUGH && (oldEngine === STATES.PLAYING || oldEngine === STATES.PAUSE)) {
+          return self.setState(oldState);
+        }
       };
       positionHandle = function(pos) {
         return self.trigger(EVENTS.POSITIONCHANGE, pos);
