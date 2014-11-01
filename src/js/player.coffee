@@ -130,15 +130,12 @@ do (root = this, factory = (
             opts = @opts
             recover = opts.recoverMethodWhenWaitingTimeout
 
-            pass = ->
-                self.getState() in [
-                    STATES.PAUSE, STATES.STOP, STATES.END
-                ]
-
             @engine = engine.on(EVENTS.STATECHANGE, (e) ->
                 st = e.newState
 
-                if pass()
+                if st not in [
+                    STATES.PREBUFFER, STATES.BUFFERING
+                ]
                     self.waitingTimer.clear()
 
                 self.trigger('player:statechange', e)
@@ -151,7 +148,9 @@ do (root = this, factory = (
 
                 if self.getUrl()
                     self.waitingTimer.clear().after(opts.maxWaitingTime, ->
-                        unless pass()
+                        if self.getState() not in [
+                            STATES.PAUSE, STATES.STOP, STATES.END
+                        ]
                             engine.trigger(EVENTS.WAITING_TIMEOUT)
                     ).start()
             ).on(EVENTS.PROGRESS, (progress) ->

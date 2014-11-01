@@ -1700,9 +1700,7 @@ var __hasProp = {}.hasOwnProperty,
         return self.trigger(EVENTS.STATECHANGE, e);
       };
       positionHandle = function(pos) {
-        if (self.getState() === STATES.PLAYING) {
-          return self.trigger(EVENTS.POSITIONCHANGE, pos);
-        }
+        return self.trigger(EVENTS.POSITIONCHANGE, pos);
       };
       progressHandle = function(progress) {
         return self.trigger(EVENTS.PROGRESS, progress);
@@ -2015,18 +2013,14 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Player.prototype._initEngine = function(engine) {
-      var opts, pass, recover, self;
+      var opts, recover, self;
       self = this;
       opts = this.opts;
       recover = opts.recoverMethodWhenWaitingTimeout;
-      pass = function() {
-        var _ref1;
-        return (_ref1 = self.getState()) === STATES.PAUSE || _ref1 === STATES.STOP || _ref1 === STATES.END;
-      };
       return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
         st = e.newState;
-        if (pass()) {
+        if (st !== STATES.PREBUFFER && st !== STATES.BUFFERING) {
           self.waitingTimer.clear();
         }
         self.trigger('player:statechange', e);
@@ -2038,7 +2032,8 @@ var __hasProp = {}.hasOwnProperty,
         self.trigger('timeupdate', pos);
         if (self.getUrl()) {
           return self.waitingTimer.clear().after(opts.maxWaitingTime, function() {
-            if (!pass()) {
+            var _ref1;
+            if ((_ref1 = self.getState()) !== STATES.PAUSE && _ref1 !== STATES.STOP && _ref1 !== STATES.END) {
               return engine.trigger(EVENTS.WAITING_TIMEOUT);
             }
           }).start();
