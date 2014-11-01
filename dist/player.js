@@ -2035,7 +2035,7 @@ var __hasProp = {}.hasOwnProperty,
           newState: newState
         };
         self.trigger(EVENTS.STATECHANGE, e);
-        if (newState === STATES.CANPLAYTHROUGH && (oldEngine === STATES.PLAYING || oldEngine === STATES.PAUSE)) {
+        if (newState === STATES.CANPLAYTHROUGH && (oldState === STATES.PLAYING || oldState === STATES.PAUSE)) {
           return self.setState(oldState);
         }
       };

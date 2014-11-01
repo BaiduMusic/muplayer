@@ -68,7 +68,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                     oldState: oldState
                     newState: newState
                 self.trigger(EVENTS.STATECHANGE, e)
-                if newState is STATES.CANPLAYTHROUGH and oldEngine in [STATES.PLAYING, STATES.PAUSE]
+                if newState is STATES.CANPLAYTHROUGH and oldState in [STATES.PLAYING, STATES.PAUSE]
                     self.setState(oldState)
             positionHandle = (pos) ->
                 self.trigger(EVENTS.POSITIONCHANGE, pos)
