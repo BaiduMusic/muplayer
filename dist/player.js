@@ -1214,14 +1214,14 @@ var __hasProp = {}.hasOwnProperty,
         _results.push(this[name] = utils.wrap(this[name], function() {
           var args, fn, handle;
           fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-          if (audio.readyState < 3) {
+          try {
+            fn.apply(self, args);
+          } catch (_error) {
             handle = function() {
               fn.apply(self, args);
               return audio.off('canplay', handle);
             };
             audio.on('canplay', handle);
-          } else {
-            fn.apply(self, args);
           }
           return self;
         }));
