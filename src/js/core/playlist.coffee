@@ -46,7 +46,7 @@ do (root = @, factory = (utils, Events) ->
             @remove(sid)
 
             if $.isArray(sid) and sid.length
-                @list = unshift and @list.concat(sid) or sid.concat(@list)
+                @list = unshift and sid.concat(@list) or @list.concat(sid)
             else if sid
                 @list[unshift and 'unshift' or 'push'](sid)
 
