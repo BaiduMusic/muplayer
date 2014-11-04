@@ -1,17 +1,15 @@
-os = require '../lib/os'
-Q = require 'q'
+{ kit } = require 'nobone'
+
+{ spawn, log } = kit
 
 class Setup
-    constructor: ->
-
     start: ->
-        Q.fcall ->
-            os.spawn 'node_modules/.bin/bower', ['install']
+        spawn join('node_modules', '.bin', 'bower'), ['install']
         .then ->
-            if process.env.quiet == 'true'
+            if process.env.quiet is 'true'
                 return { install_flex_sdk: 'no' }
 
-            os.prompt_get [{
+            kit.prompt_get [{
                 name: 'install_flex_sdk'
                 description: 'Whether Flex SDK or not? (yes/no)'
                 default: 'no'
@@ -19,13 +17,12 @@ class Setup
             }]
         .catch (e) ->
             if e.message is 'canceled'
-                console.log '\n>> Canceled.'.red
+                log '\n>> Canceled.'.red
                 process.exit 0
-
-        .then (opts) =>
+        .then (opts) ->
             if opts.install_flex_sdk is 'yes'
-                os.spawn 'npm', ['install', 'flex-sdk']
+                spawn 'npm', ['install', 'flex-sdk']
         .done ->
-            console.log ">> Setup done.".yellow
+            log '>> Setup done.'.yellow
 
 module.exports = new Setup
