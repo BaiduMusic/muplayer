@@ -2,24 +2,19 @@ process.env.NODE_ENV = 'production'
 
 gulp = require 'gulp'
 gulp_concat = require 'gulp-concat'
-nobone = require 'nobone'
 
-{
-    kit,
-    renderer
-} = nobone(renderer: {})
+{ kit } = require 'nobone'
 
 {
     _,
-    Promise,
     log,
     copy,
     glob,
     spawn,
     remove,
-    path: { join, relative }
+    Promise,
+    path: { join }
 } = kit
-
 
 class Builder
     constructor: ->
@@ -131,7 +126,7 @@ class Builder
             paths:
                 'muplayer': '.'
 
-        new Promise (resolve, reject) ->
+        new Promise (resolve) ->
             # PC
             requirejs.optimize opts_pc, (buildResponse) ->
                 log '>> r.js for PC'.cyan

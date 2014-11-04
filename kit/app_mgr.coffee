@@ -1,9 +1,21 @@
-require 'colors'
-os = require '../lib/os'
-Q = require 'q'
+nobone = require 'nobone'
+
+{ kit, service, renderer } = nobone()
+{
+    log,
+    copy,
+    glob,
+    spawn,
+    remove,
+    symlink,
+    Promise,
+    path: { join, basename }
+} = kit
+
+argv = process.argv
 
 main = ->
-    switch process.argv[2]
+    switch argv[2]
         when 'setup'
             setup = require './setup'
             setup.start()
@@ -13,18 +25,17 @@ main = ->
             builder.start()
 
         when 'doc'
-            doxx_bin = 'node_modules/.bin/doxx'
-            Q.fcall =>
-                os.remove 'doc'
-            .then =>
-                Q.all([
-                    os.spawn('compass', [
+            doxx_bin = join 'node_modules', '.bin', 'doxx'
+            remove 'doc'
+            .then ->
+                Promise.all([
+                    spawn('compass', [
                         'compile'
                         '--sass-dir', 'src/css'
                         '--css-dir', 'doc/css'
                         '--no-line-comments'
                     ])
-                    os.spawn(doxx_bin, [
+                    spawn(doxx_bin, [
                         '-d'
                         '-R', 'README.md'
                         '-t', 'MuPlayer 『百度音乐播放内核』'
@@ -33,42 +44,39 @@ main = ->
                         '--template', 'src/doc/base.jade'
                     ])
                 ])
-            .then =>
-                Q.all([
-                    os.copy 'doc_temp/player.js.html', 'doc/api.html'
-                    os.copy 'doc_temp/index.html', 'doc/index.html'
+            .then ->
+                Promise.all([
+                    copy join('doc_temp', 'player.js.html'), join('doc', 'api.html')
+                    copy join('doc_temp', 'index.html'), join('doc', 'index.html')
                 ])
-            .then =>
-                os.remove 'doc_temp'
-            .then =>
-                Q.all [
-                    os.symlink '../dist', 'doc/dist', 'dir'
-                    os.symlink '../bower_components', 'doc/bower_components', 'dir'
-                    os.symlink '../src/doc/img', 'doc/img', 'dir'
-                    os.symlink '../src/doc/mp3', 'doc/mp3', 'dir'
-                    os.symlink '../src/doc/js', 'doc/js', 'dir'
-                    os.symlink '../src/img/favicon.ico', 'doc/favicon.ico'
-                    os.glob('src/doc/*.html').then (paths) ->
+            .then ->
+                remove 'doc_temp'
+            .then ->
+                # symlink from root_path to doc_path
+                symlink_to = (from, to, type = 'dir') ->
+                    symlink join('..', from), join('doc', to), type
+
+                Promise.all [
+                    symlink_to 'dist', 'dist'
+                    symlink_to 'bower_components', 'bower_components'
+                    symlink_to join('src', 'doc', 'img'), 'img'
+                    symlink_to join('src', 'doc', 'mp3'), 'mp3'
+                    symlink_to join('src', 'doc', 'js'), 'js'
+                    symlink_to join('src', 'img', 'favicon.ico'), 'favicon.ico', 'file'
+                    glob join('src', 'doc', '*.html')
+                    .then (paths) ->
                         for p in paths
-                            to = 'doc/' + os.path.basename(p)
-                            console.log '>> Link: '.cyan + p + ' -> '.cyan + to
-                            os.symlink '../' + p, to
+                            to = join('doc', basename p)
+                            log '>> Link: '.cyan + p + ' -> '.cyan + to
+                            symlink join('..', p), to
                 ]
-            .done =>
-                console.log '>> Build doc done.'.yellow
+            .done ->
+                log '>> Build doc done.'.yellow
 
         when 'server'
-            port = process.argv[3]
-            node_static = require 'node-static'
-            file = new node_static.Server 'doc'
-
-            require 'http'
-            .createServer (req, res) ->
-                req.addListener 'end', ->
-                    file.serve req, res
-                .resume()
-            .listen port
-
-            console.log ">> Server start at port: #{port}".cyan
+            port = argv[3]
+            service.use '/', renderer.static('doc')
+            service.listen port, ->
+                log ">> Server start at port: #{port}".cyan
 
 main()
