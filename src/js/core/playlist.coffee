@@ -39,16 +39,16 @@ do (root = @, factory = (utils, Events) ->
             ] then @mode = mode
             @_resetListRandom()
 
-        add: (sid) ->
+        add: (sid, unshift = true) ->
             sid = @_formatSid(sid)
 
             # 剔除重复sid, 保证列表是一个set
             @remove(sid)
 
             if $.isArray(sid) and sid.length
-                @list = sid.concat(@list)
+                @list = unshift and @list.concat(sid) or sid.concat(@list)
             else if sid
-                @list.unshift(sid)
+                @list[unshift and 'unshift' or 'push'](sid)
 
             @trigger('playlist:add', sid)
             @_resetListRandom()
