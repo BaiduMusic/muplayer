@@ -1,10 +1,10 @@
 { kit } = require 'nobone'
 
-{ spawn, log } = kit
+{ spawn, log, path } = kit
 
 class Setup
     start: ->
-        spawn join('node_modules', '.bin', 'bower'), ['install']
+        spawn path.join('node_modules', '.bin', 'bower'), ['install']
         .then ->
             if process.env.quiet is 'true'
                 return { install_flex_sdk: 'no' }
