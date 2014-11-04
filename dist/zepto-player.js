@@ -2247,7 +2247,7 @@ var __hasProp = {}.hasOwnProperty,
 
 
     /**
-     * 将音频资源添加到播放列表。会派发 <code>player:add</code> 事件。
+     * 将音频资源添加到播放列表，会派发 <code>player:add</code> 事件。
      * @param {String|Array} sid 要添加的单曲资源或标识，为数组则代表批量添加。
      * @param {Boolean} unshift sid被添加到播放列表中的位置，默认是true，代表往数组前面添加，为flase时表示往数组后添加。
      * @return {player}
