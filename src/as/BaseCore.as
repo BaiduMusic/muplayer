@@ -8,7 +8,6 @@ package {
     public class BaseCore extends Sprite implements IEngine {
         // JS回调
         private var jsInstance:String = '';
-        private var errTimes:int = 0;
         private var canPlayThrough:Boolean = false;
 
         protected var playerTimer:Timer;
@@ -73,15 +72,9 @@ package {
         protected function onPlayTimer(e:TimerEvent = null):void {}
 
         protected function handleErr(e:* = null):void {
-            // 出错时默认跳歌重试，再次出错就交由外部JS处理，比如切换播放内核等。
-            if (errTimes++) {
-                onPlayComplete();
-            } else {
-                errTimes = 0;
-                f_stop();
-                reset();
-                callJS(Consts.SWF_ON_ERR, e);
-            }
+            f_stop();
+            reset();
+            callJS(Consts.SWF_ON_ERR, e);
         }
 
         public function getData(k:String):* {

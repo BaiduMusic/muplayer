@@ -1857,7 +1857,7 @@ var __hasProp = {}.hasOwnProperty,
 
     FlashCore.prototype._swfOnErr = function(e) {
       this.setState(STATES.END);
-      this.trigger(EVENTS.ERROR);
+      this.trigger(EVENTS.ERROR, e);
       return typeof console !== "undefined" && console !== null ? typeof console.error === "function" ? console.error(e) : void 0 : void 0;
     };
 
