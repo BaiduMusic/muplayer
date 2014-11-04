@@ -58,8 +58,19 @@ class Builder
         copy_to_dist = @copy_to_dist
         from = join 'src', 'js'
 
-        copy(from, join(self.build_temp_path, 'js')).then ->
-            kit.log '>> Copy: '.cyan + from + ' -> '.green + self.build_temp_path
+        glob join(@dist_path, '**', '*')
+        .then (paths) ->
+            Promise.all(
+                # swf文件默认不处理，由complie_as时自己决定是否重编
+                _.reject(paths, (path) ->
+                    /\.(swf|cache)$/.test(path)
+                ).map (path) ->
+                    remove (path)
+                    log '>> Clean: '.cyan + path
+            )
+        .then ->
+            copy(from, join(self.build_temp_path, 'js')).then ->
+                kit.log '>> Copy: '.cyan + from + ' -> '.green + self.build_temp_path
         .then ->
             Promise.all([
                 copy_to_dist join(self.lib_path, 'expressInstall.swf'), 'expressInstall.swf'
