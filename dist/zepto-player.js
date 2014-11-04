@@ -906,13 +906,16 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this._resetListRandom();
     };
 
-    Playlist.prototype.add = function(sid) {
+    Playlist.prototype.add = function(sid, unshift) {
+      if (unshift == null) {
+        unshift = true;
+      }
       sid = this._formatSid(sid);
       this.remove(sid);
       if ($.isArray(sid) && sid.length) {
-        this.list = sid.concat(this.list);
+        this.list = unshift && this.list.concat(sid) || sid.concat(this.list);
       } else if (sid) {
-        this.list.unshift(sid);
+        this.list[unshift && 'unshift' || 'push'](sid);
       }
       this.trigger('playlist:add', sid);
       return this._resetListRandom();
@@ -2244,14 +2247,18 @@ var __hasProp = {}.hasOwnProperty,
 
 
     /**
-     * 将音频资源添加到播放列表
-     * @param {String|Array} sid 要添加的单曲资源或标识，为数组则代表批量添加。会派发 <code>player:add</code> 事件。
+     * 将音频资源添加到播放列表。会派发 <code>player:add</code> 事件。
+     * @param {String|Array} sid 要添加的单曲资源或标识，为数组则代表批量添加。
+     * @param {Boolean} unshift sid被添加到播放列表中的位置，默认是true，代表往数组前面添加，为flase时表示往数组后添加。
      * @return {player}
      */
 
-    Player.prototype.add = function(sid) {
+    Player.prototype.add = function(sid, unshift) {
+      if (unshift == null) {
+        unshift = true;
+      }
       if (sid) {
-        this.playlist.add(sid);
+        this.playlist.add(sid, unshift);
       }
       this.trigger('player:add', sid);
       return this;
