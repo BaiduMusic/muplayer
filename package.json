@@ -18,6 +18,8 @@
     "fs-extra": "~0.9.1",
     "glob": "~4.0.0",
     "graceful-fs": "~2.0.3",
+    "gulp": "^3.8.10",
+    "gulp-concat": "^2.4.1",
     "lodash": "~2.4.1",
     "nobone": "^0.8.6",
     "node-static": "~0.7.3",
