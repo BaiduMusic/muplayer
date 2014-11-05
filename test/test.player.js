@@ -31,7 +31,7 @@ suite('player', function() {
         });
 
         test('暂停后播放位置不会被重置', function(done) {
-            p.on('timeupdate', function() {
+            p.once('timeupdate', function() {
                 p.pause();
             });
             p.on('pause', function() {
@@ -66,7 +66,94 @@ suite('player', function() {
         });
     });
 
-    suite('#setCur()', function() {
+    suite('#replay()', function() {
+        test('重头播放', function(done) {
+            p.once('timeupdate', function() {
+                p.replay();
+                p.once('timeupdate', function() {
+                    assert.ok(true);
+                    done();
+                });
+            });
+            p.on('suspend', function() {
+                assert.ok(true);
+            });
+            p.setUrl(mp3).play();
+        });
+    });
+
+    suite('#duration()', function() {
+        test('rain.mp3的时长与时长格式化', function(done) {
+            p.on('timeupdate', function() {
+                assert.equal(8, p.duration());
+                assert.equal('00:08', p.duration(true));
+                done();
+            });
+            p.setUrl(mp3).play();
+        });
+    });
+
+    suite('#getState()', function() {
+        test('播放、暂停和停止时可获得对应状态', function(done) {
+            p.on('playing', function() {
+                assert.equal('playing', p.getState());
+                p.pause();
+            });
+            p.on('pause', function() {
+                assert.equal('pause', p.getState());
+                p.stop();
+            });
+            p.on('suspend', function() {
+                assert.equal('suspend', p.getState());
+                done();
+            });
+            p.setUrl(mp3).play();
+        });
+    });
+
+    suite('#setUrl() & getUrl()', function() {
+        test('通过setUrl设置音频连接后，可通过getUrl取回', function() {
+            p.setUrl(mp3);
+            assert.equal(mp3, p.getUrl());
+        });
+    });
+
+    suite('#setVolume() & getVolume()', function() {
+        test('通过setVolume设置的音量，可通过getVolume取回', function() {
+            p.setVolume(66);
+            assert.equal(66, p.getVolume());
+        });
+
+        test('非法的音量取值不能设置成功', function() {
+            p.setVolume(85);
+            p.setVolume(101);
+            assert.equal(85, p.getVolume());
+            p.setVolume(-1);
+            assert.equal(85, p.getVolume());
+            p.setVolume('35');
+            assert.equal(85, p.getVolume());
+        });
+
+        test('音量设置和是否静音相互独立', function() {
+            p.setMute(false);
+            p.setVolume(0);
+            assert.equal(false, p.getMute());
+            p.setVolume(85);
+            p.setMute(true);
+            assert.equal(85, p.getVolume());
+        });
+    });
+
+    suite('#setMute() & getMute()', function() {
+        test('通过setMute设置的是否静音，通过getMute取得静音状态', function() {
+            p.setMute(true);
+            assert.equal(true, p.getMute());
+            p.setMute(false);
+            assert.equal(false, p.getMute());
+        });
+    });
+
+    suite('#setCur() & getCur()', function() {
         test('通过setCur设置sid后，可通过getCur取回该sid', function() {
             p.add([
                 '1', '2', '3'
