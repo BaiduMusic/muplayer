@@ -13,6 +13,8 @@ nobone = require 'nobone'
 } = kit
 
 argv = process.argv
+[ port, open ] = argv[3..4]
+open = open is 'true'
 
 main = ->
     switch argv[2]
@@ -74,13 +76,11 @@ main = ->
                 log '>> Build doc done.'.yellow
 
         when 'server'
-            port = argv[3]
             service.use '/', renderer.static('doc')
             service.listen port, ->
                 log '>> Server start at port: '.cyan + port
 
         when 'test'
-            [ port, open ] = argv[3..4]
             service.use '/', renderer.static('test')
             service.use '/st', renderer.static('doc')
             service.use '/st/bower', renderer.static('bower_components')
