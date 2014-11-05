@@ -144,6 +144,8 @@ do (root = this, factory = (
                 if st is STATES.END
                     self.next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
+                return unless pos
+
                 self.trigger('timeupdate', pos)
 
                 if self.getUrl()
