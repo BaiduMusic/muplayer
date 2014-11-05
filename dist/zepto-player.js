@@ -2293,6 +2293,7 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.reset = function() {
+      delete this._sid;
       this._retryTimes = 0;
       this.playlist.reset();
       this.engine.reset();

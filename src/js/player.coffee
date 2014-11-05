@@ -333,6 +333,7 @@ do (root = this, factory = (
          * @return {player}
         ###
         reset: ->
+            delete @_sid
             @_retryTimes = 0
             @playlist.reset()
             @engine.reset()
