@@ -17,9 +17,6 @@
     <script src="test.utils.js"></script>
     <script src="test.player.js"></script>
     <script>
-        mocha.checkLeaks();
-        mocha.globals(['jQuery']);
-
         if (window.mochaPhantomJS) {
             mochaPhantomJS.run();
         } else {
