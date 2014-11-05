@@ -3,24 +3,30 @@ var p = new _mu.Player({
         mode: 'list',
         absoluteUrl: false
     }),
-    mp3Path = '/st/mp3/';
-
-window.muplayer = p;
+    mp3 = '/st/mp3/rain.mp3';
 
 suite('player', function() {
-    setup(function() {
-        p.add([
-            mp3Path + 'rain.mp3'
-        ]);
-    });
-
     suite('#play()', function() {
         test('播放开始后会派发playing事件', function(done) {
             p.on('playing', function() {
                 assert.ok(true);
                 done();
             });
-            p.play();
+            p.setUrl(mp3).play();
+        });
+    });
+
+    suite('#pause()', function() {
+        test('暂停后会派发pause事件', function(done) {
+            p.on('playing', function() {
+                assert.ok(true);
+                p.pause();
+                done();
+            });
+            p.on('pause', function() {
+                assert.ok(true);
+            });
+            p.setUrl(mp3).play();
         });
     });
 
