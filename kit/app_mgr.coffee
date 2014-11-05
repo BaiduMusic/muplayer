@@ -77,6 +77,16 @@ main = ->
             port = argv[3]
             service.use '/', renderer.static('doc')
             service.listen port, ->
-                log ">> Server start at port: #{port}".cyan
+                log '>> Server start at port: '.cyan + port
+
+        when 'test'
+            [ port, open ] = argv[3..4]
+            service.use '/', renderer.static('test')
+            service.use '/st', renderer.static('doc')
+            service.use '/st/bower', renderer.static('bower_components')
+            service.listen port, ->
+                log 'Start at port: '.cyan + port
+                if open
+                    kit.open "http://127.0.0.1:#{port}/runner.html"
 
 main()

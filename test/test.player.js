@@ -2,7 +2,7 @@ var p = new _mu.Player({
         mute: true,
         mode: 'list'
     }),
-    mp3Path = '../src/doc/mp3/';
+    mp3Path = '/st/mp3/';
 
 suite('player', function() {
     setup(function() {
