@@ -129,7 +129,7 @@ suite('player', function() {
     suite('#duration()', function() {
         test('rain.mp3的时长与时长格式化', function(done) {
             p.on('timeupdate', function() {
-                assert.equal(8, p.duration());
+                assert.equal(8, ~~p.duration());
                 assert.equal('00:08', p.duration(true));
                 done();
             });
