@@ -1,6 +1,6 @@
 var p = new _mu.Player({
         mute: true,
-        absoluteUrl: false
+        absoluteUrl: false,
         engines: [
             {
                 constructor: 'FlashMP3Core'
