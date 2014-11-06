@@ -772,6 +772,9 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     EngineCore.prototype.canPlayType = function(type) {
+      if (type === 'mp4a') {
+        type = 'm4a';
+      }
       return $.inArray(type, this.getSupportedTypes()) !== -1;
     };
 
@@ -2068,6 +2071,9 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.canPlayType = function(type) {
+      if (type === 'mp4a') {
+        type = 'm4a';
+      }
       return $.inArray(type, this.getSupportedTypes()) !== -1;
     };
 
