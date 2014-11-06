@@ -12,7 +12,6 @@ karma_bin = join node_bin, 'karma'
 coffee_bin = join node_bin, 'coffee'
 
 option '-p', '--port [port]', 'Which port to listen to. Example: cake -p 8077 server'
-option '-o', '--open', 'To open a webpage with default browser.'
 
 task 'build', 'Build all source code.', ->
     spawn coffee_bin, [app_mgr, 'build']
