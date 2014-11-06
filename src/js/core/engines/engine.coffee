@@ -98,6 +98,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                     .setMute(oldEngine.getMute())
 
         canPlayType: (type) ->
+            type = 'm4a' if type is 'mp4a'
             $.inArray(type, @getSupportedTypes()) isnt -1
 
         getSupportedTypes: ->
