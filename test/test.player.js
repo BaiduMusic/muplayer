@@ -1,6 +1,7 @@
 var p = new _mu.Player({
         mute: true,
-        absoluteUrl: false
+        absoluteUrl: false,
+        baseDir: '/st/dist',
     }),
     mp3 = '/st/mp3/rain.mp3';
 
@@ -18,25 +19,26 @@ suite('player', function() {
 
         test('事件派发顺序', function(done) {
             this.timeout(3000);
-            var sts = [];
+
+            var evts = [];
+
             p.on('player:statechange', function(e) {
-                sts.push(e.newState);
+                evts.push(e.newState);
             });
-            p.on('ended', function(e) {
-                var evts = [];
-                // canplaythrough的派发时机不定，不作验证。
-                for (var i = 0, l = sts.length; i < l; i++) {
-                    var st = sts[i];
-                    if (st !== 'canplaythrough') {
-                        evts.push(st);
-                    }
-                }
-                assert.deepEqual([
-                    'suspend', 'waiting', 'loadeddata',
-                    'playing', 'pause', 'ended'
-                ], evts);
+
+            p.on('ended', function() {
+                var waitingIndex = $.inArray('waiting', evts),
+                    loadeddataIndex = $.inArray('loadeddata', evts),
+                    playingIndex = $.inArray('playing', evts),
+                    pauseIndex = $.inArray('pause', evts),
+                    endedIndex = $.inArray('ended', evts);
+                assert.ok(waitingIndex <= loadeddataIndex);
+                assert.ok(loadeddataIndex < playingIndex);
+                assert.ok(playingIndex < pauseIndex);
+                assert.ok(pauseIndex < endedIndex);
                 done();
             });
+
             p.setUrl('/st/mp3/empty.mp3').play();
         });
 
