@@ -195,7 +195,11 @@ package {
         public function f_pause():void {}
 
         public function f_stop(p:Number = 0):void {
-            _pausePosition = p;
+            if (p === 0) {
+                _position = 0;
+            } else {
+                _pausePosition = p;
+            }
             if (playerTimer) {
                 playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.stop();
