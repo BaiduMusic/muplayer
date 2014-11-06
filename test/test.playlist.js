@@ -1,7 +1,8 @@
 var p = new _mu.Player({
         absoluteUrl: false
     }),
-    pl = p.playlist;
+    pl = p.playlist,
+    assert = chai.assert;
 
 suite('playlist', function() {
     suite('#add()', function() {

@@ -1,4 +1,5 @@
-var u = _mu.utils;
+var u = _mu.utils,
+    assert = chai.assert;
 
 suite('utils', function() {
     test('#time2str()', function() {
