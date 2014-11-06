@@ -1,5 +1,6 @@
 var p = new _mu.Player({
         mute: true,
+        volume: 0,
         absoluteUrl: false,
         baseDir: '/st/dist',
     }),
@@ -8,6 +9,10 @@ var p = new _mu.Player({
 window.muplayer = p;
 
 suite('player', function() {
+    setup(function() {
+        p.setVolume(0);
+    });
+
     suite('#play()', function() {
         test('播放开始后会派发playing事件', function(done) {
             p.on('playing', function() {
@@ -175,7 +180,7 @@ suite('player', function() {
             p.setVolume(-1);
             assert.equal(85, p.getVolume());
             p.setVolume('35');
-            assert.equal(85, p.getVolume());
+            assert.equal(35, p.getVolume());
         });
 
         test('音量设置和是否静音相互独立', function() {

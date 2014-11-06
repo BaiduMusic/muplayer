@@ -1,5 +1,6 @@
 var p = new _mu.Player({
         mute: true,
+        volume: 0,
         absoluteUrl: false,
         baseDir: '/st/dist',
         engines: [
@@ -18,19 +19,27 @@ var p = new _mu.Player({
     aac = '/st/mp3/coins.m4a';
 
 suite('engine', function() {
+    setup(function() {
+        p.setVolume(0);
+    });
+
     test('getEngineType可以获得当前内核的类型', function() {
         var t = p.getEngineType();
         assert.ok(t === 'FlashMP3Core' || t === 'FlashMP4Core' || t === 'AudioCore');
     });
 
     test('会自动switch到合适内核处理播放', function(done) {
-        var t;
+        this.timeout(3000);
+
+        var t, url;
+
         p.on('playing', function() {
             t = p.getEngineType();
-            if (p.getCur() === mp3) {
+            url = p.getUrl();
+            if (url === mp3) {
                 assert.ok(t === 'FlashMP3Core' || t === 'AudioCore');
                 p.setUrl(aac).play();
-            } else if (p.getCur() === aac) {
+            } else if (url === aac) {
                 assert.ok(t === 'FlashMP4Core' || t === 'AudioCore');
                 done();
             }
