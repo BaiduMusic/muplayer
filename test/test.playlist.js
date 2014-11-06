@@ -1,6 +1,5 @@
 var p = new _mu.Player({
         mute: true,
-        mode: 'list',
         absoluteUrl: false
     }),
     pl = p.playlist;
@@ -54,6 +53,17 @@ suite('playlist', function() {
             assert.deepEqual(['1', '5', '6'], pl.list);
             p.remove(['6', 7]);
             assert.deepEqual(['1', '5'], pl.list);
+        });
+    });
+
+    suite('#getSongsNum()', function() {
+        test('playre.getSongsNum()可以反映playlist中item总数', function() {
+            p.add([1, 2, 3]);
+            assert.equal(3, p.getSongsNum());
+            p.add(4);
+            assert.equal(4, p.getSongsNum());
+            p.remove([2, 3]);
+            assert.equal(2, p.getSongsNum());
         });
     });
 
