@@ -2,7 +2,7 @@ var p = new _mu.Player({
         mute: true,
         volume: 0,
         absoluteUrl: false,
-        baseDir: '/st/dist',
+        baseDir: '/base/dist',
         engines: [
             {
                 constructor: 'FlashMP3Core'
@@ -15,8 +15,11 @@ var p = new _mu.Player({
             }
         ]
     }),
-    mp3 = '/st/mp3/rain.mp3',
-    aac = '/st/mp3/coins.m4a';
+    mp3 = '/base/doc/mp3/rain.mp3',
+    aac = '/base/doc/mp3/coins.mp4a',
+    assert = chai.assert;
+
+window.muplayer = p;
 
 suite('engine', function() {
     setup(function() {
@@ -29,7 +32,7 @@ suite('engine', function() {
     });
 
     test('会自动switch到合适内核处理播放', function(done) {
-        this.timeout(3000);
+        this.timeout(4000);
 
         var t, url;
 
@@ -44,7 +47,7 @@ suite('engine', function() {
                 done();
             }
         });
-        p.setUrl(mp3).play();
+        p.setUrl(aac).play();
     });
 
     teardown(function() {

@@ -2,9 +2,11 @@ var p = new _mu.Player({
         mute: true,
         volume: 0,
         absoluteUrl: false,
-        baseDir: '/st/dist',
+        baseDir: '/base/dist'
     }),
-    mp3 = '/st/mp3/rain.mp3';
+    mp3 = '/base/doc/mp3/rain.mp3',
+    empty_mp3 = '/base/doc/mp3/empty.mp3',
+    assert = chai.assert;
 
 window.muplayer = p;
 
@@ -44,7 +46,7 @@ suite('player', function() {
                 done();
             });
 
-            p.setUrl('/st/mp3/empty.mp3').play();
+            p.setUrl(empty_mp3).play();
         });
 
         test('播放后派发timeupdate', function(done) {
@@ -63,7 +65,7 @@ suite('player', function() {
             p.on('pause', function() {
                 done();
             });
-            p.setUrl('/st/mp3/empty.mp3').play();
+            p.setUrl(empty_mp3).play();
         });
     });
 

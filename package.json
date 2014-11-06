@@ -16,6 +16,11 @@
     "doxx": "~0.7.4",
     "gulp": "^3.8.10",
     "gulp-concat": "^2.4.1",
+    "karma": "^0.12.24",
+    "karma-chrome-launcher": "^0.1.5",
+    "karma-cli": "0.0.4",
+    "karma-mocha": "^0.1.9",
+    "mocha": "^2.0.1",
     "nobone": "^0.8.6",
     "requirejs": "~2.1.12",
     "uglify-js": "~2.4.13"
