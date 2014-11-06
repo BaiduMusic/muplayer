@@ -1,7 +1,5 @@
 var p = new _mu.Player({
-        mute: true,
-        absoluteUrl: false,
-        baseDir: '/st/dist'
+        absoluteUrl: false
     }),
     pl = p.playlist;
 
