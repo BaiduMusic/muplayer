@@ -1,13 +1,18 @@
 var p = new _mu.Player({
         mute: true,
-        mode: 'list',
-        absoluteUrl: false
+        volume: 0,
+        absoluteUrl: false,
+        baseDir: '/st/dist',
     }),
     mp3 = '/st/mp3/rain.mp3';
 
 window.muplayer = p;
 
 suite('player', function() {
+    setup(function() {
+        p.setVolume(0);
+    });
+
     suite('#play()', function() {
         test('播放开始后会派发playing事件', function(done) {
             p.on('playing', function() {
@@ -15,6 +20,50 @@ suite('player', function() {
                 done();
             });
             p.setUrl(mp3).play();
+        });
+
+        test('事件派发顺序', function(done) {
+            this.timeout(3000);
+
+            var evts = [];
+
+            p.on('player:statechange', function(e) {
+                evts.push(e.newState);
+            });
+
+            p.on('ended', function() {
+                var waitingIndex = $.inArray('waiting', evts),
+                    loadeddataIndex = $.inArray('loadeddata', evts),
+                    playingIndex = $.inArray('playing', evts),
+                    pauseIndex = $.inArray('pause', evts),
+                    endedIndex = $.inArray('ended', evts);
+                assert.ok(waitingIndex <= loadeddataIndex);
+                assert.ok(loadeddataIndex < playingIndex);
+                assert.ok(playingIndex < pauseIndex);
+                assert.ok(pauseIndex < endedIndex);
+                done();
+            });
+
+            p.setUrl('/st/mp3/empty.mp3').play();
+        });
+
+        test('播放后派发timeupdate', function(done) {
+            var t = 0,
+                lastPos;
+            p.on('timeupdate', function(pos) {
+                t++;
+                if (t === 1) {
+                    lastPos = pos;
+                }
+                if (t === 2) {
+                    assert.ok(pos !== lastPos);
+                    p.pause();
+                }
+            });
+            p.on('pause', function() {
+                done();
+            });
+            p.setUrl('/st/mp3/empty.mp3').play();
         });
     });
 
@@ -85,7 +134,7 @@ suite('player', function() {
     suite('#duration()', function() {
         test('rain.mp3的时长与时长格式化', function(done) {
             p.on('timeupdate', function() {
-                assert.equal(8, p.duration());
+                assert.equal(8, ~~p.duration());
                 assert.equal('00:08', p.duration(true));
                 done();
             });
@@ -131,7 +180,7 @@ suite('player', function() {
             p.setVolume(-1);
             assert.equal(85, p.getVolume());
             p.setVolume('35');
-            assert.equal(85, p.getVolume());
+            assert.equal(35, p.getVolume());
         });
 
         test('音量设置和是否静音相互独立', function() {
