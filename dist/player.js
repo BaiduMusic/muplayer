@@ -2372,6 +2372,9 @@ var __hasProp = {}.hasOwnProperty,
           return self.next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
+        if (!pos) {
+          return;
+        }
         self.trigger('timeupdate', pos);
         if (self.getUrl()) {
           return self.waitingTimer.clear().after(opts.maxWaitingTime, function() {
@@ -2438,15 +2441,18 @@ var __hasProp = {}.hasOwnProperty,
           return def.resolve();
         }, 0);
       };
-      st = this.getState();
-      if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
-        this.trigger('player:fetch:start');
-        this._fetch().done(function() {
-          self.trigger('player:fetch:done');
-          return play();
-        });
-      } else {
-        play();
+      if (this._st !== 'play') {
+        this._st = 'play';
+        st = this.getState();
+        if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
+          this.trigger('player:fetch:start');
+          this._fetch().done(function() {
+            self.trigger('player:fetch:done');
+            return play();
+          });
+        } else {
+          play();
+        }
       }
       return def.promise();
     };
@@ -2458,8 +2464,11 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.pause = function() {
-      this.engine.pause();
-      this.trigger('player:pause');
+      if (this._st !== 'pause') {
+        this._st = 'pause';
+        this.engine.pause();
+        this.trigger('player:pause');
+      }
       return this;
     };
 
@@ -2470,6 +2479,9 @@ var __hasProp = {}.hasOwnProperty,
      */
 
     Player.prototype.stop = function() {
+      if (this._st !== 'stop') {
+        this._st = 'stop';
+      }
       this.engine.stop();
       this.trigger('player:stop');
       return this;
