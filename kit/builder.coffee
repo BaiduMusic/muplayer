@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'production'
-
 gulp = require 'gulp'
 gulp_concat = require 'gulp-concat'
 
@@ -74,7 +72,7 @@ class Builder
 
     compile_all_coffee: ->
         self = @
-        coffeescript = require 'coffee-script'
+        coffeescript = kit.require 'coffee-script'
 
         glob join(self.build_temp_path, '**', '*.coffee')
         .then (coffee_list) ->
@@ -92,7 +90,7 @@ class Builder
                     .then ->
                         log '>> Compiled: '.cyan + path
 
-    combine_js: (opts) ->
+    combine_js: (options = {}) ->
         self = @
         { copy_to_dist, dist_path, require_temp_path } = @
 
@@ -102,7 +100,7 @@ class Builder
 
         opts_pc =
             appDir: @build_temp_path
-            baseUrl: 'js/'
+            baseUrl: 'js'
             dir: require_temp_path
 
             optimize: 'none'
@@ -126,6 +124,8 @@ class Builder
             paths:
                 'muplayer': '.'
 
+        opts_pc = _.merge(opts_pc, options.pc)
+
         new Promise (resolve) ->
             # PC
             requirejs.optimize opts_pc, (buildResponse) ->
@@ -144,6 +144,7 @@ class Builder
                             name: 'muplayer/player'
                         }
                     ]
+                    opts_pc = _.merge(opts_webapp, options.webapp)
 
                     # Webapp
                     requirejs.optimize opts_webapp, (buildResponse) ->
@@ -158,7 +159,7 @@ class Builder
                             log '>> Compile client js done.'.cyan
                             resolve()
 
-    compress_js: ->
+    compress_js: (files = []) ->
         compress = (path) ->
             spawn join('node_modules', '.bin', 'uglifyjs'), [
                 '-mt'
@@ -166,12 +167,15 @@ class Builder
                 path + '.js'
             ]
 
+        dist_path = @dist_path
+        files = [
+            'player'
+            'zepto-player'
+        ].concat(files)
+
         Promise.all(
-            [
-                join @dist_path, 'player'
-                join @dist_path, 'zepto-player'
-            ].map (path) ->
-                compress path
+            files.map (path) ->
+                compress join(dist_path, path)
         ).then ->
             log '>> Compress js done.'.cyan
 
@@ -228,4 +232,4 @@ class Builder
             remove @require_temp_path
         ]
 
-module.exports = new Builder
+module.exports = Builder

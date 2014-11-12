@@ -144,21 +144,19 @@
       hour = floor(time / 3600);
       minute = floor((time - 3600 * hour) / 60);
       second = time % 60;
-      pad = (function(_this) {
-        return function(source, length) {
-          var nagative, pre, str;
-          pre = '';
-          nagative = '';
-          if (source < 0) {
-            nagative = '-';
-          }
-          str = String(Math.abs(source));
-          if (str.length < length) {
-            pre = new Array(length - str.length + 1).join('0');
-          }
-          return nagative + pre + str;
-        };
-      })(this);
+      pad = function(source, length) {
+        var nagative, pre, str;
+        pre = '';
+        nagative = '';
+        if (source < 0) {
+          nagative = '-';
+        }
+        str = String(Math.abs(source));
+        if (str.length < length) {
+          pre = new Array(length - str.length + 1).join('0');
+        }
+        return nagative + pre + str;
+      };
       if (hour) {
         r.push(hour);
       }
@@ -1249,7 +1247,7 @@ var __hasProp = {}.hasOwnProperty,
       try {
         this.audio.currentTime = 0;
       } catch (_error) {
-
+        return;
       } finally {
         this.pause();
       }
@@ -1278,7 +1276,7 @@ var __hasProp = {}.hasOwnProperty,
       try {
         this.audio.currentTime = ms / 1000;
       } catch (_error) {
-
+        return;
       } finally {
         this.play();
       }
@@ -2013,7 +2011,7 @@ var __hasProp = {}.hasOwnProperty,
           }
           engine = new constructor(args);
         } catch (_error) {
-          throw "Missing constructor: " + (String(engine.constructor));
+          throw new Error("Missing constructor: " + (String(engine.constructor)));
         }
         if (engine._test()) {
           this.engines.push(engine);
@@ -2200,10 +2198,6 @@ var __hasProp = {}.hasOwnProperty,
       return this.curEngine.engineType;
     };
 
-    Engine.prototype.getState = function() {
-      return this.curEngine.getState();
-    };
-
     return Engine;
 
   })();
@@ -2337,7 +2331,7 @@ var __hasProp = {}.hasOwnProperty,
       if (baseDir === false) {
         baseDir = '';
       } else if (!baseDir) {
-        throw "baseDir must be set! Usually, it should point to the MuPlayer's dist directory.";
+        throw new Error("baseDir must be set! Usually, it should point to the MuPlayer's dist directory.");
       }
       if (baseDir && !baseDir.endsWith('/')) {
         baseDir = baseDir + '/';
