@@ -1,4 +1,6 @@
-do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) ->
+do (root = @, factory = (
+    cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core
+) ->
     { EVENTS, STATES } = cfg.engine
     timerResolution = cfg.timerResolution
     extReg = /\.(\w+)(\?.*)?$/
@@ -42,7 +44,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
                     constructor = eval(constructor) unless $.isFunction(constructor)
                     engine = new constructor(args)
                 catch
-                    throw "Missing constructor: #{String(engine.constructor)}"
+                    throw new Error "Missing constructor: #{String(engine.constructor)}"
 
                 if engine._test()
                     @engines.push(engine)
@@ -159,6 +161,7 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
             @curEngine.setState(st)
             @
 
+        # 当前内核的播放状态: play, pause, pre-buffer等
         getState: ->
             @curEngine.getState()
 
@@ -197,10 +200,6 @@ do (root = @, factory = (cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core
 
         getEngineType: ->
             @curEngine.engineType
-
-        # 当前内核的播放状态: play, pause, pre-buffer等
-        getState: ->
-            @curEngine.getState()
 
     Events.mixTo(Engine)
     Engine

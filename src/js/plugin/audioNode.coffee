@@ -1,4 +1,4 @@
-do (root = @, factory = () ->
+do (root = @, factory = ->
     class AudioNode
         constructor: (options) ->
             unless AudioContext
@@ -18,10 +18,10 @@ do (root = @, factory = () ->
                 @input = input
             @output = opts.output or context.destination
 
-        connect: () ->
+        connect: ->
             @output.connect.apply(@output, arguments);
 
-        disconnect: () ->
+        disconnect: ->
             @output.disconnect(0)
 ) ->
     if typeof exports is 'object'

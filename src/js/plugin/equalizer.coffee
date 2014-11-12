@@ -31,7 +31,7 @@ do (root = @, factory = (AudioNode) ->
             lastFilter = null
             filterOpts = opts.filter
 
-            @preGain = context.createGain();
+            @preGain = context.createGain()
 
             for frequency in opts.frequencies
                 # BiquadFilter相关：http://chimera.labs.oreilly.com/books/1234000001552/ch06.html

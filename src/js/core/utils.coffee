@@ -13,7 +13,7 @@ do (root = @, factory = (cfg) ->
     for name in ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']
         utils['is' + name] = do (name=name) ->
             (obj) ->
-                toString.call(obj) == '[object ' + name + ']';
+                toString.call(obj) is '[object ' + name + ']'
 
     unless $.isFunction(StrProto.startsWith)
         StrProto.startsWith = (str) ->
@@ -66,7 +66,7 @@ do (root = @, factory = (cfg) ->
             minute = floor((time - 3600 * hour) / 60)
             second = time % 60
 
-            pad = (source, length) =>
+            pad = (source, length) ->
                 pre = ''
                 nagative = ''
                 nagative = '-' if source < 0
