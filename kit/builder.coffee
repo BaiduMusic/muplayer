@@ -41,14 +41,13 @@ class Builder
         .done ->
             console.log '>> Build done.'.yellow
 
-    copy_to_dist: (from, to) =>
+    copy_to_dist: (from, to) ->
         to = join @dist_path, to
         copy(from, to).then ->
             log '>> Copy: '.cyan + from + ' -> '.green + to
 
     update_build_dir: ->
         self = @
-        copy_to_dist = @copy_to_dist
         from = join 'src', 'js'
 
         glob join(@dist_path, '**', '*')
@@ -66,8 +65,8 @@ class Builder
                 kit.log '>> Copy: '.cyan + from + ' -> '.green + self.build_temp_path
         .then ->
             Promise.all([
-                copy_to_dist join(self.lib_path, 'expressInstall.swf'), 'expressInstall.swf'
-                copy_to_dist join(self.doc_path, 'mp3', 'empty.mp3'), 'empty.mp3'
+                self.copy_to_dist join(self.lib_path, 'expressInstall.swf'), 'expressInstall.swf'
+                self.copy_to_dist join(self.doc_path, 'mp3', 'empty.mp3'), 'empty.mp3'
             ])
 
     compile_all_coffee: ->
@@ -92,7 +91,7 @@ class Builder
 
     combine_js: (options = {}) ->
         self = @
-        { copy_to_dist, dist_path, require_temp_path } = @
+        { dist_path, require_temp_path } = @
 
         log '>> Compile client js with requirejs ...'.cyan
 
@@ -124,7 +123,9 @@ class Builder
             paths:
                 'muplayer': '.'
 
-        opts_pc = _.merge(opts_pc, options.pc)
+        opts_pc = _.merge(opts_pc, options.pc, (a, b) ->
+            _.isArray(a) and a.concat(b) or undefined
+        )
 
         new Promise (resolve) ->
             # PC
@@ -133,9 +134,9 @@ class Builder
                 log buildResponse
 
                 Promise.all([
-                    copy_to_dist join(require_temp_path, 'js', 'player.js'), 'player.js'
-                    copy_to_dist join(require_temp_path, 'js', 'plugin', 'equalizer.js'), 'equalizer.js'
-                    copy_to_dist join(require_temp_path, 'js', 'plugin', 'lrc.js'), 'lrc.js'
+                    self.copy_to_dist join(require_temp_path, 'js', 'player.js'), 'player.js'
+                    self.copy_to_dist join(require_temp_path, 'js', 'plugin', 'equalizer.js'), 'equalizer.js'
+                    self.copy_to_dist join(require_temp_path, 'js', 'plugin', 'lrc.js'), 'lrc.js'
                 ]).then ->
                     opts_webapp = _.cloneDeep opts_pc
                     opts_webapp.pragmas.FlashCoreExclude = true
@@ -144,7 +145,9 @@ class Builder
                             name: 'muplayer/player'
                         }
                     ]
-                    opts_pc = _.merge(opts_webapp, options.webapp)
+                    opts_pc = _.merge(opts_webapp, options.webapp, (a, b) ->
+                        _.isArray(a) and a.concat(b) or undefined
+                    )
 
                     # Webapp
                     requirejs.optimize opts_webapp, (buildResponse) ->
