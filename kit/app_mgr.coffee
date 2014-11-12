@@ -23,7 +23,7 @@ main = ->
             setup.start()
 
         when 'build'
-            builder = require './builder'
+            builder = new (require './builder')
             builder.start()
 
         when 'doc'
