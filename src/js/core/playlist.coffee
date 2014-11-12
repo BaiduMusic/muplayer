@@ -13,7 +13,7 @@ do (root = @, factory = (utils, Events) ->
 
         _resetListRandom: (index) ->
             if @mode is 'list-random'
-                index = index || 0
+                index = index or 0
                 @_listRandomIndex = index
                 @_listRandom = utils.shuffle([0...@list.length])
                 @cur = @list[@_listRandom[index]]

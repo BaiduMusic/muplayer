@@ -146,6 +146,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             try
                 @audio.currentTime = 0
             catch
+                return
             finally
                 @pause()
             @
@@ -175,6 +176,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 # https://github.com/videojs/video.js/issues/792
                 @audio.currentTime = ms / 1000
             catch
+                return
             finally
                 @play()
             @

@@ -106,7 +106,7 @@ do (root = this, factory = (
             if baseDir is false
                 baseDir = ''
             else unless baseDir
-                throw "baseDir must be set! Usually, it should point to the MuPlayer's dist directory."
+                throw new Error "baseDir must be set! Usually, it should point to the MuPlayer's dist directory."
             if baseDir and not baseDir.endsWith('/')
                 baseDir = baseDir + '/'
 
@@ -254,7 +254,7 @@ do (root = this, factory = (
          * <pre>cur // 调用prev时正在播放的歌曲</pre>
          * @return {player}
         ###
-        prev:  ->
+        prev: ->
             ctrl.apply @, ['prev']
 
         ###*

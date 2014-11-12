@@ -1,7 +1,8 @@
 process.env.NODE_ENV ?= 'development'
 
 {
-    kit: { path, spawn }
+    kit,
+    kit: { path, spawn, Promise }
 } = require 'nobone'
 
 join = path.join
@@ -30,3 +31,20 @@ task 'test', 'Run a test server.', (opts) ->
         '--browsers', 'Chrome,Firefox,Safari,Opera,IE'
     ] or []
     spawn karma_bin, ['start', 'karma.conf.js'].concat(args)
+
+task 'coffeelint', 'Lint all coffee files.', (opts) ->
+    expand = kit.require 'glob-expand'
+    coffeelint_bin = join node_bin, 'coffeelint'
+
+    lint = (path) ->
+        args = ['-f', 'coffeelint.json', path]
+        if opts.quite
+            args.unshift('-q')
+        spawn coffeelint_bin, args
+
+    Promise.resolve(expand(
+        join('**', '*.coffee'),
+        join('!node_modules', '**', '*.coffee'),
+        join('!bower_components', '**', '*.coffee')
+    )).then (file_list) ->
+        Promise.map file_list, lint

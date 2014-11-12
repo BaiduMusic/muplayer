@@ -176,7 +176,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                     self.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check)
             super(url)
 
-        getState: () ->
+        getState: ->
             @_state
 
         _setVolume: (volume) ->
