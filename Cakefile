@@ -21,10 +21,10 @@ task 'build', 'Build all source code.', ->
 task 'doc', 'Build doc.', ->
     spawn coffee_bin, [app_mgr, 'doc']
 
-task 'server', 'Run a dev server.', (opts) ->
+task 'server', 'Run dev server.', (opts) ->
     spawn coffee_bin, ['kit/app_mgr.coffee', 'server', opts.port or 8077]
 
-task 'test', 'Run a test server.', (opts) ->
+task 'test', 'Run test runner.', (opts) ->
     args = opts.cli and [
         '--single-run',
         '--no-auto-watch',
