@@ -47,7 +47,8 @@ suite('engine', function() {
                 done();
             }
         });
-        p.setUrl(aac).play();
+
+        p.setUrl(mp3).play();
     });
 
     teardown(function() {
