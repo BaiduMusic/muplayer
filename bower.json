@@ -23,9 +23,7 @@
     "jquery-ui": "~1.10.3",
     "prefixfree": "*",
     "prism": "gh-pages",
-    "mocha": "~1.21.4",
-    "zepto": "~1.1.4",
-    "chai": "~1.9.1",
+    "zeptojs": "~1.1.4",
     "lodash": "~2.4.1"
   }
 }
