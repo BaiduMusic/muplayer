@@ -17,11 +17,11 @@ gulp_concat = require 'gulp-concat'
 class Builder
     constructor: ->
         @src_path = 'src'
-        @build_temp_path = 'build_temp'
-        @require_temp_path = 'require_temp'
         @dist_path = 'dist'
         @lib_path = 'lib'
         @doc_path = 'doc'
+        @build_temp_path = 'build_temp'
+        @require_temp_path = 'require_temp'
 
     start: ->
         self = @
@@ -153,12 +153,15 @@ class Builder
                     requirejs.optimize opts_webapp, (buildResponse) ->
                         log '>> r.js for WebApp'.cyan
                         log buildResponse
-                        glob join(require_temp_path, 'js', 'lib', 'zepto', '**', '*.js')
-                        .then (file_list) ->
+
+                        zepto_path = join(require_temp_path, 'js', 'lib', 'zepto')
+
+                        glob(join zepto_path, '**', '*.js').then (file_list) ->
                             file_list.push(join require_temp_path, 'js', 'player.js')
                             gulp.src(file_list)
                                 .pipe(gulp_concat 'zepto-player.js')
                                 .pipe(gulp.dest dist_path)
+                            remove (zepto_path)
                             log '>> Compile client js done.'.cyan
                             resolve()
 
