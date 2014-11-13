@@ -127,7 +127,7 @@ do (root = @, factory = (
             @
 
         setUrl: (url) ->
-            if extReg.test(url)
+            if extReg.test(decodeURIComponent(url))
                 ext = RegExp.$1.toLocaleLowerCase()
 
             if @canPlayType(ext)

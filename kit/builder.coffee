@@ -17,11 +17,11 @@ gulp_concat = require 'gulp-concat'
 class Builder
     constructor: ->
         @src_path = 'src'
-        @build_temp_path = 'build_temp'
-        @require_temp_path = 'require_temp'
         @dist_path = 'dist'
         @lib_path = 'lib'
         @doc_path = 'doc'
+        @build_temp_path = 'build_temp'
+        @require_temp_path = 'require_temp'
 
     start: ->
         self = @
