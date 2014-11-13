@@ -123,9 +123,7 @@ class Builder
             paths:
                 'muplayer': '.'
 
-        opts_pc = _.merge(opts_pc, options.pc, (a, b) ->
-            _.isArray(a) and a.concat(b) or undefined
-        )
+        opts_pc = _.extend(opts_pc, options.pc)
 
         new Promise (resolve) ->
             # PC
@@ -133,11 +131,13 @@ class Builder
                 log '>> r.js for PC'.cyan
                 log buildResponse
 
-                Promise.all([
-                    self.copy_to_dist join(require_temp_path, 'js', 'player.js'), 'player.js'
-                    self.copy_to_dist join(require_temp_path, 'js', 'plugin', 'equalizer.js'), 'equalizer.js'
-                    self.copy_to_dist join(require_temp_path, 'js', 'plugin', 'lrc.js'), 'lrc.js'
-                ]).then ->
+                Promise.all(
+                    opts_pc.modules.map (mod) ->
+                        file = mod.name.replace(/^muplayer/, 'js') + '.js'
+                        from = join(require_temp_path, file)
+                        to = file.split('/').slice(-1)[0]
+                        self.copy_to_dist from, to
+                ).then ->
                     opts_webapp = _.cloneDeep opts_pc
                     opts_webapp.pragmas.FlashCoreExclude = true
                     opts_webapp.modules = [
@@ -145,20 +145,26 @@ class Builder
                             name: 'muplayer/player'
                         }
                     ]
-                    opts_pc = _.merge(opts_webapp, options.webapp, (a, b) ->
-                        _.isArray(a) and a.concat(b) or undefined
-                    )
+
+                    opts_webapp =_.extend(opts_webapp, options.webapp)
 
                     # Webapp
                     requirejs.optimize opts_webapp, (buildResponse) ->
                         log '>> r.js for WebApp'.cyan
                         log buildResponse
+
                         glob join(require_temp_path, 'js', 'lib', 'zepto', '**', '*.js')
                         .then (file_list) ->
-                            file_list.push(join require_temp_path, 'js', 'player.js')
-                            gulp.src(file_list)
-                                .pipe(gulp_concat 'zepto-player.js')
-                                .pipe(gulp.dest dist_path)
+                            Promise.all([
+                                opts_webapp.modules.map (mod) ->
+                                    file = join require_temp_path, (mod.name.replace(/^muplayer/, 'js') + '.js')
+                                    fname = 'zepto-' + file.split('/').slice(-1)[0]
+                                    gulp.src(file_list.concat file)
+                                        .pipe(gulp_concat fname)
+                                        .pipe(gulp.dest dist_path)
+                                    log '>> Concat & Compiled to: '.cyan + join(dist_path, fname)
+                            ])
+                        .then ->
                             log '>> Compile client js done.'.cyan
                             resolve()
 
@@ -182,7 +188,7 @@ class Builder
         ).then ->
             log '>> Compress js done.'.cyan
 
-    add_license: ->
+    add_license: (match = '*.js') ->
         cfg = require '../bower'
         info = """
             // @license
@@ -191,7 +197,7 @@ class Builder
             // (c) 2014 FE Team of Baidu Music
             // Can be freely distributed under the BSD license.\n
         """
-        glob join(@dist_path, '*.js')
+        glob join(@dist_path, match)
         .then (paths) ->
             Promise.all _.map(paths, (path) ->
                 kit.readFile(path, 'utf8').then (str) ->
