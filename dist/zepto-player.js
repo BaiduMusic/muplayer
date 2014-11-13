@@ -1778,7 +1778,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.setUrl = function(url) {
       var ext;
-      if (extReg.test(url)) {
+      if (extReg.test(decodeURIComponent(url))) {
         ext = RegExp.$1.toLocaleLowerCase();
       }
       if (this.canPlayType(ext)) {

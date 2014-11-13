@@ -167,6 +167,12 @@ suite('player', function() {
             p.setUrl(mp3);
             assert.equal(mp3, p.getUrl());
         });
+
+        test('setUrl可以检测encode后的音频类型', function() {
+            assert.doesNotThrow(function() {
+                p.setUrl('http://localhost:8123/?URLStr=http%3A%2F%2Fzhangmenshiting.baidu.com%2Fdata2%2Fmusic%2F124506768%2F124506768.mp3%3Fxcode%3Da6b8cd215f4f3affd3100a790a2a71bec3f47fcedb7fe8f9');
+            });
+        });
     });
 
     suite('#setVolume() & getVolume()', function() {
