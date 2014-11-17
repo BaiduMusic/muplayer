@@ -36,10 +36,10 @@ module.exports = function(config) {
       'bower_components/chai/chai.js',
       'bower_components/mocha/mocha.js',
       'dist/player.js',
-      'test/test.utils.js',
-      'test/test.player.js',
-      'test/test.playlist.js',
-      'test/test.engine.js',
+      'test/utils.js',
+      'test/player.js',
+      'test/playlist.js',
+      'test/engine.js',
     ],
 
 
