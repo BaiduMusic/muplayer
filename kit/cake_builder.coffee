@@ -51,12 +51,6 @@ tasks = [
         'Lint all coffee files.'
         (opts) ->
             expand = kit.require 'glob-expand'
-    ]
-    [
-        'coffeelint'
-        'Lint all coffee files.'
-        (opts) ->
-            expand = kit.require 'glob-expand'
             coffeelint_bin = join node_bin, 'coffeelint'
 
             lint = (path) ->
