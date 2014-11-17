@@ -36,10 +36,10 @@ module.exports = function(config) {
       'bower_components/chai/chai.js',
       'bower_components/mocha/mocha.js',
       'dist/player.js',
-      'test/utils.js',
-      'test/player.js',
-      'test/playlist.js',
-      'test/engine.js',
+      'test/utils.coffee',
+      'test/player.coffee',
+      'test/playlist.coffee',
+      'test/engine.coffee'
     ],
 
 
@@ -51,6 +51,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        '**/*.coffee': 'coffee'
     },
 
 
