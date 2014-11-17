@@ -139,7 +139,6 @@ class Builder
                         self.copy_to_dist from, to
                 ).then ->
                     opts_webapp = _.cloneDeep opts_pc
-                    opts_webapp.pragmas.FlashCoreExclude = true
                     opts_webapp.modules = [
                         {
                             name: 'muplayer/player'
@@ -147,6 +146,7 @@ class Builder
                     ]
 
                     opts_webapp =_.extend(opts_webapp, options.webapp)
+                    opts_webapp.pragmas.FlashCoreExclude = true
 
                     # Webapp
                     requirejs.optimize opts_webapp, (buildResponse) ->
