@@ -48,4 +48,4 @@ class Setup
                 )
             }
 
-module.exports = new Setup
+module.exports = Setup
