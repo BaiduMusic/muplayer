@@ -1683,7 +1683,7 @@ var __hasProp = {}.hasOwnProperty,
 
     instance = null;
 
-    Player.defaults = {
+    Player.prototype.defaults = {
       baseDir: "" + cfg.cdn + cfg.version,
       mode: 'loop',
       mute: false,
@@ -1692,7 +1692,23 @@ var __hasProp = {}.hasOwnProperty,
       absoluteUrl: true,
       maxRetryTimes: 1,
       maxWaitingTime: 4 * 1000,
-      recoverMethodWhenWaitingTimeout: 'retry'
+      recoverMethodWhenWaitingTimeout: 'retry',
+      fetch: function() {
+        var cur, def;
+        def = $.Deferred();
+        cur = this.getCur();
+        if (this.getUrl() === cur) {
+          def.resolve();
+        } else {
+          setTimeout((function(_this) {
+            return function() {
+              _this.setUrl(cur);
+              return def.resolve();
+            };
+          })(this), 0);
+        }
+        return def.promise();
+      }
     };
 
 
@@ -1751,7 +1767,7 @@ var __hasProp = {}.hasOwnProperty,
 
     function Player(options) {
       var baseDir, opts;
-      this.opts = opts = $.extend({}, Player.defaults, options);
+      this.opts = opts = $.extend({}, this.defaults, options);
       this.waitingTimer = new Timer(100);
       baseDir = opts.baseDir;
       if (baseDir === false) {
@@ -1872,7 +1888,7 @@ var __hasProp = {}.hasOwnProperty,
         st = this.getState();
         if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
           this.trigger('player:fetch:start');
-          this._fetch().done(function() {
+          this.opts.fetch.call(this).done(function() {
             self.trigger('player:fetch:done');
             return play();
           });
@@ -1949,7 +1965,7 @@ var __hasProp = {}.hasOwnProperty,
 
 
     /**
-     * 获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。
+     * 获取当前歌曲（根据业务逻辑和选链opts.fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。
      * 如果之前没有主动执行过setCur，则认为播放列表的第一首歌是当前歌曲。
      * @return {String}
      */
@@ -1968,7 +1984,7 @@ var __hasProp = {}.hasOwnProperty,
 
     /**
      * 设置当前歌曲。
-     * @param {String} sid 可以是音频文件url，也可以是音频文件id（如果是文件id，则要自己重写_fetch方法，决定如何根据id获得相应音频的实际地址）。
+     * @param {String} sid 可以是音频文件url，也可以是音频文件id（如果是文件id，则要实现自己的opts.fetch方法，决定如何根据id获得相应音频的实际地址）。
      * @return {player}
      */
 
@@ -2083,7 +2099,7 @@ var __hasProp = {}.hasOwnProperty,
 
 
     /**
-     * 设置当前播放资源的url。一般而言，这个方法是私有方法，供_fetch等内部方法中调用，客户端无需关心。
+     * 设置当前播放资源的url。一般而言，这个方法是私有方法，供opts.fetch选链使用，客户端无需关心。
      * 但出于调试和灵活性的考虑，依然之暴露为公共方法。
      * @param {String} url
      * @return {player}
@@ -2199,23 +2215,6 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype.getEngineType = function() {
       return this.engine.curEngine.engineType;
-    };
-
-    Player.prototype._fetch = function() {
-      var cur, def;
-      def = $.Deferred();
-      cur = this.getCur();
-      if (this.getUrl() === cur) {
-        def.resolve();
-      } else {
-        setTimeout((function(_this) {
-          return function() {
-            _this.setUrl(cur);
-            return def.resolve();
-          };
-        })(this), 0);
-      }
-      return def.promise();
     };
 
     return Player;

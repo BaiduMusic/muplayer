@@ -209,7 +209,7 @@ cur // 调用next时正在播放的歌曲</pre> </div>
               <div class="label label-info mr5">method</div><span>Player.prototype.getCur()</span> -><span>String</span>
             </p>
           </section>
-          <div class="description"><p>获取当前歌曲（根据业务逻辑和选链_fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。<br />如果之前没有主动执行过setCur，则认为播放列表的第一首歌是当前歌曲。</p> </div>
+          <div class="description"><p>获取当前歌曲（根据业务逻辑和选链opts.fetch方法的具体实现可以是音频文件url，也可以是标识id，默认直接传入音频文件url即可）。<br />如果之前没有主动执行过setCur，则认为播放列表的第一首歌是当前歌曲。</p> </div>
           <section id="setCur">
             <h1>setCur</h1>
             <h5 class="subheader"></h5>
@@ -231,7 +231,7 @@ cur // 调用next时正在播放的歌曲</pre> </div>
               <tr>
                 <td>sid</td>
                 <td>String</td>
-                <td>可以是音频文件url，也可以是音频文件id（如果是文件id，则要自己重写_fetch方法，决定如何根据id获得相应音频的实际地址）。</td>
+                <td>可以是音频文件url，也可以是音频文件id（如果是文件id，则要实现自己的opts.fetch方法，决定如何根据id获得相应音频的实际地址）。</td>
               </tr>
             </tbody>
           </table>
@@ -329,7 +329,7 @@ cur // 调用next时正在播放的歌曲</pre> </div>
               <div class="label label-info mr5">method</div><span>Player.prototype.setUrl()</span> -><span>player</span>
             </p>
           </section>
-          <div class="description"><p>设置当前播放资源的url。一般而言，这个方法是私有方法，供_fetch等内部方法中调用，客户端无需关心。<br />但出于调试和灵活性的考虑，依然之暴露为公共方法。</p> </div>
+          <div class="description"><p>设置当前播放资源的url。一般而言，这个方法是私有方法，供opts.fetch选链使用，客户端无需关心。<br />但出于调试和灵活性的考虑，依然之暴露为公共方法。</p> </div>
           <h5>参数说明</h5>
           <table class="table table-bordered table-striped">
             <thead>
