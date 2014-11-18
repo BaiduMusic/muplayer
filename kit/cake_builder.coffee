@@ -72,10 +72,12 @@ tasks = [
 
             Promise.resolve(expand(
                 join('**', '*.coffee'),
+                join('!lib', '**', '*.coffee'),
                 join('!node_modules', '**', '*.coffee'),
                 join('!bower_components', '**', '*.coffee')
             )).then (file_list) ->
-                Promise.map file_list, lint
+                console.log file_list
+                #Promise.map file_list, lint
     ]
 ]
 
