@@ -2,13 +2,7 @@ nobone = require 'nobone'
 
 { kit, service, renderer } = nobone()
 {
-    log,
-    copy,
-    glob,
-    spawn,
-    remove,
-    symlink,
-    Promise,
+    log, copy, glob, spawn, remove, symlink, Promise,
     path: { join, basename }
 } = kit
 

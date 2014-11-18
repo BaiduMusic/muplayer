@@ -1,6 +1,6 @@
 { kit } = require 'nobone'
 
-{ _, spawn, log, path, { path: join } } = kit
+{ _, spawn, log, path, path: { join } } = kit
 
 class Setup
     start: ->
