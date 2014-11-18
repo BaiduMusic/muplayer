@@ -13,6 +13,7 @@ coffee_bin = join node_bin, 'coffee'
 options = [
     ['-p', '--port [port]', 'Which port to listen to. Example: cake -p 8077 server']
     ['-q', '--quite', 'Running lint script at quite mode results in only printing errors. Example: cake -q coffeelint']
+    ['-r', '--rebuild', 'Wheather to rebuild src and doc files before run dev server?']
     ['-c', '--cli', 'Wheather to run test cases in CLI?']
 ]
 
@@ -33,7 +34,17 @@ tasks = [
         'server'
         'Run dev server.'
         (opts) ->
-            spawn coffee_bin, [app_mgr, 'server', opts.port or 8077]
+            run = ->
+                spawn coffee_bin, [app_mgr, 'server', opts.port or 8077]
+
+            if opts.rebuild
+                invoke 'build'
+                .then ->
+                    invoke 'doc'
+                .then ->
+                    run()
+            else
+                run()
     ]
     [
         'test'
