@@ -19,7 +19,7 @@ open = open is 'true'
 main = ->
     switch argv[2]
         when 'setup'
-            setup = require './setup'
+            setup = new (require './setup')
             setup.start()
 
         when 'build'
