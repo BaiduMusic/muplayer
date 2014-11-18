@@ -228,7 +228,7 @@ do (root = this, factory = (
                     # 及setUrl的时机都是依据opts.fetch的实现决定。
                     # 如果继承时需传入自己的fetch实现，这些都要自己权衡。
                     @trigger('player:fetch:start')
-                    @opts.fetch().done ->
+                    @opts.fetch.call(@).done ->
                         self.trigger('player:fetch:done')
                         play()
                 else
