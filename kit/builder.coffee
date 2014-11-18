@@ -4,13 +4,7 @@ gulp_concat = require 'gulp-concat'
 { kit } = require 'nobone'
 
 {
-    _,
-    log,
-    copy,
-    glob,
-    spawn,
-    remove,
-    Promise,
+    _, log, copy, glob, spawn, remove, Promise,
     path: { join }
 } = kit
 
