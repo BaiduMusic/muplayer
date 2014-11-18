@@ -76,8 +76,7 @@ tasks = [
                 join('!node_modules', '**', '*.coffee'),
                 join('!bower_components', '**', '*.coffee')
             )).then (file_list) ->
-                console.log file_list
-                #Promise.map file_list, lint
+                Promise.map file_list, lint
     ]
 ]
 
