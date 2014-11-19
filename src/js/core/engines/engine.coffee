@@ -3,7 +3,6 @@ do (root = @, factory = (
 ) ->
     { EVENTS, STATES } = cfg.engine
     timerResolution = cfg.timerResolution
-    extReg = /\.(\w+)(\?.*)?$/
 
     class Engine
         # 隐藏容器, 用于容纳swf和audio等标签
@@ -127,9 +126,7 @@ do (root = @, factory = (
             @
 
         setUrl: (url) ->
-            if extReg.test(decodeURIComponent(url))
-                ext = RegExp.$1.toLocaleLowerCase()
-
+            ext = utils.getExt(url)
             if @canPlayType(ext)
                 @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
             else

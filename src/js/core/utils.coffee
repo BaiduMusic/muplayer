@@ -10,6 +10,8 @@ do (root = @, factory = (cfg) ->
     hasOwnProperty = ObjProto.hasOwnProperty
     toString = ObjProto.toString
 
+    extReg = /\.(\w+)(\?.*)?$/
+
     for name in ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']
         utils['is' + name] = do (name=name) ->
             (obj) ->
@@ -118,6 +120,12 @@ do (root = @, factory = (cfg) ->
             div.firstChild.href = url
             div.innerHTML = div.innerHTML
             div.firstChild.href
+
+        getExt: (url) ->
+            ext = ''
+            if extReg.test(decodeURIComponent(url))
+                ext = RegExp.$1.toLocaleLowerCase()
+            ext
     }
 
     utils

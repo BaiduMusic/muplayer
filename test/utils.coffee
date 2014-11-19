@@ -1,5 +1,4 @@
 u = _mu.utils
-assert = chai.assert
 
 suite 'utils', ->
     test '#time2str()', ->
@@ -27,3 +26,10 @@ suite 'utils', ->
         )
 
         assert.equal hello(), 'before, hello moe, after'
+
+    test '#getExt()', ->
+        assert.equal 'mp3', u.getExt('http://localhost:8123/?URLStr=http%3A%2F%2Fzhangmenshiting.baidu.com%2Fdata2%2Fmusic%2F124506768%2F124506768.mp3%3Fxcode%3Da6b8cd215f4f3affd3100a790a2a71bec3f47fcedb7fe8f9')
+        assert.equal 'mp3', u.getExt('http://localhost:8123/test.mp3')
+        assert.equal 'aac', u.getExt('http://localhost:8123/test.aac')
+        assert.equal 'mp4', u.getExt('http://localhost:8123/test.mp4?Xode=XX')
+        assert.equal '', u.getExt('http://localhost:8123/test')
