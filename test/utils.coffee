@@ -1,5 +1,3 @@
-u = _mu.utils
-
 suite 'utils', ->
     test '#time2str()', ->
         assert.equal u.time2str(59), '00:59'
