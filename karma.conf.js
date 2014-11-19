@@ -36,6 +36,7 @@ module.exports = function(config) {
       'bower_components/chai/chai.js',
       'bower_components/mocha/mocha.js',
       'dist/player.js',
+      'test/setup.coffee',
       'test/utils.coffee',
       'test/player.coffee',
       'test/playlist.coffee',

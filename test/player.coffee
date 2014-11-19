@@ -1,15 +1,3 @@
-p = new _mu.Player({
-    mute: true
-    volume: 0,
-    absoluteUrl: false
-    baseDir: '/base/dist'
-})
-mp3 = '/base/doc/mp3/rain.mp3'
-empty_mp3 = '/base/doc/mp3/empty.mp3'
-assert = chai.assert
-
-window.muplayer = p
-
 suite 'player', ->
     setup ->
         p.setVolume(0)
