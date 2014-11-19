@@ -117,7 +117,7 @@
     return root._mu.utils = factory(root._mu.cfg);
   }
 })(this, function(cfg) {
-  var ArrayProto, NumProto, ObjProto, StrProto, hasOwnProperty, name, push, toString, utils, _i, _len, _ref;
+  var ArrayProto, NumProto, ObjProto, StrProto, extReg, hasOwnProperty, name, push, toString, utils, _i, _len, _ref;
   utils = {};
   StrProto = String.prototype;
   NumProto = Number.prototype;
@@ -126,6 +126,7 @@
   push = ArrayProto.push;
   hasOwnProperty = ObjProto.hasOwnProperty;
   toString = ObjProto.toString;
+  extReg = /\.(\w+)(\?.*)?$/;
   _ref = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'];
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     name = _ref[_i];
@@ -252,6 +253,14 @@
       div.firstChild.href = url;
       div.innerHTML = div.innerHTML;
       return div.firstChild.href;
+    },
+    getExt: function(url) {
+      var ext;
+      ext = '';
+      if (extReg.test(decodeURIComponent(url))) {
+        ext = RegExp.$1.toLocaleLowerCase();
+      }
+      return ext;
     }
   });
   return utils;
@@ -1399,10 +1408,9 @@ var __hasProp = {}.hasOwnProperty,
                     );
   }
 })(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) {
-  var EVENTS, Engine, STATES, extReg, timerResolution, _ref;
+  var EVENTS, Engine, STATES, timerResolution, _ref;
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
-  extReg = /\.(\w+)(\?.*)?$/;
   Engine = (function() {
     Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>';
 
@@ -1536,9 +1544,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.setUrl = function(url) {
       var ext;
-      if (extReg.test(decodeURIComponent(url))) {
-        ext = RegExp.$1.toLocaleLowerCase();
-      }
+      ext = utils.getExt(url);
       if (this.canPlayType(ext)) {
         if (!this.curEngine.canPlayType(ext)) {
           this.switchEngineByType(ext);
