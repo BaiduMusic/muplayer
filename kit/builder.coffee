@@ -13,7 +13,7 @@ class Builder
         @src_path = 'src'
         @dist_path = 'dist'
         @lib_path = 'lib'
-        @doc_path = 'doc'
+        @doc_path = join('src', 'doc')
         @build_temp_path = 'build_temp'
         @require_temp_path = 'require_temp'
 
@@ -156,7 +156,7 @@ class Builder
                                     gulp.src(file_list.concat file)
                                         .pipe(gulp_concat fname)
                                         .pipe(gulp.dest dist_path)
-                                    log '>> Concat & Compiled to: '.cyan + join(dist_path, fname)
+                                    log '>> Concat & Compiled: '.cyan + file + ' -> '.green + join(dist_path, fname)
                             ])
                         .then ->
                             log '>> Compile client js done.'.cyan
