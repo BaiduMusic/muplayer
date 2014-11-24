@@ -10,6 +10,8 @@ argv = process.argv
 [ port, open ] = argv[3..4]
 open = open is 'true'
 
+root_path = process.cwd()
+
 main = ->
     switch argv[2]
         when 'setup'
@@ -21,8 +23,8 @@ main = ->
             builder.start()
 
         when 'doc'
-            doxx_bin = join 'node_modules', '.bin', 'doxx'
-            remove 'doc'
+            doxx_bin = join root_path, 'node_modules', '.bin', 'doxx'
+            remove join(root_path, 'doc')
             .then ->
                 Promise.all([
                     spawn('compass', [
@@ -37,20 +39,23 @@ main = ->
                         '-t', 'MuPlayer 『百度音乐播放内核』'
                         '-s', 'dist'
                         '-T', 'doc_temp'
-                        '--template', 'src/doc/base.jade'
+                        '--template', join(root_path, 'src', 'doc', 'base.jade')
                     ])
                 ])
             .then ->
+                copy_to = (from, to) ->
+                    copy join(root_path, 'doc_temp', from), join(root_path, 'doc', to)
+
                 Promise.all([
-                    copy join('doc_temp', 'player.js.html'), join('doc', 'api.html')
-                    copy join('doc_temp', 'index.html'), join('doc', 'index.html')
+                    copy_to 'player.js.html', 'api.html'
+                    copy_to 'index.html', 'index.html'
                 ])
             .then ->
-                remove 'doc_temp'
+                remove join(root_path, 'doc_temp')
             .then ->
                 # symlink from root_path to doc_path
                 symlink_to = (from, to, type = 'dir') ->
-                    symlink join('..', from), join('doc', to), type
+                    symlink join('..', from), join(root_path, 'doc', to), type
 
                 Promise.all [
                     symlink_to 'dist', 'dist'
