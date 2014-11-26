@@ -243,8 +243,8 @@ do (root = this, factory = (
         pause: ->
             if @_st isnt 'pause'
                 @_st = 'pause'
-                @engine.pause()
-                @trigger('player:pause')
+            @engine.pause()
+            @trigger('player:pause')
             @
 
         ###*

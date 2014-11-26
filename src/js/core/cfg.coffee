@@ -17,6 +17,7 @@ do (root = @, factory = ->
                 FLASH_MP3: 'FlashMP3Core'
                 FLASH_MP4: 'FlashMP4Core'
                 AUDIO: 'AudioCore'
+
             EVENTS:
                 STATECHANGE: 'engine:statechange'           # 播放状态改变事件（STATES）
                 POSITIONCHANGE: 'engine:postionchange'      # 播放时播放进度改变事件
