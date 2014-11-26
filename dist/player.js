@@ -2488,9 +2488,9 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.pause = function() {
       if (this._st !== 'pause') {
         this._st = 'pause';
-        this.engine.pause();
-        this.trigger('player:pause');
       }
+      this.engine.pause();
+      this.trigger('player:pause');
       return this;
     };
 
