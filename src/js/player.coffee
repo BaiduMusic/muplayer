@@ -35,7 +35,7 @@ do (root = this, factory = (
     class Player
         instance = null
 
-        defaults:
+        @defaults:
             baseDir: "#{cfg.cdn}#{cfg.version}"
             mode: 'loop'
             mute: false
@@ -114,7 +114,7 @@ do (root = this, factory = (
          *  </tr></table>
         ###
         constructor: (options) ->
-            @opts = opts = $.extend({}, @defaults, options)
+            @opts = opts = $.extend({}, Player.defaults, options)
             @waitingTimer = new Timer(100)
 
             baseDir = opts.baseDir

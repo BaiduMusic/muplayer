@@ -2263,7 +2263,7 @@ var __hasProp = {}.hasOwnProperty,
 
     instance = null;
 
-    Player.prototype.defaults = {
+    Player.defaults = {
       baseDir: "" + cfg.cdn + cfg.version,
       mode: 'loop',
       mute: false,
@@ -2347,7 +2347,7 @@ var __hasProp = {}.hasOwnProperty,
 
     function Player(options) {
       var baseDir, opts;
-      this.opts = opts = $.extend({}, this.defaults, options);
+      this.opts = opts = $.extend({}, Player.defaults, options);
       this.waitingTimer = new Timer(100);
       baseDir = opts.baseDir;
       if (baseDir === false) {
