@@ -2451,17 +2451,15 @@ var __hasProp = {}.hasOwnProperty,
       def = $.Deferred();
       startTime = ~~startTime;
       play = function() {
-        return setTimeout(function() {
-          if (self.getUrl()) {
-            if (startTime) {
-              engine.setCurrentPosition(startTime);
-            } else {
-              engine.play();
-            }
+        if (self.getUrl()) {
+          if (startTime) {
+            engine.setCurrentPosition(startTime);
+          } else {
+            engine.play();
           }
-          self.trigger('player:play', startTime);
-          return def.resolve();
-        }, 0);
+        }
+        self.trigger('player:play', startTime);
+        return def.resolve();
       };
       if (this._st !== 'play') {
         this._st = 'play';
@@ -2469,8 +2467,8 @@ var __hasProp = {}.hasOwnProperty,
         if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
           this.trigger('player:fetch:start');
           this.opts.fetch.call(this).done(function() {
-            self.trigger('player:fetch:done');
-            return play();
+            play();
+            return self.trigger('player:fetch:done');
           });
         } else {
           play();
