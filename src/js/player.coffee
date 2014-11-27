@@ -204,15 +204,13 @@ do (root = this, factory = (
             startTime = ~~startTime
 
             play = ->
-                setTimeout( ->
-                    if self.getUrl()
-                        if startTime
-                            engine.setCurrentPosition(startTime)
-                        else
-                            engine.play()
-                    self.trigger('player:play', startTime)
-                    def.resolve()
-                , 0)
+                if self.getUrl()
+                    if startTime
+                        engine.setCurrentPosition(startTime)
+                    else
+                        engine.play()
+                self.trigger('player:play', startTime)
+                def.resolve()
 
             if @_st isnt 'play'
                 @_st = 'play'
@@ -229,8 +227,8 @@ do (root = this, factory = (
                     # 如果继承时需传入自己的fetch实现，这些都要自己权衡。
                     @trigger('player:fetch:start')
                     @opts.fetch.call(@).done ->
-                        self.trigger('player:fetch:done')
                         play()
+                        self.trigger('player:fetch:done')
                 else
                     play()
 
