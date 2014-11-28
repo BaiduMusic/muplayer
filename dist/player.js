@@ -2461,7 +2461,7 @@ var __hasProp = {}.hasOwnProperty,
         self.trigger('player:play', startTime);
         return def.resolve();
       };
-      if (this._st !== 'play') {
+      if (this._st !== 'play' || startTime) {
         this._st = 'play';
         st = this.getState();
         if ((st === STATES.STOP || st === STATES.END) || st === STATES.BUFFERING && this.curPos() === 0) {
@@ -2486,9 +2486,9 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.pause = function() {
       if (this._st !== 'pause') {
         this._st = 'pause';
+        this.engine.pause();
+        this.trigger('player:pause');
       }
-      this.engine.pause();
-      this.trigger('player:pause');
       return this;
     };
 
@@ -2501,9 +2501,9 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.stop = function() {
       if (this._st !== 'stop') {
         this._st = 'stop';
+        this.engine.stop();
+        this.trigger('player:stop');
       }
-      this.engine.stop();
-      this.trigger('player:stop');
       return this;
     };
 
