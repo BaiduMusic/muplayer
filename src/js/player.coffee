@@ -212,7 +212,7 @@ do (root = this, factory = (
                 self.trigger('player:play', startTime)
                 def.resolve()
 
-            if @_st isnt 'play'
+            if @_st isnt 'play' or startTime
                 @_st = 'play'
 
                 st = @getState()
@@ -241,8 +241,8 @@ do (root = this, factory = (
         pause: ->
             if @_st isnt 'pause'
                 @_st = 'pause'
-            @engine.pause()
-            @trigger('player:pause')
+                @engine.pause()
+                @trigger('player:pause')
             @
 
         ###*
@@ -252,8 +252,8 @@ do (root = this, factory = (
         stop: ->
             if @_st isnt 'stop'
                 @_st = 'stop'
-            @engine.stop()
-            @trigger('player:stop')
+                @engine.stop()
+                @trigger('player:stop')
             @
 
         ###*
