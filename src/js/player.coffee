@@ -212,25 +212,22 @@ do (root = this, factory = (
                 self.trigger('player:play', startTime)
                 def.resolve()
 
-            if @_st isnt 'play' or startTime
-                @_st = 'play'
-
-                st = @getState()
-                # 只有如下3种情况会触发opts.fetch选链：
-                # 1) 内核首次使用或被reset过 (STATES.STOP)
-                # 2) 上一首歌播放完成自动触发下一首的播放 (STATES.END)
-                # 3) 某些移动浏览器无交互时不能触发自动播放 (会被卡在STATES.BUFFERING)
-                if st in [STATES.STOP, STATES.END] or st is STATES.BUFFERING and @curPos() is 0
-                    # XXX: 应该在opts.fetch中决定是否发起选链。
-                    # 是从cache中取音频链接地址，还是发起选链请求，
-                    # 及setUrl的时机都是依据opts.fetch的实现决定。
-                    # 如果继承时需传入自己的fetch实现，这些都要自己权衡。
-                    @trigger('player:fetch:start')
-                    @opts.fetch.call(@).done ->
-                        play()
-                        self.trigger('player:fetch:done')
-                else
+            st = @getState()
+            # 只有如下3种情况会触发opts.fetch选链：
+            # 1) 内核首次使用或被reset过 (STATES.STOP)
+            # 2) 上一首歌播放完成自动触发下一首的播放 (STATES.END)
+            # 3) 某些移动浏览器无交互时不能触发自动播放 (会被卡在STATES.BUFFERING)
+            if st in [STATES.STOP, STATES.END] or st is STATES.BUFFERING and @curPos() is 0
+                # XXX: 应该在opts.fetch中决定是否发起选链。
+                # 是从cache中取音频链接地址，还是发起选链请求，
+                # 及setUrl的时机都是依据opts.fetch的实现决定。
+                # 如果继承时需传入自己的fetch实现，这些都要自己权衡。
+                @trigger('player:fetch:start')
+                @opts.fetch.call(@).done ->
                     play()
+                    self.trigger('player:fetch:done')
+            else
+                play()
 
             return def.promise()
 
@@ -239,10 +236,8 @@ do (root = this, factory = (
          * @return {player}
         ###
         pause: ->
-            if @_st isnt 'pause'
-                @_st = 'pause'
-                @engine.pause()
-                @trigger('player:pause')
+            @engine.pause()
+            @trigger('player:pause')
             @
 
         ###*
@@ -250,10 +245,8 @@ do (root = this, factory = (
          * @return {player}
         ###
         stop: ->
-            if @_st isnt 'stop'
-                @_st = 'stop'
-                @engine.stop()
-                @trigger('player:stop')
+            @engine.stop()
+            @trigger('player:stop')
             @
 
         ###*
