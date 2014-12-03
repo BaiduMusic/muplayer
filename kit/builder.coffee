@@ -1,5 +1,4 @@
-gulp = require 'gulp'
-gulp_concat = require 'gulp-concat'
+utils = require './utils'
 
 { kit } = require 'nobone'
 
@@ -153,10 +152,8 @@ class Builder
                                 opts_webapp.modules.map (mod) ->
                                     file = join require_temp_path, (mod.name.replace(/^muplayer/, 'js') + '.js')
                                     fname = 'zepto-' + file.split('/').slice(-1)[0]
-                                    gulp.src(file_list.concat file)
-                                        .pipe(gulp_concat fname)
-                                        .pipe(gulp.dest dist_path)
-                                    log '>> Concat & Compiled: '.cyan + file + ' -> '.green + join(dist_path, fname)
+                                    file_list.push(file)
+                                    utils.concat_files(file_list, join(dist_path, fname), ';')
                             ])
                         .then ->
                             log '>> Compile client js done.'.cyan
