@@ -32,7 +32,7 @@ class Builder
         .then ->
             self.clean()
         .done ->
-            console.log '>> Build done.'.yellow
+            log '>> Build done.'.yellow
 
     copy_to_dist: (from, to) ->
         to = join @dist_path, to
@@ -84,14 +84,14 @@ class Builder
 
     combine_js: (options = {}) ->
         self = @
-        { dist_path, require_temp_path } = @
+        { dist_path, build_temp_path, require_temp_path } = @
 
         log '>> Compile client js with requirejs ...'.cyan
 
         requirejs = kit.require 'requirejs'
 
         opts_pc =
-            appDir: @build_temp_path
+            appDir: build_temp_path
             baseUrl: 'js'
             dir: require_temp_path
 
@@ -109,7 +109,7 @@ class Builder
                 }
             ]
             fileExclusionRegExp: /^\./
-            removeCombined: true
+            removeCombined: false
             pragmas:
                 FlashCoreExclude: false
             # 为映射muplayer这个namespace
@@ -148,13 +148,11 @@ class Builder
 
                         glob join(require_temp_path, 'js', 'lib', 'zepto', '**', '*.js')
                         .then (file_list) ->
-                            Promise.all([
-                                opts_webapp.modules.map (mod) ->
-                                    file = join require_temp_path, (mod.name.replace(/^muplayer/, 'js') + '.js')
-                                    fname = 'zepto-' + file.split('/').slice(-1)[0]
-                                    file_list.push(file)
-                                    utils.concat_files(file_list, join(dist_path, fname), ';')
-                            ])
+                            mod = opts_webapp.modules[0]
+                            file = join require_temp_path, (mod.name.replace(/^muplayer/, 'js') + '.js')
+                            fname = 'zepto-' + file.split('/').slice(-1)[0]
+                            file_list.push(file)
+                            utils.concat_files(file_list, join(dist_path, fname), ';')
                         .then ->
                             log '>> Compile client js done.'.cyan
                             resolve()
