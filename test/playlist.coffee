@@ -1,10 +1,7 @@
-p = new _mu.Player({
-    absoluteUrl: false
-})
-pl = p.playlist
-assert = chai.assert
-
 suite 'playlist', ->
+    setup ->
+        p.off().reset().setVolume(0)
+
     suite '#add()', ->
         test '数字类型sid自动被转换成字符串', ->
             p.add 1
@@ -105,6 +102,3 @@ suite 'playlist', ->
             assert.equal '1', p.getCur()
 
         # TODO: list-random模式需要仔细测一下
-
-    teardown ->
-        p.off().reset()
