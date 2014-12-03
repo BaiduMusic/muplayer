@@ -24,5 +24,6 @@ p = new _mu.Player({
         }
     ]
 })
+pl = p.playlist
 
 window.muplayer = p

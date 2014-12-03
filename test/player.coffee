@@ -1,6 +1,6 @@
 suite 'player', ->
     setup ->
-        p.setVolume(0)
+        p.off().reset().setVolume(0)
 
     suite '#play()', ->
         test '播放开始后会派发playing事件', (done) ->
@@ -10,7 +10,7 @@ suite 'player', ->
             p.setUrl(mp3).play()
 
         test '事件派发顺序', (done) ->
-            this.timeout(3000)
+            @timeout(3000)
 
             evts = []
 
@@ -198,6 +198,3 @@ suite 'player', ->
                 '1', '2', '3', '4', '5'
             ]).setCur('3')
             assert.equal '3', p.getCur()
-
-    teardown ->
-        p.off().reset()

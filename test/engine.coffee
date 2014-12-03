@@ -1,13 +1,13 @@
 suite 'engine', ->
     setup ->
-        p.setVolume(0)
+        p.off().reset().setVolume(0)
 
     test 'getEngineType可以获得当前内核的类型', ->
         t = p.getEngineType()
         assert.ok t in ['FlashMP3Core', 'FlashMP4Core', 'AudioCore']
 
     test '会自动switch到合适内核处理播放', (done) ->
-        this.timeout(4000)
+        @timeout(4000)
 
         p.on 'playing', ->
             t = p.getEngineType()
@@ -20,6 +20,3 @@ suite 'engine', ->
                 done()
 
         p.setUrl(mp3).play()
-
-    teardown ->
-        p.off().reset()
