@@ -53,8 +53,7 @@
         h.insertBefore(s, h.firstChild);
     }
 })(Zepto);
-
-(function(root, factory) {
+;(function(root, factory) {
   if (typeof root._mu === 'undefined') {
     root._mu = {};
   }
