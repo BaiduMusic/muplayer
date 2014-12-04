@@ -2566,7 +2566,6 @@ var __hasProp = {}.hasOwnProperty,
       if (sid && this._sid !== sid) {
         pl.setCur(sid);
         this._sid = sid;
-        this.stop();
       }
       return this;
     };
