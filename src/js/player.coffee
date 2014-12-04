@@ -299,7 +299,6 @@ do (root = this, factory = (
             if sid and @_sid isnt sid
                 pl.setCur(sid)
                 @_sid = sid
-                @stop()
             @
 
         ###*
