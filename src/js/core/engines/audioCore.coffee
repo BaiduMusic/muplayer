@@ -128,7 +128,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                         fn.apply(self, args)
                         audio.off('canplay', handle)
 
-                    if $.browser.webkit
+                    if /webkit/.test navigator.userAgent.toLowerCase()
                         # 对应的编码含义见: http://www.w3schools.com/tags/av_prop_readystate.asp
                         # 小于3认为还没有加载足够数据去播放。
                         if audio.readyState < 3
