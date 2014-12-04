@@ -1283,7 +1283,7 @@ var __hasProp = {}.hasOwnProperty,
             fn.apply(self, args);
             return audio.off('canplay', handle);
           };
-          if ($.browser.webkit) {
+          if (/webkit/.test(navigator.userAgent.toLowerCase())) {
             if (audio.readyState < 3) {
               audio.on('canplay', handle);
             } else {
@@ -2006,6 +2006,7 @@ var __hasProp = {}.hasOwnProperty,
       if (sid && this._sid !== sid) {
         pl.setCur(sid);
         this._sid = sid;
+        this.stop();
       }
       return this;
     };
