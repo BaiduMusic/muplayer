@@ -122,13 +122,28 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             audio = @audio
             for name in fnames
                 @[name] = utils.wrap @[name], (fn, args...) ->
-                    try
+                    t = null
+                    handle = ->
+                        clearTimeout(t)
                         fn.apply(self, args)
-                    catch
-                        handle = ->
+                        audio.off('canplay', handle)
+
+                    if $.browser.webkit
+                        # 对应的编码含义见: http://www.w3schools.com/tags/av_prop_readystate.asp
+                        # 小于3认为还没有加载足够数据去播放。
+                        if audio.readyState < 3
+                            audio.on('canplay', handle)
+                        else
                             fn.apply(self, args)
-                            audio.off('canplay', handle)
+                    else
+                        t = setTimeout( ->
+                            try
+                                fn.apply(self, args)
+                            catch e
+                                console?.error?('error: ', e)
+                        , 1000)
                         audio.on('canplay', handle)
+
                     self
 
         play: ->

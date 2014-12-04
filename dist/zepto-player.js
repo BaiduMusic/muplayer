@@ -1275,15 +1275,30 @@ var __hasProp = {}.hasOwnProperty,
       for (_i = 0, _len = fnames.length; _i < _len; _i++) {
         name = fnames[_i];
         _results.push(this[name] = utils.wrap(this[name], function() {
-          var args, fn, handle;
+          var args, fn, handle, t;
           fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-          try {
+          t = null;
+          handle = function() {
+            clearTimeout(t);
             fn.apply(self, args);
-          } catch (_error) {
-            handle = function() {
+            return audio.off('canplay', handle);
+          };
+          if ($.browser.webkit) {
+            if (audio.readyState < 3) {
+              audio.on('canplay', handle);
+            } else {
               fn.apply(self, args);
-              return audio.off('canplay', handle);
-            };
+            }
+          } else {
+            t = setTimeout(function() {
+              var e;
+              try {
+                return fn.apply(self, args);
+              } catch (_error) {
+                e = _error;
+                return typeof console !== "undefined" && console !== null ? typeof console.error === "function" ? console.error('error: ', e) : void 0 : void 0;
+              }
+            }, 1000);
             audio.on('canplay', handle);
           }
           return self;
