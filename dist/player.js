@@ -2464,10 +2464,12 @@ var __hasProp = {}.hasOwnProperty,
       self = this;
       engine = this.engine;
       def = $.Deferred();
-      startTime = ~~startTime;
       play = function() {
         if (self.getUrl()) {
-          engine.play().setCurrentPosition(startTime);
+          engine.play();
+          if ($.isNumeric(startTime)) {
+            engine.setCurrentPosition(startTime);
+          }
           self.trigger('player:play', startTime);
         }
         return def.resolve();
@@ -2556,9 +2558,8 @@ var __hasProp = {}.hasOwnProperty,
       cur = pl.cur;
       if (!cur && this.getSongsNum()) {
         cur = pl.list[0];
-        pl.setCur(cur);
       }
-      return cur + '';
+      return this._sid = '' + cur;
     };
 
 
@@ -2570,6 +2571,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Player.prototype.setCur = function(sid) {
       var pl;
+      sid = '' + sid;
       pl = this.playlist;
       if (!sid && this.getSongsNum()) {
         sid = pl.list[0];

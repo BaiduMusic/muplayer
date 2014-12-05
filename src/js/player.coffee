@@ -201,11 +201,12 @@ do (root = this, factory = (
             self = @
             engine = @engine
             def = $.Deferred()
-            startTime = ~~startTime
 
             play = ->
                 if self.getUrl()
-                    engine.play().setCurrentPosition(startTime)
+                    engine.play()
+                    if $.isNumeric startTime
+                        engine.setCurrentPosition(startTime)
                     self.trigger('player:play', startTime)
                 def.resolve()
 
@@ -281,8 +282,7 @@ do (root = this, factory = (
             cur = pl.cur
             if not cur and @getSongsNum()
                 cur = pl.list[0]
-                pl.setCur(cur)
-            cur + ''
+            @_sid = '' + cur
 
         ###*
          * 设置当前歌曲。
@@ -290,6 +290,7 @@ do (root = this, factory = (
          * @return {player}
         ###
         setCur: (sid) ->
+            sid = '' + sid
             pl = @playlist
             if not sid and @getSongsNum()
                 sid = pl.list[0]
