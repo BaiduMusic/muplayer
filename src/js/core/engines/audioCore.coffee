@@ -197,7 +197,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @
 
         getCurrentPosition: ->
-            @audio.currentTime * 1000
+            ~~(@audio.currentTime * 1000)
 
         getLoadedPercent: ->
             audio = @audio
