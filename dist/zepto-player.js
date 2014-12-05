@@ -1358,7 +1358,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.getCurrentPosition = function() {
-      return this.audio.currentTime * 1000;
+      return ~~(this.audio.currentTime * 1000);
     };
 
     AudioCore.prototype.getLoadedPercent = function() {
@@ -1892,13 +1892,9 @@ var __hasProp = {}.hasOwnProperty,
       startTime = ~~startTime;
       play = function() {
         if (self.getUrl()) {
-          if (startTime) {
-            engine.setCurrentPosition(startTime);
-          } else {
-            engine.play();
-          }
+          engine.play().setCurrentPosition(startTime);
+          self.trigger('player:play', startTime);
         }
-        self.trigger('player:play', startTime);
         return def.resolve();
       };
       st = this.getState();
@@ -2221,6 +2217,12 @@ var __hasProp = {}.hasOwnProperty,
     Player.prototype.getMode = function() {
       return this.playlist.mode;
     };
+
+
+    /**
+     * 获取当前engineType
+     * @return {String} [FlashMP3Core|FlashMP3Core|AudioCore]
+     */
 
     Player.prototype.getEngineType = function() {
       return this.engine.curEngine.engineType;

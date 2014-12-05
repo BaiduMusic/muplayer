@@ -52,20 +52,17 @@ suite 'player', ->
         test '传入startTime可以改变播放位置', (done) ->
             p.once 'timeupdate', (pos) ->
                 assert.ok pos >= 10000
-                p.play(20000)
+
                 p.once 'timeupdate', (pos) ->
                     assert.ok pos >= 20000
-                    done()
 
-            p.setUrl(long_mp3).play(10000)
+                    p.once 'timeupdate', (pos) ->
+                        assert.ok 0 <= pos < 1000
+                        done()
 
-        test 'startTime为0时可重头开始播放', (done) ->
-            p.once 'timeupdate', (pos) ->
-                assert.ok pos >= 10000
-                p.play(0)
-                p.once 'timeupdate', (pos) ->
-                    assert.ok 0 <= pos < 1000
-                    done()
+                    p.play(0)
+
+                p.play(20000)
 
             p.setUrl(long_mp3).play(10000)
 

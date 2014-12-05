@@ -205,11 +205,8 @@ do (root = this, factory = (
 
             play = ->
                 if self.getUrl()
-                    if startTime
-                        engine.setCurrentPosition(startTime)
-                    else
-                        engine.play()
-                self.trigger('player:play', startTime)
+                    engine.play().setCurrentPosition(startTime)
+                    self.trigger('player:play', startTime)
                 def.resolve()
 
             st = @getState()
@@ -447,6 +444,10 @@ do (root = this, factory = (
         getMode: ->
             @playlist.mode
 
+        ###*
+         * 获取当前engineType
+         * @return {String} [FlashMP3Core|FlashMP3Core|AudioCore]
+        ###
         getEngineType: ->
             @engine.curEngine.engineType
 
