@@ -59,6 +59,16 @@ suite 'player', ->
 
             p.setUrl(long_mp3).play(10000)
 
+        test 'startTime为0时可重头开始播放', (done) ->
+            p.once 'timeupdate', (pos) ->
+                assert.ok pos >= 10000
+                p.play(0)
+                p.once 'timeupdate', (pos) ->
+                    assert.ok 0 <= pos < 1000
+                    done()
+
+            p.setUrl(long_mp3).play(10000)
+
     suite '#pause()', ->
         test '暂停播放后会派发pause事件', (done) ->
             p.on 'playing', ->
