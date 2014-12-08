@@ -827,7 +827,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       if (__indexOf.call(availableStates, st) < 0 || st === this._state) {
         return;
       }
-      if (st === STATES.BUFFERING && ((_ref1 = this._state) === STATES.END || _ref1 === STATES.PAUSE || _ref1 === STATES.STOP)) {
+      if ((st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH) && ((_ref1 = this._state) === STATES.END || _ref1 === STATES.PAUSE || _ref1 === STATES.STOP)) {
         return;
       }
       oldState = this._state;
@@ -2269,7 +2269,7 @@ var __slice = [].slice;
     if (this.getSongsNum()) {
       if (!pl.cur) {
         play();
-      } else if (pl[fname]()) {
+      } else if (pl[fname](auto)) {
         play();
       }
     }
