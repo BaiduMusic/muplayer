@@ -203,7 +203,7 @@ do (root = this, factory = (
             def = $.Deferred()
 
             play = ->
-                if self.getUrl()
+                if self.getUrl() and not self._frozen
                     engine.play()
                     if $.isNumeric startTime
                         engine.setCurrentPosition(startTime)
