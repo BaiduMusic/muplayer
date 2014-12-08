@@ -22,7 +22,7 @@ do (root = this, factory = (
         if @getSongsNum()
             unless pl.cur
                 play()
-            else if pl[fname]()
+            else if pl[fname](auto)
                 play()
 
         @

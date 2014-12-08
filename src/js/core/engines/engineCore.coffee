@@ -41,7 +41,11 @@ do (root = @, factory = (cfg, utils, Events) ->
             if st not in availableStates or st is @_state
                 return
 
-            if st is STATES.BUFFERING and @_state in [STATES.END, STATES.PAUSE, STATES.STOP]
+            if st in [
+                STATES.BUFFERING,  STATES.CANPLAYTHROUGH
+            ] and @_state in [
+                STATES.END, STATES.PAUSE, STATES.STOP
+            ]
                 return
 
             oldState = @_state
