@@ -67,38 +67,38 @@ suite 'playlist', ->
 
         test 'list模式下的上一首、下一首', ->
             p.setMode 'list'
-            p.add [1, 2, 3]
-            assert.equal '1', p.getCur()
+            p.add ['a', 'b', 'c']
+            assert.equal 'a', p.getCur()
             pl.next()
-            assert.equal '2', p.getCur()
+            assert.equal 'b', p.getCur()
             pl.next()
-            assert.equal '3', p.getCur()
+            assert.equal 'c', p.getCur()
             pl.prev()
-            assert.equal '2', p.getCur()
+            assert.equal 'b', p.getCur()
             pl.next()
-            assert.equal '3', p.getCur()
+            assert.equal 'c', p.getCur()
             assert.equal false, pl.next()
 
         test 'loop模式下的上一首、下一首', ->
             p.setMode 'loop'
-            p.add [1, 2, 3]
-            assert.equal '1', p.getCur()
+            p.add ['a', 'b', 'c']
+            assert.equal 'a', p.getCur()
             pl.prev()
-            assert.equal '3', p.getCur()
+            assert.equal 'c', p.getCur()
             pl.prev()
-            assert.equal '2', p.getCur()
+            assert.equal 'b', p.getCur()
             pl.next()
-            assert.equal '3', p.getCur()
+            assert.equal 'c', p.getCur()
             pl.next()
-            assert.equal '1', p.getCur()
+            assert.equal 'a', p.getCur()
 
         test 'single模式下单曲循环', ->
             p.setMode 'single'
-            p.add [1, 2, 3]
-            assert.equal '1', p.getCur()
+            p.add ['a', 'b', 'c']
+            assert.equal 'a', p.getCur()
             pl.next()
-            assert.equal '1', p.getCur()
+            assert.equal 'a', p.getCur()
             pl.prev()
-            assert.equal '1', p.getCur()
+            assert.equal 'a', p.getCur()
 
         # TODO: list-random模式需要仔细测一下

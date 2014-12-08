@@ -666,6 +666,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       var i, l, list, prev;
       list = this.list;
       i = $.inArray(this.cur, list);
+      if (i === -1) {
+        i = 0;
+      }
       l = list.length;
       prev = i - 1;
       switch (this.mode) {
@@ -701,6 +704,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       var i, l, list, next;
       list = this.list;
       i = $.inArray(this.cur, list);
+      if (i === -1) {
+        i = 0;
+      }
       l = list.length;
       next = i + 1;
       switch (this.mode) {
@@ -2226,6 +2232,8 @@ var __hasProp = {}.hasOwnProperty,
   return Engine;
 });
 
+var __slice = [].slice;
+
 (function(root, factory) {
   if (typeof exports === 'object') {
     return module.exports = factory();
@@ -2364,6 +2372,7 @@ var __hasProp = {}.hasOwnProperty,
       var baseDir, opts;
       this.opts = opts = $.extend({}, Player.defaults, options);
       this.waitingTimer = new Timer(100);
+      this._checkFrozen(['play', 'pause', 'stop', 'setCurrentPosition', 'setVolume', 'setMute', 'setVolume', 'setCur', 'setUrl', 'next', 'prev', 'retry']);
       baseDir = opts.baseDir;
       if (baseDir === false) {
         baseDir = '';
@@ -2797,12 +2806,42 @@ var __hasProp = {}.hasOwnProperty,
 
 
     /**
-     * 获取当前engineType
+     * 获取当前engineType。
      * @return {String} [FlashMP3Core|FlashMP3Core|AudioCore]
      */
 
     Player.prototype.getEngineType = function() {
       return this.engine.curEngine.engineType;
+    };
+
+    Player.prototype._checkFrozen = function(fnames) {
+      var name, self, _i, _len, _results;
+      self = this;
+      _results = [];
+      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
+        name = fnames[_i];
+        _results.push(self[name] = utils.wrap(self[name], function() {
+          var args, fn;
+          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+          if (!self._frozen) {
+            fn.apply(self, args);
+          }
+          return self;
+        }));
+      }
+      return _results;
+    };
+
+
+    /**
+     * 设置冻结（冻结后MuPlayer实例的set方法及切歌方法失效）
+     * @param {Boolean} frozen 是否冻结。
+     * @return {player}
+     */
+
+    Player.prototype.setFrozen = function(frozen) {
+      this._frozen = !!frozen;
+      return this;
     };
 
     return Player;

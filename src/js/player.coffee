@@ -117,6 +117,12 @@ do (root = this, factory = (
             @opts = opts = $.extend({}, Player.defaults, options)
             @waitingTimer = new Timer(100)
 
+            @_checkFrozen([
+                'play', 'pause', 'stop', 'setCurrentPosition'
+                'setVolume', 'setMute', 'setVolume', 'setCur'
+                'setUrl', 'next', 'prev', 'retry'
+            ])
+
             baseDir = opts.baseDir
             if baseDir is false
                 baseDir = ''
@@ -446,11 +452,28 @@ do (root = this, factory = (
             @playlist.mode
 
         ###*
-         * 获取当前engineType
+         * 获取当前engineType。
          * @return {String} [FlashMP3Core|FlashMP3Core|AudioCore]
         ###
         getEngineType: ->
             @engine.curEngine.engineType
+
+        _checkFrozen: (fnames) ->
+            self = @
+            for name in fnames
+                self[name] = utils.wrap self[name], (fn, args...) ->
+                    unless self._frozen
+                        fn.apply(self, args)
+                    self
+
+        ###*
+         * 设置冻结（冻结后MuPlayer实例的set方法及切歌方法失效）
+         * @param {Boolean} frozen 是否冻结。
+         * @return {player}
+        ###
+        setFrozen: (frozen) ->
+            @_frozen = !!frozen
+            @
 
     Events.mixTo(Player)
     Player

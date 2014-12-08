@@ -71,6 +71,7 @@ do (root = @, factory = (utils, Events) ->
         prev: =>
             list = @list
             i = $.inArray(@cur, list)
+            i = 0 if i is -1
             l = list.length
             prev = i - 1
 
@@ -97,6 +98,7 @@ do (root = @, factory = (utils, Events) ->
         next: =>
             list = @list
             i = $.inArray(@cur, list)
+            i = 0 if i is -1
             l = list.length
             next = i + 1
 
