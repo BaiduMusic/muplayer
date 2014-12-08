@@ -2465,7 +2465,7 @@ var __hasProp = {}.hasOwnProperty,
       engine = this.engine;
       def = $.Deferred();
       play = function() {
-        if (self.getUrl()) {
+        if (self.getUrl() && !self._frozen) {
           engine.play();
           if ($.isNumeric(startTime)) {
             engine.setCurrentPosition(startTime);
