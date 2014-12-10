@@ -212,7 +212,7 @@ class Builder
                 join(src_path, 'as', "#{src}.as")
             ], (err, stdout, stderr) ->
                 if err
-                    kit.err err.stack.red
+                    kit.err err
                 else
                     log stdout
                     log stderr

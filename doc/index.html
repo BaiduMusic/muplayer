@@ -37,40 +37,52 @@
       </div>
     </section>
     <section class="container bs-docs-container">
-      <section id="Main"><h2>概述</h2>
-<p><strong>MuPlayer</strong> 是百度 <a href="http://weibo.com/musicfe">@音乐前端</a> 团队开发维护的浏览端音频播放内核，它基于 HTML5 Audio 及 Flash 音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p><h2>安装</h2>
-<p>你可以使用 <a href="https://github.com/bower/bower">bower</a> 安装</p><pre><code>bower install muplayer
-</code></pre><p>或者到发布页面下载压缩文档：<a href="https://github.com/Baidu-Music-FE/muplayer/releases">Releases</a></p><p>具体使用方法请参见文档部分。</p><h2>文档</h2>
-<h3>参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">MuPlayer API</a></h3>
-<h3>示例：<a href="http://labs.music.baidu.com/demo/muplayer/doc/demo.html">Demo</a></h3>
-<h3><a href="https://github.com/Baidu-Music-FE/muplayer/wiki/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E8%AF%B4%E6%98%8E">常用事件说明</a></h3>
-<h2>为项目贡献代码</h2>
+      <section id="Main"><h2 id="-">概述</h2>
+<p><strong>MuPlayer</strong> 是百度 <a href="http://weibo.com/musicfe">@音乐前端</a> 团队开发维护的浏览端音频播放内核，它基于 HTML5 Audio 及 Flash 音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
+<h2 id="-">安装</h2>
+<p>你可以使用 <a href="https://github.com/bower/bower">bower</a> 安装</p>
+<pre><code>bower install muplayer</code></pre>
+<p>或者到发布页面下载压缩文档：<a href="https://github.com/Baidu-Music-FE/muplayer/releases">Releases</a></p>
+<p>具体使用方法请参见文档部分。</p>
+<h2 id="-">文档</h2>
+<h3 id="-muplayer-api-http-labs-music-baidu-com-demo-muplayer-doc-api-html-">参见：<a href="http://labs.music.baidu.com/demo/muplayer/doc/api.html">MuPlayer API</a></h3>
+<h3 id="-demo-http-labs-music-baidu-com-demo-muplayer-doc-demo-html-">示例：<a href="http://labs.music.baidu.com/demo/muplayer/doc/demo.html">Demo</a></h3>
+<h3 id="-https-github-com-baidu-music-fe-muplayer-wiki-e5-b8-b8-e7-94-a8-e4-ba-8b-e4-bb-b6-e8-af-b4-e6-98-8e-"><a href="https://github.com/Baidu-Music-FE/muplayer/wiki/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E8%AF%B4%E6%98%8E">常用事件说明</a></h3>
+<h2 id="-">为项目贡献代码</h2>
 <ol>
 <li>签出项目<pre><code>git clone https://github.com/Baidu-Music-FE/muplayer.git
-cd muplayer
-</code></pre></li>
-<li>如果你没有全局安装 <a href="http://coffeescript.org/">coffee</a>，请先安装它<pre><code>npm install -g coffee-script
-</code></pre></li>
-<li><p>安装依赖</p><pre><code>npm install
-</code></pre><p>这个步骤会提示你是否安装 Flex SDK，如果选择 <code>no</code>， 项目会利用现有的编译好的 <code>swf</code> 文件。如果你希望更改 action script 源码并编译，请选择 <code>yes</code>，注意这个 SDK 可能会需要下载 400MB 的依赖。如果想自动选择默认项安装（安静模式），请运行 <code>quiet=true npm install</code></p></li>
-<li><p>编译</p><pre><code>cake build
-</code></pre><p>编译好的文件会保存到 <code>dist</code> 文件夹。</p></li>
+cd muplayer</code></pre>
+</li>
+<li>如果你没有全局安装 <a href="http://coffeescript.org/">coffee</a>，请先安装它<pre><code>npm install -g coffee-script</code></pre>
+</li>
+<li><p>安装依赖</p>
+<pre><code>npm install</code></pre>
+<p>这个步骤会提示你是否安装 Flex SDK，如果选择 <code>no</code>， 项目会利用现有的编译好的 <code>swf</code> 文件。如果你希望更改 action script 源码并编译，请选择 <code>yes</code>，注意这个 SDK 可能会需要下载 400MB 的依赖。如果想自动选择默认项安装（安静模式），请运行 <code>quiet=true npm install</code></p>
+</li>
+<li><p>编译</p>
+<pre><code>cake build</code></pre>
+<p>编译好的文件会保存到 <code>dist</code> 文件夹。</p>
+</li>
 </ol>
-<h2>修订文档</h2>
+<h2 id="-">修订文档</h2>
 <ol>
-<li><p>编译文档</p><pre><code>cake doc
-</code></pre></li>
-<li><p>预览文档需要启动本地服务器，启动后访问 <a href="http://127.0.0.1:8077">http://127.0.0.1:8077</a></p><pre><code>cake server
-</code></pre><p>指定端口号</p><pre><code>cake -p 8080 server
-</code></pre></li>
+<li><p>编译文档</p>
+<pre><code>cake doc</code></pre>
+</li>
+<li><p>预览文档需要启动本地服务器，启动后访问 <a href="http://127.0.0.1:8077">http://127.0.0.1:8077</a></p>
+<pre><code>cake server</code></pre>
+<p>指定端口号</p>
+<pre><code>cake -p 8080 server</code></pre>
+</li>
 </ol>
-<h2>使用案例</h2>
-<p><code>MuPlayer</code>本就源自百度音乐前端团队在产品开发上的积累，被用于多条在线产品及音乐服务上，如<a href="http://y.baidu.com">百度音乐人</a>，<a href="http://lebo.baidu.com">百度乐播</a>，及WebApp，是音乐前端的核心基础库之一。下面继续列举一些我们已知的第三方使用案例，以供参考：</p><ol>
+<h2 id="-">使用案例</h2>
+<p><code>MuPlayer</code>本就源自百度音乐前端团队在产品开发上的积累，被用于多条在线产品及音乐服务上，如<a href="http://y.baidu.com">百度音乐人</a>，<a href="http://lebo.baidu.com">百度乐播</a>，及WebApp，是音乐前端的核心基础库之一。下面继续列举一些我们已知的第三方使用案例，以供参考：</p>
+<ol>
 <li>百度个人中心的音乐随心听模块：<a href="http://i.baidu.com/#ibx-mod-music">http://i.baidu.com/#ibx-mod-music</a></li>
 <li><a href="https://github.com/mozillazg">@mozillazg</a> 实现的音乐FM：<a href="https://github.com/mozillazg/lark">https://github.com/mozillazg/lark</a></li>
 <li><a href="https://github.com/alankell">@alankell</a> 的个人博客背景音播放：<a href="http://alankell.com/">http://alankell.com/</a></li>
 </ol>
-<h2>许可</h2>
+<h2 id="-">许可</h2>
 <pre><code>MuPlayer 实行 BSD 许可协议。
 版权 (c) 2014 Baidu Music。
 
@@ -92,8 +104,8 @@ cd muplayer
 约之侵权（包括过失或其他原因等）而起，对于任何因使用本软件包装所产生的
 任何直接性、间接性、偶发性、特殊性、惩罚性或任何结果的损害（包括但不限
 于替代商品或劳务之购用、使用损失、资料损失、利益损失、业务中断等等），
-不负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。
-</code></pre></section>
+不负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。</code></pre>
+</section>
     </section>
     <footer class="bs-footer">
       <div class="container">
@@ -111,16 +123,16 @@ cd muplayer
           $body = $(document.body),
           $sideBar = $('.bs-sidebar'),
           navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
-      
+          
         $body.scrollspy({
           target: '.bs-sidebar',
           offset: navHeight
         });
-      
+        
         $win.on('load', function() {
           $body.scrollspy('refresh');
         });
-      
+        
         setTimeout(function() {
           $sideBar.affix({
             offset: {
@@ -134,15 +146,15 @@ cd muplayer
             }
           });
         }, 100);
-      
+        
         $sideBar.on('click', 'a[href^=#]', function() {
           var id = $(this).attr('href').substr(1),
             top = $('#'+ id).offset().top - navHeight + 10;
-      
+            
           $('html, body').animate({
             scrollTop: top
           }, 300);
-      
+          
           return false;
         });
       });
