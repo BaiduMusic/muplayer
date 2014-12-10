@@ -9,14 +9,14 @@ class Setup
             if process.env.quiet is 'true'
                 return { install_flex_sdk: 'no' }
 
-            kit.prompt_get [{
+            kit.promptGet [{
                 name: 'install_flex_sdk'
-                description: 'Whether Flex SDK or not? (yes/no)'
-                default: 'no'
-                pattern: /(yes)|(no)/
+                description: 'Whether to install Flex SDK or not? (y/n)'
+                default: 'n'
+                pattern: /(y)|(n)/
             }]
         .then (opts) ->
-            if opts.install_flex_sdk is 'yes'
+            if opts.install_flex_sdk is 'y'
                 spawn 'npm', ['install', 'flex-sdk']
         .then =>
             @build_zepto()

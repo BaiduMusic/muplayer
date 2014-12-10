@@ -2479,7 +2479,6 @@ var __slice = [].slice;
           if ($.isNumeric(startTime)) {
             engine.setCurrentPosition(startTime);
           }
-          self.trigger('player:play', startTime);
         }
         return def.resolve();
       };
@@ -2493,6 +2492,7 @@ var __slice = [].slice;
       } else {
         play();
       }
+      self.trigger('player:play', startTime);
       return def.promise();
     };
 

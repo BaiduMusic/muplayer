@@ -27,8 +27,8 @@
     "karma-opera-launcher": "^0.1.0",
     "karma-safari-launcher": "^0.1.1",
     "mocha": "^2.0.1",
-    "nobone": "^1.0.8",
+    "nobone": "^1.0.9",
     "requirejs": "~2.1.15",
-    "uglify-js": "~2.4.15"
+    "uglify-js": "~2.4.16"
   }
 }

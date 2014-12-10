@@ -213,7 +213,6 @@ do (root = this, factory = (
                     engine.play()
                     if $.isNumeric startTime
                         engine.setCurrentPosition(startTime)
-                    self.trigger('player:play', startTime)
                 def.resolve()
 
             st = @getState()
@@ -232,6 +231,8 @@ do (root = this, factory = (
                     self.trigger('player:fetch:done')
             else
                 play()
+
+            self.trigger('player:play', startTime)
 
             return def.promise()
 
