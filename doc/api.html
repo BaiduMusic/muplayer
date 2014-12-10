@@ -34,7 +34,6 @@
         <div class="col-md-3">
           <div class="bs-sidebar affix-top hidden-print">
             <ul class="nav bs-sidenav">
-              <li><a href="#Player">Player</a></li>
               <li><a href="#play">play</a></li>
               <li><a href="#pause">pause</a></li>
               <li><a href="#stop">stop</a></li>
@@ -59,83 +58,12 @@
               <li><a href="#getSongsNum">getSongsNum</a></li>
               <li><a href="#setMode">setMode</a></li>
               <li><a href="#getMode">getMode</a></li>
+              <li><a href="#getEngineType">getEngineType</a></li>
+              <li><a href="#setFrozen">setFrozen</a></li>
             </ul>
           </div>
         </div>
         <div class="col-md-9">
-          <div class="description"><p>muplayer的Player类（对应player.js）是对外暴露的接口，它封装了音频操作及播放列表（Playlist）逻辑，并屏蔽了对音频内核适配的细节对音频内核适配的细节。<br /><b>对一般应用场景，只需签出编译后的 <code>dist/js/player.min.js</code> 即可</b>。<br />文档中 <code>player</code> 指代Player的实例。</p> </div>
-          <section id="Player">
-            <h1>Player</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-info mr5">function</div><span>Player()</span>
-            </p>
-          </section>
-          <div class="description"><p>Player初始化方法</p> </div>
-          <h5>参数说明</h5>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th style="width:15%">名称</th>
-                <th style="width:15%">类型</th>
-                <th>描述</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>options</td>
-                <td>Object</td>
-                <td><table class="sub-params">  <tr>
-   <th>选项</th>
-   <th>说明</th>
- </tr>
- <tr>
-   <td>baseDir</td>
-   <td>必填选项，指向MuPlayer编译后的静态文件资源目录。默认指向同版本线上CDN文件目录，但建议指向自己签出的dist文件夹目录，以规避潜在的flash跨域警告。</td>
- </tr>
- <tr>
-   <td>mode</td>
-   <td>默认值: 'loop'。加入播放器的歌曲列表的播放顺序逻辑，可选值为 'loop'（循环播放），'list'（列表播放，该列表播放到最后一首或第一首后则停止播放），'single'（单曲播放），'random'（随机），'list-random'（列表随机，与random的区别是保证已随机过的列表中歌曲均播放一次后，再对列表随机重置）。</td>
- </tr>
- <tr>
-   <td>mute</td>
-   <td>默认值: false。是否静音。</td>
- </tr>
- <tr>
-   <td>volume</td>
-   <td>默认值: 80。播放音量，取值范围0 - 100。</td>
- </tr>
- <tr>
-   <td>singleton</td>
-   <td>默认值: true。初始化的Player实例是否是单实例。如果希望一个页面中有多个播放实例并存，可以设成false</td>
- </tr>
- <tr>
-   <td>absoluteUrl</td>
-   <td>默认值: true。播放音频的链接是否要自动转化成绝对地址。</td>
- </tr>
- <tr>
-   <td>engines</td>
-   <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会根据内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
-   <pre>
-   [{<br>
-   <span class="ts"></span>constructor: 'FlashMP3Core',<br>
-   <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
-   <span class="ts2"></span>swf: 'muplayer_mp3.swf' // 对应的swf文件路径<br>
-   <span class="ts"></span>}<br>
-   }, {<br>
-   <span class="ts"></span>constructor: 'FlashMP4Core',<br>
-   <span class="ts"></span>args: { // 初始化FlashMP4Core的参数, FlashMP4Core支持m4a格式的音频文件<br>
-   <span class="ts2"></span>swf: 'muplayer_mp4.swf' // 对应的swf文件路径<br>
-   <span class="ts"></span>}<br>
-   }, {<br>
-   <span class="ts"></span>constructor: 'AudioCore'<br>
-   }]
-   </pre>
-   </td>
- </tr></table></td>
-              </tr>
-            </tbody>
-          </table>
           <section id="play">
             <h1>play</h1>
             <h5 class="subheader"></h5>
@@ -487,6 +415,39 @@ cur // 调用next时正在播放的歌曲</pre> </div>
             </p>
           </section>
           <div class="description"><p>获取列表播放的模式。</p> </div>
+          <section id="getEngineType">
+            <h1>getEngineType</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.getEngineType()</span> -><span>String</span>
+            </p>
+          </section>
+          <div class="description"><p>获取当前engineType。</p> </div>
+          <section id="setFrozen">
+            <h1>setFrozen</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.setFrozen()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>设置冻结（冻结后MuPlayer实例的set方法及切歌方法失效）</p> </div>
+          <h5>参数说明</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:15%">名称</th>
+                <th style="width:15%">类型</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>frozen</td>
+                <td>Boolean</td>
+                <td>是否冻结。</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -506,16 +467,16 @@ cur // 调用next时正在播放的歌曲</pre> </div>
           $body = $(document.body),
           $sideBar = $('.bs-sidebar'),
           navHeight = $('.bs-docs-nav').outerHeight(true) + 10;
-          
+      
         $body.scrollspy({
           target: '.bs-sidebar',
           offset: navHeight
         });
-        
+      
         $win.on('load', function() {
           $body.scrollspy('refresh');
         });
-        
+      
         setTimeout(function() {
           $sideBar.affix({
             offset: {
@@ -529,15 +490,15 @@ cur // 调用next时正在播放的歌曲</pre> </div>
             }
           });
         }, 100);
-        
+      
         $sideBar.on('click', 'a[href^=#]', function() {
           var id = $(this).attr('href').substr(1),
             top = $('#'+ id).offset().top - navHeight + 10;
-            
+      
           $('html, body').animate({
             scrollTop: top
           }, 300);
-          
+      
           return false;
         });
       });
