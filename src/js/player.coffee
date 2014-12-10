@@ -459,14 +459,6 @@ do (root = this, factory = (
         getEngineType: ->
             @engine.curEngine.engineType
 
-        _checkFrozen: (fnames) ->
-            self = @
-            for name in fnames
-                self[name] = utils.wrap self[name], (fn, args...) ->
-                    unless self._frozen
-                        fn.apply(self, args)
-                    self
-
         ###*
          * 设置冻结（冻结后MuPlayer实例的set方法及切歌方法失效）
          * @param {Boolean} frozen 是否冻结。
@@ -475,6 +467,14 @@ do (root = this, factory = (
         setFrozen: (frozen) ->
             @_frozen = !!frozen
             @
+
+        _checkFrozen: (fnames) ->
+            self = @
+            for name in fnames
+                self[name] = utils.wrap self[name], (fn, args...) ->
+                    unless self._frozen
+                        fn.apply(self, args)
+                    self
 
     Events.mixTo(Player)
     Player

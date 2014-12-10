@@ -2814,6 +2814,18 @@ var __slice = [].slice;
       return this.engine.curEngine.engineType;
     };
 
+
+    /**
+     * 设置冻结（冻结后MuPlayer实例的set方法及切歌方法失效）
+     * @param {Boolean} frozen 是否冻结。
+     * @return {player}
+     */
+
+    Player.prototype.setFrozen = function(frozen) {
+      this._frozen = !!frozen;
+      return this;
+    };
+
     Player.prototype._checkFrozen = function(fnames) {
       var name, self, _i, _len, _results;
       self = this;
@@ -2830,18 +2842,6 @@ var __slice = [].slice;
         }));
       }
       return _results;
-    };
-
-
-    /**
-     * 设置冻结（冻结后MuPlayer实例的set方法及切歌方法失效）
-     * @param {Boolean} frozen 是否冻结。
-     * @return {player}
-     */
-
-    Player.prototype.setFrozen = function(frozen) {
-      this._frozen = !!frozen;
-      return this;
     };
 
     return Player;
