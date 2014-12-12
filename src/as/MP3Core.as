@@ -12,7 +12,9 @@ package {
         private var sc:SoundChannel;
         private var isPlaying:Boolean;
 
+        Utils.log('in MP3Core');
         override public function init():void {
+            Utils.log('flash MP3Core');
             super.init();
             if (ExternalInterface.available) {
                 reset();

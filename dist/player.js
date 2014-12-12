@@ -2000,7 +2000,7 @@ var __hasProp = {}.hasOwnProperty,
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
   Engine = (function() {
-    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 10px; height: 10px; position: relative; top: 1px"></div>';
+    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; background: transparent; position: absolute; left: 0; top: 0;"></div>';
 
     Engine.prototype.defaults = {
       engines: [
