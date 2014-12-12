@@ -7,7 +7,7 @@ do (root = @, factory = (
     class Engine
         # 隐藏容器, 用于容纳swf和audio等标签
         # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
-        @el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>'
+        @el: '<div id="muplayer_container_{{DATETIME}}" style="width: 10px; height: 10px; position: relative; top: 1px"></div>'
 
         defaults:
             engines: `[

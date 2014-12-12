@@ -1633,7 +1633,6 @@ var __hasProp = {}.hasOwnProperty,
     __extends(FlashCore, _super);
 
     FlashCore.defaults = {
-      swfCacheTime: .5 * 3600 * 1000,
       expressInstaller: 'expressInstall.swf'
     };
 
@@ -1651,7 +1650,7 @@ var __hasProp = {}.hasOwnProperty,
       utils.namespace('engines')[instanceName] = this;
       instanceName = '_mu.engines.' + instanceName;
       this.flash = $.flash.create({
-        swf: baseDir + opts.swf + '?t=' + Math.floor(+new Date() / opts.swfCacheTime),
+        swf: baseDir + opts.swf + '?t=' + (+new Date()),
         id: id,
         height: 1,
         width: 1,
@@ -2001,7 +2000,7 @@ var __hasProp = {}.hasOwnProperty,
   _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
   timerResolution = cfg.timerResolution;
   Engine = (function() {
-    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; overflow: hidden"></div>';
+    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 10px; height: 10px; position: relative; top: 1px"></div>';
 
     Engine.prototype.defaults = {
       engines: [
