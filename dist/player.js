@@ -825,10 +825,10 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     EngineCore.prototype.setState = function(st) {
       var oldState, _ref1;
       if (__indexOf.call(availableStates, st) < 0 || st === this._state) {
-        return;
+        return this;
       }
       if ((st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH) && ((_ref1 = this._state) === STATES.END || _ref1 === STATES.PAUSE || _ref1 === STATES.STOP)) {
-        return;
+        return this;
       }
       oldState = this._state;
       this._state = st;
