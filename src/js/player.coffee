@@ -52,13 +52,10 @@ do (root = this, factory = (
             fetch: ->
                 def = $.Deferred()
                 cur = @getCur()
-                if @getUrl() is cur
+                setTimeout( =>
+                    @setUrl(cur)
                     def.resolve()
-                else
-                    setTimeout( =>
-                        @setUrl(cur)
-                        def.resolve()
-                    , 0)
+                , 0)
                 def.promise()
 
         ###*

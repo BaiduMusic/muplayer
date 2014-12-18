@@ -1725,16 +1725,12 @@ var __slice = [].slice;
         var cur, def;
         def = $.Deferred();
         cur = this.getCur();
-        if (this.getUrl() === cur) {
-          def.resolve();
-        } else {
-          setTimeout((function(_this) {
-            return function() {
-              _this.setUrl(cur);
-              return def.resolve();
-            };
-          })(this), 0);
-        }
+        setTimeout((function(_this) {
+          return function() {
+            _this.setUrl(cur);
+            return def.resolve();
+          };
+        })(this), 0);
         return def.promise();
       }
     };
