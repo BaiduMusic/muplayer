@@ -264,10 +264,7 @@ pre.language-javascript.hotfix code {
   top: -12px;
 }
 
-html, body {
-  overflow: hidden;
-}
-
 #content {
+  overflow: hidden;
   margin-bottom: -55px;
 }
