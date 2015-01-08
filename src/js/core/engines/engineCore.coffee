@@ -39,14 +39,14 @@ do (root = @, factory = (cfg, utils, Events) ->
 
         setState: (st) ->
             if st not in availableStates or st is @_state
-                return @
+                return
 
             if st in [
                 STATES.BUFFERING,  STATES.CANPLAYTHROUGH
             ] and @_state in [
                 STATES.END, STATES.PAUSE, STATES.STOP
             ]
-                return @
+                return
 
             oldState = @_state
             @_state = st
