@@ -1987,7 +1987,7 @@ var __slice = [].slice;
       pl = this.playlist;
       cur = pl.cur;
       if (!cur && this.getSongsNum()) {
-        cur = pl.list[0];
+        pl.cur = cur = pl.list[0];
       }
       return this._sid = '' + cur;
     };
