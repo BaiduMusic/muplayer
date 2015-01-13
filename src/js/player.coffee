@@ -285,7 +285,7 @@ do (root = this, factory = (
             pl = @playlist
             cur = pl.cur
             if not cur and @getSongsNum()
-                cur = pl.list[0]
+                pl.cur = cur = pl.list[0]
             @_sid = '' + cur
 
         ###*
