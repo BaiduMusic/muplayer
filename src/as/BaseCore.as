@@ -73,7 +73,6 @@ package {
 
         protected function handleErr(e:* = null):void {
             f_stop();
-            reset();
             callJS(Consts.SWF_ON_ERR, e);
         }
 
@@ -194,9 +193,9 @@ package {
 
         public function f_pause():void {}
 
-        public function f_stop(p:Number = 0):void {
-            if (p === 0) {
-                _position = 0;
+        public function f_stop(p:Number = -1):void {
+            if (p === -1) {
+                reset();
             } else {
                 _pausePosition = p;
             }

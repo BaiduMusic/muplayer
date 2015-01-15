@@ -36,6 +36,6 @@ package {
 
         function f_pause():void;
 
-        function f_stop(p:Number = 0):void;
+        function f_stop(p:Number = -1):void;
     }
 }

@@ -153,7 +153,7 @@ package {
             f_stop(ns.time * 1000);
         }
 
-        override public function f_stop(p:Number = 0):void {
+        override public function f_stop(p:Number = -1):void {
             super.f_stop(p);
             // 判断ns是否存在是因为ns在load方法调用时才被延迟初始化
             if (ns) {
