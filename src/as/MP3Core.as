@@ -135,7 +135,7 @@ package {
             }
         }
 
-        override public function f_stop(p:Number = 0):void {
+        override public function f_stop(p:Number = -1):void {
             super.f_stop(p);
             // 判断sc是否存在是因为sc在play方法调用时才被延迟初始化
             if (sc) {

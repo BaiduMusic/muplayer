@@ -35,6 +35,7 @@ module.exports = function(config) {
       'bower_components/jquery/jquery.js',
       'bower_components/chai/chai.js',
       'bower_components/mocha/mocha.js',
+      'bower_components/mocha/mocha.css',
       'dist/player.js',
       'test/setup.coffee',
       'test/utils.coffee',
