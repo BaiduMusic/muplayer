@@ -195,7 +195,8 @@ package {
 
         public function f_stop(p:Number = -1):void {
             if (p === -1) {
-                reset();
+                _position = 0;
+                _pausePosition = 0;
             } else {
                 _pausePosition = p;
             }
