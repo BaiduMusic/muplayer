@@ -2414,11 +2414,7 @@ var __slice = [].slice;
         } else {
           trigger(nst, e);
           if (ost === STATES.PAUSE || ost === STATES.PLAYING) {
-            self.trigger('player:statechange', {
-              oldState: nst,
-              newState: ost
-            });
-            self.trigger(ost);
+            self.setState(ost);
           }
         }
         if (nst === STATES.END) {
