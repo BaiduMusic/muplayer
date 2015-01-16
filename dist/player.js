@@ -2414,7 +2414,7 @@ var __slice = [].slice;
         } else {
           trigger(nst, e);
           if (ost === STATES.PAUSE || ost === STATES.PLAYING) {
-            self.setState(ost);
+            self.engine.setState(ost);
           }
         }
         if (nst === STATES.END) {

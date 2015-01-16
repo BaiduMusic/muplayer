@@ -166,7 +166,7 @@ do (root = this, factory = (
                     if ost in [
                         STATES.PAUSE, STATES.PLAYING
                     ]
-                        self.setState(ost)
+                        self.engine.setState(ost)
 
                 if nst is STATES.END
                     self.next(true)
