@@ -166,11 +166,7 @@ do (root = this, factory = (
                     if ost in [
                         STATES.PAUSE, STATES.PLAYING
                     ]
-                        self.trigger('player:statechange', {
-                            oldState: nst
-                            newState: ost
-                        })
-                        self.trigger(ost)
+                        self.setState(ost)
 
                 if nst is STATES.END
                     self.next(true)
