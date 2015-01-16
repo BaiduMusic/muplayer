@@ -149,17 +149,30 @@ do (root = this, factory = (
             recover = opts.recoverMethodWhenWaitingTimeout
 
             @engine = engine.on(EVENTS.STATECHANGE, (e) ->
-                st = e.newState
+                [ ost, nst ] = [ e.oldState, e.newState ]
 
-                if st not in [
+                trigger = (st, e) ->
+                    self.trigger('player:statechange', e)
+                    self.trigger(st)
+
+                if nst not in [
                     STATES.PREBUFFER, STATES.BUFFERING
                 ]
                     self.waitingTimer.clear()
+                    trigger(nst, e)
+                else
+                    trigger(nst, e)
 
-                self.trigger('player:statechange', e)
-                self.trigger(st)
+                    if ost in [
+                        STATES.PAUSE, STATES.PLAYING
+                    ]
+                        self.trigger('player:statechange', {
+                            oldState: nst
+                            newState: ost
+                        })
+                        self.trigger(ost)
 
-                if st is STATES.END
+                if nst is STATES.END
                     self.next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 return unless pos
