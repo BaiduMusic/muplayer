@@ -2402,14 +2402,26 @@ var __slice = [].slice;
       opts = this.opts;
       recover = opts.recoverMethodWhenWaitingTimeout;
       return this.engine = engine.on(EVENTS.STATECHANGE, function(e) {
-        var st;
-        st = e.newState;
-        if (st !== STATES.PREBUFFER && st !== STATES.BUFFERING) {
+        var nst, ost, trigger, _ref1;
+        _ref1 = [e.oldState, e.newState], ost = _ref1[0], nst = _ref1[1];
+        trigger = function(st, e) {
+          self.trigger('player:statechange', e);
+          return self.trigger(st);
+        };
+        if (nst !== STATES.PREBUFFER && nst !== STATES.BUFFERING) {
           self.waitingTimer.clear();
+          trigger(nst, e);
+        } else {
+          trigger(nst, e);
+          if (ost === STATES.PAUSE || ost === STATES.PLAYING) {
+            self.trigger('player:statechange', {
+              oldState: nst,
+              newState: ost
+            });
+            self.trigger(ost);
+          }
         }
-        self.trigger('player:statechange', e);
-        self.trigger(st);
-        if (st === STATES.END) {
+        if (nst === STATES.END) {
           return self.next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
