@@ -629,8 +629,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
       sid = this._formatSid(sid);
       this.remove(sid);
-      if ($.isArray(sid) && sid.length) {
-        this.list = unshift && sid.concat(this.list) || this.list.concat(sid);
+      if ($.isArray(sid)) {
+        if (sid.length) {
+          this.list = unshift && sid.concat(this.list) || this.list.concat(sid);
+        }
       } else if (sid) {
         this.list[unshift && 'unshift' || 'push'](sid);
       }
