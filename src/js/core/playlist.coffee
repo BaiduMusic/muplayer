@@ -45,8 +45,9 @@ do (root = @, factory = (utils, Events) ->
             # 剔除重复sid, 保证列表是一个set
             @remove(sid)
 
-            if $.isArray(sid) and sid.length
-                @list = unshift and sid.concat(@list) or @list.concat(sid)
+            if $.isArray(sid)
+                if sid.length
+                    @list = unshift and sid.concat(@list) or @list.concat(sid)
             else if sid
                 @list[unshift and 'unshift' or 'push'](sid)
 

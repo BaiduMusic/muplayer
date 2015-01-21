@@ -3,6 +3,11 @@ suite 'playlist', ->
         p.off().reset().setVolume(0)
 
     suite '#add()', ->
+        test '不能添加空的sid', ->
+            p.add ''
+            p.add []
+            assert.deepEqual [], pl.list
+
         test '数字类型sid自动被转换成字符串', ->
             p.add 1
             assert.deepEqual ['1'], pl.list
