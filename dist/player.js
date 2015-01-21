@@ -2493,6 +2493,8 @@ var __slice = [].slice;
         this.opts.fetch.call(this).done(function() {
           play();
           return self.trigger('player:fetch:done');
+        }).fail(function(err) {
+          return self.trigger('player:fetch:fail', err);
         });
       } else {
         play();

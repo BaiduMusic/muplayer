@@ -235,6 +235,8 @@ do (root = this, factory = (
                 @opts.fetch.call(@).done ->
                     play()
                     self.trigger('player:fetch:done')
+                .fail (err) ->
+                    self.trigger('player:fetch:fail', err)
             else
                 play()
 
