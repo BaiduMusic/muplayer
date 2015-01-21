@@ -313,6 +313,7 @@ do (root = this, factory = (
                 pl.setCur(sid)
                 @_sid = sid
                 @stop()
+            @trigger('player:setCur', sid)
             @
 
         ###*

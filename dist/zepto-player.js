@@ -2023,6 +2023,7 @@ var __slice = [].slice;
         this._sid = sid;
         this.stop();
       }
+      this.trigger('player:setCur', sid);
       return this;
     };
 
