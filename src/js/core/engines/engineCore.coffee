@@ -44,8 +44,13 @@ do (root = @, factory = (cfg, utils, Events) ->
             if st in [
                 STATES.BUFFERING,  STATES.CANPLAYTHROUGH
             ] and @_state in [
-                STATES.END, STATES.PAUSE, STATES.STOP
+                STATES.END, STATES.STOP
             ]
+                return
+
+            if st in [
+                STATES.PREBUFFER, STATES.BUFFERING
+            ] and @_state is STATES.PAUSE
                 return
 
             oldState = @_state
