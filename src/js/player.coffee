@@ -43,7 +43,7 @@ do (root = this, factory = (
             singleton: true
             absoluteUrl: true
             maxRetryTimes: 1
-            maxWaitingTime: 4 * 1000
+            maxWaitingTime: 4
             recoverMethodWhenWaitingTimeout: 'retry'
 
             # 在基类的默认实现中将fetch设计成Promise模式的接口调用似乎没有必要,
@@ -145,43 +145,27 @@ do (root = this, factory = (
 
         _initEngine: (engine) ->
             self = @
-            opts = @opts
-            recover = opts.recoverMethodWhenWaitingTimeout
+            recover = @opts.recoverMethodWhenWaitingTimeout
 
-            @engine = engine.on(EVENTS.STATECHANGE, (e) ->
-                [ ost, nst ] = [ e.oldState, e.newState ]
+            @engine = engine
+            @engine.on(EVENTS.STATECHANGE, (e) ->
+                st = e.newState
 
-                trigger = (st, e) ->
-                    self.trigger('player:statechange', e)
-                    self.trigger(st)
-
-                if nst not in [
+                if st not in [
                     STATES.PREBUFFER, STATES.BUFFERING
                 ]
                     self.waitingTimer.clear()
-                    trigger(nst, e)
-                else
-                    trigger(nst, e)
 
-                    if ost in [
-                        STATES.PAUSE, STATES.PLAYING
-                    ]
-                        self.engine.setState(ost)
+                self.trigger('player:statechange', e)
+                self.trigger(st)
 
-                if nst is STATES.END
+                if st is STATES.END
                     self.next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 return unless pos
-
                 self.trigger('timeupdate', pos)
-
                 if self.getUrl()
-                    self.waitingTimer.clear().after(opts.maxWaitingTime, ->
-                        if self.getState() not in [
-                            STATES.PAUSE, STATES.STOP, STATES.END
-                        ]
-                            engine.trigger(EVENTS.WAITING_TIMEOUT)
-                    ).start()
+                    self._startWaitingTimer()
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) ->
@@ -222,11 +206,10 @@ do (root = this, factory = (
                 def.resolve()
 
             st = @getState()
-            # 只有如下3种情况会触发opts.fetch选链：
+            # 只有如下2种情况会触发opts.fetch选链：
             # 1) 内核首次使用或被reset过 (STATES.STOP)
             # 2) 上一首歌播放完成自动触发下一首的播放 (STATES.END)
-            # 3) 某些移动浏览器无交互时不能触发自动播放 (会被卡在STATES.BUFFERING)
-            if st in [STATES.STOP, STATES.END] or st is STATES.BUFFERING and @curPos() is 0
+            if st in [STATES.STOP, STATES.END]
                 # XXX: 应该在opts.fetch中决定是否发起选链。
                 # 是从cache中取音频链接地址，还是发起选链请求，
                 # 及setUrl的时机都是依据opts.fetch的实现决定。
@@ -385,7 +368,8 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @stop().engine.setUrl(url)
+            @_startWaitingTimer()
+                .stop().engine.setUrl(url)
             @trigger('player:setUrl', url)
             @
 
@@ -484,6 +468,16 @@ do (root = this, factory = (
                     unless self._frozen
                         fn.apply(self, args)
                     self
+
+        _startWaitingTimer: ->
+            self = @
+            @waitingTimer.clear().after("#{@opts.maxWaitingTime} seconds", ->
+                if self.getState() not in [
+                    STATES.PAUSE, STATES.STOP, STATES.END
+                ]
+                    self.engine.trigger(EVENTS.WAITING_TIMEOUT)
+            ).start()
+            @
 
     Events.mixTo(Player)
     Player
