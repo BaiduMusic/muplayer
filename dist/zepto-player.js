@@ -2099,7 +2099,7 @@ var __slice = [].slice;
       this.playlist.reset();
       this.engine.reset();
       this.trigger('player:reset');
-      return this;
+      return this.stop();
     };
 
 

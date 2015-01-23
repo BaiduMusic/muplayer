@@ -5,7 +5,7 @@ suite 'player', ->
     suite '#play()', ->
         test '播放开始后会派发playing事件', (done) ->
             p.on 'playing', ->
-                assert.ok(true)
+                assert.ok true
                 done()
             p.setUrl(mp3).play()
 
@@ -205,3 +205,23 @@ suite 'player', ->
                 '1', '2', '3', '4', '5'
             ]).setCur('3')
             assert.equal '3', p.getCur()
+
+    suite '#reset()', ->
+        test '重置后播放列表会被清空', ->
+            p.add([
+                '1', '2', '3', '4', '5'
+            ])
+            assert.equal 5, p.getSongsNum()
+            p.reset()
+            assert.equal 0, p.getSongsNum()
+
+        test '重置后播放会被停止', ->
+            t = 0
+            p.on 'playing', ->
+                assert.ok true
+                t++
+            p.on 'suspend', ->
+                assert.equal 1, t
+                assert.ok true
+                done()
+            p.setUrl(mp3).play()
