@@ -351,7 +351,7 @@ do (root = this, factory = (
             @playlist.reset()
             @engine.reset()
             @trigger('player:reset')
-            @
+            @stop()
 
         ###*
          * 获取播放内核当前状态。所有可能状态值参见 <code>cfg.coffee</code> 中的 <code>engine.STATES</code> 声明。
