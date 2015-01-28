@@ -40,8 +40,8 @@ module.exports = function(config) {
       'test/setup.coffee',
       'test/utils.coffee',
       'test/player.coffee',
-      'test/playlist.coffee',
-      'test/engine.coffee'
+      'test/engine.coffee',
+      'test/playlist.coffee'
     ],
 
 

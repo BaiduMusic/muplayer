@@ -603,8 +603,7 @@
   return Events
 });
 
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -618,8 +617,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
   var Playlist;
   Playlist = (function() {
     function Playlist(options) {
-      this.next = __bind(this.next, this);
-      this.prev = __bind(this.prev, this);
       this.opts = $.extend({}, this.defaults, options);
       this.reset();
     }
@@ -1699,8 +1696,10 @@ var __slice = [].slice;
     if (this.getSongsNum()) {
       if (!pl.cur) {
         play();
-      } else if (pl[fname](auto)) {
+      } else if (pl[fname].call(pl, auto)) {
         play();
+      } else {
+        this.trigger("player:" + fname + ":fail", auto);
       }
     }
     return this;
