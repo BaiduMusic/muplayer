@@ -22,8 +22,10 @@ do (root = this, factory = (
         if @getSongsNum()
             unless pl.cur
                 play()
-            else if pl[fname](auto)
+            else if pl[fname].call(pl, auto)
                 play()
+            else
+                @trigger "player:#{fname}:fail", auto
 
         @
 

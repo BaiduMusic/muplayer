@@ -84,6 +84,18 @@ suite 'playlist', ->
             assert.equal 'c', p.getCur()
             assert.equal false, pl.next()
 
+        test 'list模式下，列表播放完会派发事件', ->
+            t = 0
+            p.setMode 'list'
+            p.add ['a']
+            p.once 'player:next', (r) ->
+                assert.equal 'a', r.cur
+                assert.equal 1, ++t
+                p.next()
+            p.once 'player:next:fail', ->
+                assert.equal 2, ++t
+            p.next()
+
         test 'loop模式下的上一首、下一首', ->
             p.setMode 'loop'
             p.add ['a', 'b', 'c']
