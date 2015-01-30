@@ -7,7 +7,6 @@
     "url": "https://github.com/Baidu-Music-FE/muplayer.git"
   },
   "scripts": {
-    "install": "npm install",
     "test": "cake --cli test"
   },
   "license": "BSD",
