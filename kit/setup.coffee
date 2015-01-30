@@ -4,20 +4,7 @@
 
 class Setup
     start: ->
-        spawn join('node_modules', '.bin', 'bower'), ['install']
-        .then ->
-            if process.env.quiet is 'true'
-                return { install_flex_sdk: 'no' }
-
-            kit.promptGet [{
-                name: 'install_flex_sdk'
-                description: 'Whether to install Flex SDK or not? (y/n)'
-                default: 'n'
-                pattern: /(y)|(n)/
-            }]
-        .then (opts) ->
-            if opts.install_flex_sdk is 'y'
-                spawn 'npm', ['install', 'flex-sdk']
+        spawn 'bower', ['install']
         .then =>
             @build_zepto()
         .catch (e) ->
@@ -36,11 +23,8 @@ class Setup
             cwd: zepto_path
         }
         .then ->
-            coffee_bin = join 'node_modules', '.bin', 'coffee'
-
             log '>> Build Zepto with: '.cyan + mods.green
-
-            spawn coffee_bin, ['make', 'dist'], {
+            spawn 'coffee', ['make', 'dist'], {
                 cwd: zepto_path
                 env: _.defaults(
                     { MODULES: mods }
