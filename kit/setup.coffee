@@ -1,6 +1,6 @@
 { kit } = require 'nobone'
 
-{ _, spawn, log, path, path: { join } } = kit
+{ _, spawn, log, path: { join } } = kit
 
 class Setup
     start: ->
@@ -48,4 +48,4 @@ class Setup
                 )
             }
 
-module.exports = Setup
+module.exports = new Setup()
