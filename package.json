@@ -7,7 +7,8 @@
     "url": "https://github.com/Baidu-Music-FE/muplayer.git"
   },
   "scripts": {
-    "install": "coffee ./kit/app_mgr.coffee setup"
+    "install": "cake setup",
+    "test": "cake --cli test"
   },
   "license": "BSD",
   "devDependencies": {
