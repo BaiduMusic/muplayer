@@ -54,13 +54,17 @@ tasks = [
         'test'
         'Run test runner.'
         (opts) ->
-            args = opts.cli and [
-                '--single-run',
-                '--no-auto-watch',
-                # Travis supports running a real browser (Firefox) with a virtual screen.
-                '--browsers', 'Firefox'
-            ] or []
-            spawn 'karma', ['start', 'karma.conf.js'].concat(args)
+            if opts.cli
+                invoke 'build'
+                .then ->
+                    spawn 'karma', ['start', 'karma.conf.js'].concat([
+                        '--single-run',
+                        '--no-auto-watch',
+                        # Travis supports running a real browser (Firefox) with a virtual screen.
+                        '--browsers', 'Firefox'
+                    ])
+            else
+                spawn 'karma', ['start', 'karma.conf.js']
     ]
     [
         'coffeelint'
