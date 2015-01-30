@@ -6,9 +6,6 @@
 join = path.join
 
 app_mgr = join 'kit', 'app_mgr.coffee'
-node_bin = join 'node_modules', '.bin'
-karma_bin = join node_bin, 'karma'
-coffee_bin = join node_bin, 'coffee'
 
 options = [
     ['-p', '--port [port]', 'Which port to listen to. Example: cake -p 8077 server']
@@ -29,20 +26,20 @@ tasks = [
         'build'
         'Build all source code.'
         ->
-            spawn coffee_bin, [app_mgr, 'build']
+            spawn 'coffee', [app_mgr, 'build']
     ]
     [
         'doc'
         'Build doc.'
         ->
-            spawn coffee_bin, [app_mgr, 'doc']
+            spawn 'coffee', [app_mgr, 'doc']
     ]
     [
         'server'
         'Run dev server.'
         (opts) ->
             run = ->
-                spawn coffee_bin, [app_mgr, 'server', opts.port or 8077]
+                spawn 'coffee', [app_mgr, 'server', opts.port or 8077]
 
             if opts.rebuild
                 invoke 'build'
@@ -63,20 +60,19 @@ tasks = [
                 # Travis supports running a real browser (Firefox) with a virtual screen.
                 '--browsers', 'Firefox'
             ] or []
-            spawn karma_bin, ['start', 'karma.conf.js'].concat(args)
+            spawn 'karma', ['start', 'karma.conf.js'].concat(args)
     ]
     [
         'coffeelint'
         'Lint all coffee files.'
         (opts) ->
             expand = kit.require 'glob-expand'
-            coffeelint_bin = join node_bin, 'coffeelint'
 
             lint = (path) ->
                 args = ['-f', 'coffeelint.json', path]
                 if opts.quite
                     args.unshift('-q')
-                spawn coffeelint_bin, args
+                spawn 'coffeelint', args
 
             Promise.resolve(expand(
                 join('**', '*.coffee'),
