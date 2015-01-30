@@ -53,7 +53,8 @@ tasks = [
             args = opts.cli and [
                 '--single-run',
                 '--no-auto-watch',
-                '--browsers', 'Chrome,Firefox,Safari,Opera,IE'
+                # Travis supports running a real browser (Firefox) with a virtual screen.
+                '--browsers', 'Firefox'
             ] or []
             spawn karma_bin, ['start', 'karma.conf.js'].concat(args)
     ]
