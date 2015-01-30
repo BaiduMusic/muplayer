@@ -19,6 +19,13 @@ options = [
 
 tasks = [
     [
+        'setup'
+        'Setup project.'
+        ->
+            setup = require './setup'
+            setup.start()
+    ]
+    [
         'build'
         'Build all source code.'
         ->
