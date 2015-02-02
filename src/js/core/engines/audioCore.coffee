@@ -29,6 +29,8 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             return @ unless audio
             @_supportedTypes.push(k) for k, v of audio when levels[v] >= least
 
+            _eventHandlers = {}
+
             # 对于绝大多数浏览器而言, audio标签和Audio对象的方式是等价的。
             # 参考: http://www.jplayer.org/HTML5.Audio.Support/
             audio = new Audio()
@@ -38,9 +40,19 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             # event listener封装, 支持链式调用。
             audio.on = (type, listener) ->
                 audio.addEventListener(type, listener, false)
+                listeners = _eventHandlers[type]
+                listeners = [] unless listeners
+                listeners.push(listener)
                 audio
             audio.off = (type, listener) ->
-                audio.removeEventListener(type, listener, false)
+                # remove all events
+                # ref: http://stackoverflow.com/a/4386514
+                if not type and not listener
+                    for type, listeners of _eventHandlers
+                        for listener in listeners
+                            audio.removeEventListener(type, listener, false)
+                else
+                    audio.removeEventListener(type, listener, false)
                 audio
             @audio = audio
 
@@ -145,6 +157,11 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                         audio.on('canplay', handle)
 
                     self
+
+        destroy: ->
+            super()
+            @audio.off()
+            @
 
         play: ->
             @audio.play()

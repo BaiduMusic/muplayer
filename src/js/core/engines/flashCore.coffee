@@ -138,6 +138,15 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                 [fn, args] = @_queue.shift()
                 fn.apply(@, args)
 
+        destroy: ->
+            super()
+            @flash.off().remove()
+            @progressTimer.clear()
+            @progressTimer = null
+            @positionTimer.clear()
+            @positionTimer = null
+            @
+
         play: ->
             @flash.f_play()
             @
