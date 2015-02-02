@@ -7,6 +7,8 @@ utils = require './utils'
     path: { join }
 } = kit
 
+kit.require 'colors'
+
 class Builder
     constructor: ->
         @src_path = 'src'
@@ -159,7 +161,7 @@ class Builder
 
     compress_js: (files = []) ->
         compress = (path) ->
-            spawn join('node_modules', '.bin', 'uglifyjs'), [
+            spawn 'uglifyjs', [
                 '-mt'
                 '-o', path + '.min.js'
                 path + '.js'

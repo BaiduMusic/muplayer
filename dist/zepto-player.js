@@ -624,10 +624,15 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     Playlist.prototype.reset = function() {
       this.cur = '';
       if ($.isArray(this.list)) {
-        return this.list.length = 0;
+        this.list.length = 0;
       } else {
-        return this.list = [];
+        this.list = [];
       }
+      return this;
+    };
+
+    Playlist.prototype.destroy = function() {
+      return this.reset().off();
     };
 
     Playlist.prototype._resetListRandom = function(index) {
@@ -844,7 +849,12 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       this.stop();
       this.setUrl();
       this.trigger(EVENTS.PROGRESS, 0);
-      return this.trigger(EVENTS.POSITIONCHANGE, 0);
+      this.trigger(EVENTS.POSITIONCHANGE, 0);
+      return this;
+    };
+
+    EngineCore.prototype.destroy = function() {
+      return this.reset().off();
     };
 
     EngineCore.prototype.play = function() {
@@ -1132,8 +1142,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     })(this, this.document);
 });
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __hasProp = {}.hasOwnProperty,
   __slice = [].slice;
 
 (function(root, factory) {
@@ -1164,7 +1174,7 @@ var __hasProp = {}.hasOwnProperty,
     AudioCore.prototype.engineType = TYPES.AUDIO;
 
     function AudioCore(options) {
-      var audio, k, least, levels, opts, playEmpty, v;
+      var audio, k, least, levels, opts, playEmpty, v, _eventHandlers;
       this.opts = $.extend({}, AudioCore.defaults, options);
       this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
       opts = this.opts;
@@ -1184,16 +1194,34 @@ var __hasProp = {}.hasOwnProperty,
           this._supportedTypes.push(k);
         }
       }
+      _eventHandlers = {};
       audio = new Audio();
       audio.preload = opts.preload;
       audio.autoplay = opts.autoplay;
       audio.loop = false;
       audio.on = function(type, listener) {
+        var listeners;
         audio.addEventListener(type, listener, false);
+        listeners = _eventHandlers[type];
+        if (!listeners) {
+          listeners = [];
+        }
+        listeners.push(listener);
         return audio;
       };
       audio.off = function(type, listener) {
-        audio.removeEventListener(type, listener, false);
+        var listeners, _i, _len;
+        if (!type && !listener) {
+          for (type in _eventHandlers) {
+            listeners = _eventHandlers[type];
+            for (_i = 0, _len = listeners.length; _i < _len; _i++) {
+              listener = listeners[_i];
+              audio.removeEventListener(type, listener, false);
+            }
+          }
+        } else {
+          audio.removeEventListener(type, listener, false);
+        }
         return audio;
       };
       this.audio = audio;
@@ -1313,6 +1341,12 @@ var __hasProp = {}.hasOwnProperty,
         }));
       }
       return _results;
+    };
+
+    AudioCore.prototype.destroy = function() {
+      AudioCore.__super__.destroy.call(this);
+      this.audio.off();
+      return this;
     };
 
     AudioCore.prototype.play = function() {
@@ -1453,7 +1487,7 @@ var __hasProp = {}.hasOwnProperty,
       var $el, args, constructor, engine, i, opts, _i, _len, _ref1;
       this.engines = [];
       opts = this.opts;
-      $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
+      this.$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
       _ref1 = opts.engines;
       for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
         engine = _ref1[i];
@@ -1561,6 +1595,20 @@ var __hasProp = {}.hasOwnProperty,
 
     Engine.prototype.reset = function() {
       this.curEngine.reset();
+      return this;
+    };
+
+    Engine.prototype.destroy = function() {
+      var engine, _i, _len, _ref1;
+      this.reset().off();
+      _ref1 = this.engines;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        engine = _ref1[_i];
+        engine.destroy();
+      }
+      this.engines.length = 0;
+      this.$el.off().remove();
+      delete this.curEngine;
       return this;
     };
 
@@ -2103,6 +2151,20 @@ var __slice = [].slice;
 
 
     /**
+     * 销毁 <code>MuPlayer</code> 实例（解绑事件并销毁DOM）。
+     * @return {player}
+     */
+
+    Player.prototype.destroy = function() {
+      this.reset().off();
+      this.engine.destroy();
+      this.playlist.destroy();
+      instance = null;
+      return this;
+    };
+
+
+    /**
      * 获取播放内核当前状态。所有可能状态值参见 <code>cfg.coffee</code> 中的 <code>engine.STATES</code> 声明。
      * @return {String}
      */
@@ -2270,7 +2332,7 @@ var __slice = [].slice;
     Player.prototype._startWaitingTimer = function() {
       var self;
       self = this;
-      this.waitingTimer.clear().after("" + this.opts.maxWaitingTime + " seconds", function() {
+      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", function() {
         var _ref1;
         if ((_ref1 = self.getState()) !== STATES.PAUSE && _ref1 !== STATES.STOP && _ref1 !== STATES.END) {
           return self.engine.trigger(EVENTS.WAITING_TIMEOUT);

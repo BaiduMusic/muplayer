@@ -2,6 +2,8 @@
 
 { _, spawn, log, path: { join } } = kit
 
+kit.require 'colors'
+
 class Setup
     start: ->
         spawn 'bower', ['install']

@@ -356,7 +356,7 @@ do (root = this, factory = (
             @stop()
 
         ###*
-         * 销毁MuPlayer实例（解绑事件并销毁DOM）。
+         * 销毁 <code>MuPlayer</code> 实例（解绑事件并销毁DOM）。
          * @return {player}
         ###
         destroy: ->

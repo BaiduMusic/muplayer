@@ -10,7 +10,7 @@ argv = process.argv
 [ port, open ] = argv[3..4]
 open = open is 'true'
 
-root_path = process.cwd()
+root_path = join(__dirname, '..')
 
 main = ->
     switch argv[2]
@@ -23,7 +23,6 @@ main = ->
             builder.start()
 
         when 'doc'
-            doxx_bin = join root_path, 'node_modules', '.bin', 'doxx'
             remove join(root_path, 'doc')
             .then ->
                 Promise.all([
@@ -33,7 +32,7 @@ main = ->
                         '--css-dir', 'doc/css'
                         '--no-line-comments'
                     ])
-                    spawn(doxx_bin, [
+                    spawn('doxx', [
                         '-d'
                         '-R', 'README.md'
                         '-t', 'MuPlayer 『百度音乐播放内核』'
