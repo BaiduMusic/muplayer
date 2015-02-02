@@ -48,6 +48,7 @@
               <li><a href="#add">add</a></li>
               <li><a href="#remove">remove</a></li>
               <li><a href="#reset">reset</a></li>
+              <li><a href="#destroy">destroy</a></li>
               <li><a href="#getState">getState</a></li>
               <li><a href="#setUrl">setUrl</a></li>
               <li><a href="#getUrl">getUrl</a></li>
@@ -316,6 +317,14 @@ cur // 调用next时正在播放的歌曲</pre> </div>
             </p>
           </section>
           <div class="description"><p>播放列表和内核资源重置。会派发 <code>player:reset</code> 事件。<br />如有特别需要可以自行扩展，比如通过监听 <code>player:reset</code> 来重置相关业务逻辑的标志位或事件等。</p> </div>
+          <section id="destroy">
+            <h1>destroy</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info mr5">method</div><span>Player.prototype.destroy()</span> -><span>player</span>
+            </p>
+          </section>
+          <div class="description"><p>销毁 <code>MuPlayer</code> 实例（解绑事件并销毁DOM）。</p> </div>
           <section id="getState">
             <h1>getState</h1>
             <h5 class="subheader"></h5>
