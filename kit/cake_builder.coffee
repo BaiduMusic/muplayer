@@ -3,6 +3,8 @@
     kit: { path, spawn, Promise }
 } = require 'nobone'
 
+kit.require 'colors'
+
 join = path.join
 
 app_mgr = join 'kit', 'app_mgr.coffee'
