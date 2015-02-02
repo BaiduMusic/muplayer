@@ -23,8 +23,9 @@ main = ->
             builder.start()
 
         when 'doc'
-            remove join(root_path, 'doc')
-            .then ->
+            remove(join(root_path, 'doc'), {
+                isFollowLink: false
+            }).then ->
                 Promise.all([
                     spawn('compass', [
                         'compile'
