@@ -31,7 +31,7 @@ do (root = @, factory = (
         _initEngines: ->
             @engines = []
             opts = @opts
-            $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
+            @$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
 
             for engine, i in opts.engines
                 constructor = engine.constructor
@@ -123,6 +123,15 @@ do (root = @, factory = (
 
         reset: ->
             @curEngine.reset()
+            @
+
+        destroy: ->
+            @reset().off()
+            for engine in @engines
+                engine.destroy()
+            @engines.length = 0
+            @$el.off().remove()
+            delete @curEngine
             @
 
         setUrl: (url) ->

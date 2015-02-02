@@ -356,6 +356,17 @@ do (root = this, factory = (
             @stop()
 
         ###*
+         * 销毁MuPlayer实例（解绑事件并销毁DOM）。
+         * @return {player}
+        ###
+        destroy: ->
+            @reset().off()
+            @engine.destroy()
+            @playlist.destroy()
+            instance = null
+            @
+
+        ###*
          * 获取播放内核当前状态。所有可能状态值参见 <code>cfg.coffee</code> 中的 <code>engine.STATES</code> 声明。
          * @return {String}
         ###

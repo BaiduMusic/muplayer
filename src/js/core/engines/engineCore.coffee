@@ -20,6 +20,10 @@ do (root = @, factory = (cfg, utils, Events) ->
             @setUrl()
             @trigger(EVENTS.PROGRESS, 0)
             @trigger(EVENTS.POSITIONCHANGE, 0)
+            @
+
+        destroy: ->
+            @reset().off()
 
         play: ->
             @

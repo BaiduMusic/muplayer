@@ -10,6 +10,10 @@ do (root = @, factory = (utils, Events) ->
                 @list.length = 0
             else
                 @list = []
+            @
+
+        destroy: ->
+            @reset().off()
 
         _resetListRandom: (index) ->
             if @mode is 'list-random'
