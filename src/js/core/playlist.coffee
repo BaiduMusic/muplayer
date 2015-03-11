@@ -21,6 +21,7 @@ do (root = @, factory = (utils, Events) ->
                 @_listRandomIndex = index
                 @_listRandom = utils.shuffle([0...@list.length])
                 @cur = @list[@_listRandom[index]]
+                @trigger('playlist:resetListRandom')
 
         _formatSid: (sids) ->
             absoluteUrl = @opts.absoluteUrl
