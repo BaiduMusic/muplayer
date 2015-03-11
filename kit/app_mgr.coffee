@@ -6,6 +6,8 @@ nobone = require 'nobone'
     path: { join, basename }
 } = kit
 
+kit.require 'colors'
+
 argv = process.argv
 [ port, open ] = argv[3..4]
 open = open is 'true'

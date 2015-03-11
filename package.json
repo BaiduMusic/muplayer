@@ -13,8 +13,8 @@
   "license": "BSD",
   "devDependencies": {
     "bower": "~1.3.12",
-    "coffee-script": "~1.8.0",
-    "coffeelint": "^1.8.1",
+    "coffee-script": "~1.9.1",
+    "coffeelint": "^1.9.2",
     "doxx": "0.7.X",
     "flex-sdk": "^4.6.0-0",
     "glob-expand": "0.0.2",
@@ -25,12 +25,12 @@
     "karma-firefox-launcher": "^0.1.4",
     "karma-ie-launcher": "^0.1.5",
     "karma-mocha": "^0.1.10",
-    "karma-mocha-reporter": "^0.3.1",
+    "karma-mocha-reporter": "^1.0.0",
     "karma-opera-launcher": "^0.1.0",
     "karma-safari-launcher": "^0.1.1",
-    "mocha": "^2.1.0",
-    "nobone": "^1.4.3",
-    "requirejs": "~2.1.15",
+    "mocha": "^2.2.1",
+    "nobone": "^1.4.9",
+    "requirejs": "~2.1.16",
     "uglify-js": "~2.4.16"
   }
 }

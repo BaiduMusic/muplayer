@@ -645,7 +645,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           for (var _i = 0, _ref = this.list.length; 0 <= _ref ? _i < _ref : _i > _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
           return _results;
         }).apply(this));
-        return this.cur = this.list[this._listRandom[index]];
+        this.cur = this.list[this._listRandom[index]];
+        return this.trigger('playlist:resetListRandom');
       }
     };
 
@@ -1142,8 +1143,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     })(this, this.document);
 });
 
-var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty,
+var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   __slice = [].slice;
 
 (function(root, factory) {
@@ -2332,7 +2333,7 @@ var __slice = [].slice;
     Player.prototype._startWaitingTimer = function() {
       var self;
       self = this;
-      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", function() {
+      this.waitingTimer.clear().after("" + this.opts.maxWaitingTime + " seconds", function() {
         var _ref1;
         if ((_ref1 = self.getState()) !== STATES.PAUSE && _ref1 !== STATES.STOP && _ref1 !== STATES.END) {
           return self.engine.trigger(EVENTS.WAITING_TIMEOUT);
