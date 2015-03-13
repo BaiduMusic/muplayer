@@ -4,7 +4,7 @@ package {
 
     public class Utils {
         public static function log(msg:*):void {
-            ExternalInterface.call('console.debug', 'flash: ' + JSON.stringify(msg));
+            ExternalInterface.call('console.debug', 'flash: ' + msg);
         }
 
         public static function callJS(fn:String, data:Object = undefined):void {

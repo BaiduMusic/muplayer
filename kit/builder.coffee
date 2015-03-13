@@ -20,7 +20,8 @@ class Builder
 
     start: ->
         self = @
-        @update_build_dir()
+        @clean().then ->
+            self.update_build_dir()
         .then ->
             self.compile_all_coffee()
         .then ->
@@ -66,7 +67,7 @@ class Builder
 
     compile_all_coffee: ->
         self = @
-        coffeescript = kit.require 'coffee-script'
+        coffeescript = require 'coffee-script'
 
         glob join(self.build_temp_path, '**', '*.coffee')
         .then (coffee_list) ->
@@ -90,7 +91,7 @@ class Builder
 
         log '>> Compile client js with requirejs ...'.cyan
 
-        requirejs = kit.require 'requirejs'
+        requirejs = require 'requirejs'
 
         opts_pc =
             appDir: build_temp_path
@@ -200,7 +201,7 @@ class Builder
         { src_path, dist_path } = @
 
         try
-            flex_sdk = kit.require 'flex-sdk'
+            flex_sdk = require 'flex-sdk'
         catch e
             return log '>> Warn: '.yellow + e.message
 

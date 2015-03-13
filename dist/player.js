@@ -66,7 +66,7 @@
     return root._mu.utils = factory(root._mu.cfg);
   }
 })(this, function(cfg) {
-  var ArrayProto, NumProto, ObjProto, StrProto, extReg, hasOwnProperty, name, push, toString, utils, _i, _len, _ref;
+  var ArrayProto, NumProto, ObjProto, StrProto, extReg, hasOwnProperty, j, len, name, push, ref, toString, utils;
   utils = {};
   StrProto = String.prototype;
   NumProto = Number.prototype;
@@ -76,9 +76,9 @@
   hasOwnProperty = ObjProto.hasOwnProperty;
   toString = ObjProto.toString;
   extReg = /\.(\w+)(\?.*)?$/;
-  _ref = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'];
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    name = _ref[_i];
+  ref = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'];
+  for (j = 0, len = ref.length; j < len; j++) {
+    name = ref[j];
     utils['is' + name] = (function(name) {
       return function(obj) {
         return toString.call(obj) === '[object ' + name + ']';
@@ -126,11 +126,11 @@
       return min + Math.floor(Math.random() * (max - min + 1));
     },
     shuffle: function(list) {
-      var i, item, rand, shuffled, _j, _len1;
+      var i, item, k, len1, rand, shuffled;
       i = 0;
       shuffled = [];
-      for (_j = 0, _len1 = list.length; _j < _len1; _j++) {
-        item = list[_j];
+      for (k = 0, len1 = list.length; k < len1; k++) {
+        item = list[k];
         rand = this.random(i++);
         shuffled[i - 1] = shuffled[rand];
         shuffled[rand] = item;
@@ -166,15 +166,15 @@
       return r.join(':');
     },
     namespace: function() {
-      var a, arg, d, i, l, o, period, _j, _len1, _ref1;
+      var a, arg, d, i, k, l, len1, o, period, ref1;
       a = arguments;
       period = '.';
-      for (_j = 0, _len1 = a.length; _j < _len1; _j++) {
-        arg = a[_j];
+      for (k = 0, len1 = a.length; k < len1; k++) {
+        arg = a[k];
         o = cfg.namespace;
         if (arg.indexOf(period) > -1) {
           d = arg.split(period);
-          _ref1 = [0, d.length], i = _ref1[0], l = _ref1[1];
+          ref1 = [0, d.length], i = ref1[0], l = ref1[1];
           while (i < l) {
             o[d[i]] = o[d[i]] || {};
             o = o[d[i]];
@@ -553,7 +553,7 @@
   return Events
 });
 
-var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -586,14 +586,14 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     Playlist.prototype._resetListRandom = function(index) {
-      var _i, _ref, _results;
+      var j, ref, results;
       if (this.mode === 'list-random') {
         index = index || 0;
         this._listRandomIndex = index;
         this._listRandom = utils.shuffle((function() {
-          _results = [];
-          for (var _i = 0, _ref = this.list.length; 0 <= _ref ? _i < _ref : _i > _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
-          return _results;
+          results = [];
+          for (var j = 0, ref = this.list.length; 0 <= ref ? j < ref : j > ref; 0 <= ref ? j++ : j--){ results.push(j); }
+          return results;
         }).apply(this));
         this.cur = this.list[this._listRandom[index]];
         return this.trigger('playlist:resetListRandom');
@@ -607,15 +607,15 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         return absoluteUrl && utils.toAbsoluteUrl(sid) || '' + sid;
       };
       return $.isArray(sids) && ((function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = sids.length; _i < _len; _i++) {
-          sid = sids[_i];
+        var j, len, results;
+        results = [];
+        for (j = 0, len = sids.length; j < len; j++) {
+          sid = sids[j];
           if (sid) {
-            _results.push(format(sid));
+            results.push(format(sid));
           }
         }
-        return _results;
+        return results;
       })()) || format(sids);
     };
 
@@ -644,7 +644,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     Playlist.prototype.remove = function(sid) {
-      var id, remove, _i, _len;
+      var id, j, len, remove;
       remove = (function(_this) {
         return function(sid) {
           var i;
@@ -656,8 +656,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       })(this);
       sid = this._formatSid(sid);
       if ($.isArray(sid)) {
-        for (_i = 0, _len = sid.length; _i < _len; _i++) {
-          id = sid[_i];
+        for (j = 0, len = sid.length; j < len; j++) {
+          id = sid[j];
           remove(id);
         }
       } else {
@@ -745,7 +745,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
 
     Playlist.prototype.setCur = function(sid) {
       sid = this._formatSid(sid);
-      if (__indexOf.call(this.list, sid) < 0) {
+      if (indexOf.call(this.list, sid) < 0) {
         this.add(sid);
       }
       return this.cur = sid;
@@ -758,7 +758,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
   return Playlist;
 });
 
-var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -769,16 +769,16 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     return root._mu.EngineCore = factory(_mu.cfg, _mu.utils, _mu.Events);
   }
 })(this, function(cfg, utils, Events) {
-  var EVENTS, EngineCore, STATES, availableStates, k, v, _ref;
-  _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
+  var EVENTS, EngineCore, STATES, availableStates, k, ref, v;
+  ref = cfg.engine, EVENTS = ref.EVENTS, STATES = ref.STATES;
   availableStates = (function() {
-    var _results;
-    _results = [];
+    var results;
+    results = [];
     for (k in STATES) {
       v = STATES[k];
-      _results.push(v);
+      results.push(v);
     }
-    return _results;
+    return results;
   })();
   EngineCore = (function() {
     function EngineCore() {}
@@ -833,11 +833,11 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     };
 
     EngineCore.prototype.setState = function(st) {
-      var oldState, _ref1;
-      if (__indexOf.call(availableStates, st) < 0 || st === this._state) {
+      var oldState, ref1;
+      if (indexOf.call(availableStates, st) < 0 || st === this._state) {
         return;
       }
-      if ((st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH) && ((_ref1 = this._state) === STATES.END || _ref1 === STATES.STOP)) {
+      if ((st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH) && ((ref1 = this._state) === STATES.END || ref1 === STATES.STOP)) {
         return;
       }
       if ((st === STATES.PREBUFFER || st === STATES.BUFFERING) && this._state === STATES.PAUSE) {
@@ -1093,9 +1093,9 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     })(this, this.document);
 });
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __slice = [].slice;
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty,
+  slice = [].slice;
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -1106,11 +1106,11 @@ var __hasProp = {}.hasOwnProperty,
     return root._mu.AudioCore = factory(_mu.cfg, _mu.utils, _mu.EngineCore, _mu.Modernizr);
   }
 })(this, function(cfg, utils, EngineCore, Modernizr) {
-  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, win, _ref;
+  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, ref, win;
   win = window;
-  _ref = cfg.engine, TYPES = _ref.TYPES, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
-  AudioCore = (function(_super) {
-    __extends(AudioCore, _super);
+  ref = cfg.engine, TYPES = ref.TYPES, EVENTS = ref.EVENTS, STATES = ref.STATES, ERRCODE = ref.ERRCODE;
+  AudioCore = (function(superClass) {
+    extend(AudioCore, superClass);
 
     AudioCore.defaults = {
       confidence: 'maybe',
@@ -1125,7 +1125,7 @@ var __hasProp = {}.hasOwnProperty,
     AudioCore.prototype.engineType = TYPES.AUDIO;
 
     function AudioCore(options) {
-      var audio, k, least, levels, opts, playEmpty, v, _eventHandlers;
+      var _eventHandlers, audio, k, least, levels, opts, playEmpty, v;
       this.opts = $.extend({}, AudioCore.defaults, options);
       this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
       opts = this.opts;
@@ -1161,12 +1161,12 @@ var __hasProp = {}.hasOwnProperty,
         return audio;
       };
       audio.off = function(type, listener) {
-        var listeners, _i, _len;
+        var i, len, listeners;
         if (!type && !listener) {
           for (type in _eventHandlers) {
             listeners = _eventHandlers[type];
-            for (_i = 0, _len = listeners.length; _i < _len; _i++) {
-              listener = listeners[_i];
+            for (i = 0, len = listeners.length; i < len; i++) {
+              listener = listeners[i];
               audio.removeEventListener(type, listener, false);
             }
           }
@@ -1200,10 +1200,10 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._initEvents = function() {
-      var audio, canPlayThrough, errorTimer, progress, progressTimer, self, trigger, _ref1;
+      var audio, canPlayThrough, errorTimer, progress, progressTimer, ref1, self, trigger;
       self = this;
       audio = this.audio, trigger = this.trigger;
-      _ref1 = [null, null, false], errorTimer = _ref1[0], progressTimer = _ref1[1], canPlayThrough = _ref1[2];
+      ref1 = [null, null, false], errorTimer = ref1[0], progressTimer = ref1[1], canPlayThrough = ref1[2];
       this.trigger = function(type, listener) {
         if (self.getUrl() !== self.opts.emptyMP3) {
           return trigger.call(self, type, listener);
@@ -1255,15 +1255,15 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype._needCanPlay = function(fnames) {
-      var audio, name, self, _i, _len, _results;
+      var audio, i, len, name, results, self;
       self = this;
       audio = this.audio;
-      _results = [];
-      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
-        name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], function() {
+      results = [];
+      for (i = 0, len = fnames.length; i < len; i++) {
+        name = fnames[i];
+        results.push(this[name] = utils.wrap(this[name], function() {
           var args, fn, handle, t;
-          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+          fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
           t = null;
           handle = function() {
             clearTimeout(t);
@@ -1291,7 +1291,7 @@ var __hasProp = {}.hasOwnProperty,
           return self;
         }));
       }
-      return _results;
+      return results;
     };
 
     AudioCore.prototype.destroy = function() {
@@ -1355,14 +1355,14 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.getLoadedPercent = function() {
-      var audio, be, bl, buffered, duration, _ref1;
+      var audio, be, bl, buffered, duration, ref1;
       audio = this.audio;
       be = audio.currentTime;
       buffered = audio.buffered;
       if (buffered) {
         bl = buffered.length;
         while (bl--) {
-          if ((buffered.start(bl) <= (_ref1 = audio.currentTime) && _ref1 <= buffered.end(bl))) {
+          if ((buffered.start(bl) <= (ref1 = audio.currentTime) && ref1 <= buffered.end(bl))) {
             be = buffered.end(bl);
             break;
           }
@@ -1374,8 +1374,8 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     AudioCore.prototype.getTotalTime = function() {
-      var bl, buffered, currentTime, duration, _ref1;
-      _ref1 = this.audio, duration = _ref1.duration, buffered = _ref1.buffered, currentTime = _ref1.currentTime;
+      var bl, buffered, currentTime, duration, ref1;
+      ref1 = this.audio, duration = ref1.duration, buffered = ref1.buffered, currentTime = ref1.currentTime;
       duration = ~~duration;
       if (duration === 0 && buffered) {
         bl = buffered.length;
@@ -1641,9 +1641,9 @@ var __hasProp = {}.hasOwnProperty,
     ));
 });
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __slice = [].slice;
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty,
+  slice = [].slice;
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -1654,8 +1654,8 @@ var __hasProp = {}.hasOwnProperty,
     return root._mu.FlashCore = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.EngineCore);
   }
 })(this, function(cfg, utils, Timer, EngineCore) {
-  var ERRCODE, EVENTS, FlashCore, STATES, STATESCODE, timerResolution, _ref;
-  _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES, ERRCODE = _ref.ERRCODE;
+  var ERRCODE, EVENTS, FlashCore, STATES, STATESCODE, ref, timerResolution;
+  ref = cfg.engine, EVENTS = ref.EVENTS, STATES = ref.STATES, ERRCODE = ref.ERRCODE;
   timerResolution = cfg.timerResolution;
   STATESCODE = {
     '1': STATES.CANPLAYTHROUGH,
@@ -1666,8 +1666,8 @@ var __hasProp = {}.hasOwnProperty,
     '6': STATES.STOP,
     '7': STATES.END
   };
-  FlashCore = (function(_super) {
-    __extends(FlashCore, _super);
+  FlashCore = (function(superClass) {
+    extend(FlashCore, superClass);
 
     FlashCore.defaults = {
       expressInstaller: 'expressInstall.swf'
@@ -1766,14 +1766,14 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype._needFlashReady = function(fnames) {
-      var name, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
-        name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], (function(_this) {
+      var i, len, name, results;
+      results = [];
+      for (i = 0, len = fnames.length; i < len; i++) {
+        name = fnames[i];
+        results.push(this[name] = utils.wrap(this[name], (function(_this) {
           return function() {
             var args, fn;
-            fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+            fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
             if (_this._loaded) {
               fn.apply(_this, args);
             } else {
@@ -1783,18 +1783,18 @@ var __hasProp = {}.hasOwnProperty,
           };
         })(this)));
       }
-      return _results;
+      return results;
     };
 
     FlashCore.prototype._unexceptionGet = function(fnames) {
-      var name, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
-        name = fnames[_i];
-        _results.push(this[name] = utils.wrap(this[name], (function(_this) {
+      var i, len, name, results;
+      results = [];
+      for (i = 0, len = fnames.length; i < len; i++) {
+        name = fnames[i];
+        results.push(this[name] = utils.wrap(this[name], (function(_this) {
           return function() {
             var args, fn;
-            fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+            fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
             try {
               return fn.apply(_this, args);
             } catch (_error) {
@@ -1803,7 +1803,7 @@ var __hasProp = {}.hasOwnProperty,
           };
         })(this)));
       }
-      return _results;
+      return results;
     };
 
     FlashCore.prototype._pushQueue = function(fn, args) {
@@ -1811,13 +1811,13 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     FlashCore.prototype._fireQueue = function() {
-      var args, fn, _ref1, _results;
-      _results = [];
+      var args, fn, ref1, results;
+      results = [];
       while (this._queue.length) {
-        _ref1 = this._queue.shift(), fn = _ref1[0], args = _ref1[1];
-        _results.push(fn.apply(this, args));
+        ref1 = this._queue.shift(), fn = ref1[0], args = ref1[1];
+        results.push(fn.apply(this, args));
       }
-      return _results;
+      return results;
     };
 
     FlashCore.prototype.destroy = function() {
@@ -1944,8 +1944,8 @@ var __hasProp = {}.hasOwnProperty,
   return FlashCore;
 });
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -1958,8 +1958,8 @@ var __hasProp = {}.hasOwnProperty,
 })(this, function(cfg, FlashCore) {
   var FlashMP3Core, TYPES;
   TYPES = cfg.engine.TYPES;
-  FlashMP3Core = (function(_super) {
-    __extends(FlashMP3Core, _super);
+  FlashMP3Core = (function(superClass) {
+    extend(FlashMP3Core, superClass);
 
     function FlashMP3Core() {
       return FlashMP3Core.__super__.constructor.apply(this, arguments);
@@ -1981,8 +1981,8 @@ var __hasProp = {}.hasOwnProperty,
   return FlashMP3Core;
 });
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -1995,8 +1995,8 @@ var __hasProp = {}.hasOwnProperty,
 })(this, function(cfg, FlashCore) {
   var FlashMP4Core, TYPES;
   TYPES = cfg.engine.TYPES;
-  FlashMP4Core = (function(_super) {
-    __extends(FlashMP4Core, _super);
+  FlashMP4Core = (function(superClass) {
+    extend(FlashMP4Core, superClass);
 
     function FlashMP4Core() {
       return FlashMP4Core.__super__.constructor.apply(this, arguments);
@@ -2043,8 +2043,8 @@ var __hasProp = {}.hasOwnProperty,
                     );
   }
 })(this, function(cfg, utils, Events, EngineCore, AudioCore, FlashMP3Core, FlashMP4Core) {
-  var EVENTS, Engine, STATES, timerResolution, _ref;
-  _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
+  var EVENTS, Engine, STATES, ref, timerResolution;
+  ref = cfg.engine, EVENTS = ref.EVENTS, STATES = ref.STATES;
   timerResolution = cfg.timerResolution;
   Engine = (function() {
     Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; background: transparent; position: absolute; left: 0; top: 0;"></div>';
@@ -2069,13 +2069,13 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, engine, i, opts, _i, _len, _ref1;
+      var $el, args, constructor, engine, i, j, len, opts, ref1;
       this.engines = [];
       opts = this.opts;
       this.$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
-      _ref1 = opts.engines;
-      for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
-        engine = _ref1[i];
+      ref1 = opts.engines;
+      for (i = j = 0, len = ref1.length; j < len; i = ++j) {
+        engine = ref1[i];
         constructor = engine.constructor;
         args = engine.args || {};
         args.baseDir = opts.baseDir;
@@ -2151,22 +2151,22 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.getSupportedTypes = function() {
-      var engine, types, _i, _len, _ref1;
+      var engine, j, len, ref1, types;
       types = [];
-      _ref1 = this.engines;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        engine = _ref1[_i];
+      ref1 = this.engines;
+      for (j = 0, len = ref1.length; j < len; j++) {
+        engine = ref1[j];
         types = types.concat(engine.getSupportedTypes());
       }
       return types;
     };
 
     Engine.prototype.switchEngineByType = function(type) {
-      var engine, match, _i, _len, _ref1;
+      var engine, j, len, match, ref1;
       match = false;
-      _ref1 = this.engines;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        engine = _ref1[_i];
+      ref1 = this.engines;
+      for (j = 0, len = ref1.length; j < len; j++) {
+        engine = ref1[j];
         if (engine.canPlayType(type)) {
           this.setEngine(engine);
           match = true;
@@ -2184,11 +2184,11 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Engine.prototype.destroy = function() {
-      var engine, _i, _len, _ref1;
+      var engine, j, len, ref1;
       this.reset().off();
-      _ref1 = this.engines;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        engine = _ref1[_i];
+      ref1 = this.engines;
+      for (j = 0, len = ref1.length; j < len; j++) {
+        engine = ref1[j];
         engine.destroy();
       }
       this.engines.length = 0;
@@ -2292,7 +2292,7 @@ var __hasProp = {}.hasOwnProperty,
   return Engine;
 });
 
-var __slice = [].slice;
+var slice = [].slice;
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -2303,8 +2303,8 @@ var __slice = [].slice;
     return root._mu.Player = factory(_mu.cfg, _mu.utils, _mu.Timer, _mu.Events, _mu.Playlist, _mu.Engine);
   }
 })(this, function(cfg, utils, Timer, Events, Playlist, Engine) {
-  var EVENTS, Player, STATES, ctrl, time2str, _ref;
-  _ref = cfg.engine, EVENTS = _ref.EVENTS, STATES = _ref.STATES;
+  var EVENTS, Player, STATES, ctrl, ref, time2str;
+  ref = cfg.engine, EVENTS = ref.EVENTS, STATES = ref.STATES;
   time2str = utils.time2str;
   ctrl = function(fname, auto) {
     var pl, play;
@@ -2897,29 +2897,29 @@ var __slice = [].slice;
     };
 
     Player.prototype._checkFrozen = function(fnames) {
-      var name, self, _i, _len, _results;
+      var i, len, name, results, self;
       self = this;
-      _results = [];
-      for (_i = 0, _len = fnames.length; _i < _len; _i++) {
-        name = fnames[_i];
-        _results.push(self[name] = utils.wrap(self[name], function() {
+      results = [];
+      for (i = 0, len = fnames.length; i < len; i++) {
+        name = fnames[i];
+        results.push(self[name] = utils.wrap(self[name], function() {
           var args, fn;
-          fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+          fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
           if (!self._frozen) {
             fn.apply(self, args);
           }
           return self;
         }));
       }
-      return _results;
+      return results;
     };
 
     Player.prototype._startWaitingTimer = function() {
       var self;
       self = this;
-      this.waitingTimer.clear().after("" + this.opts.maxWaitingTime + " seconds", function() {
-        var _ref1;
-        if ((_ref1 = self.getState()) !== STATES.PAUSE && _ref1 !== STATES.STOP && _ref1 !== STATES.END) {
+      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", function() {
+        var ref1;
+        if ((ref1 = self.getState()) !== STATES.PAUSE && ref1 !== STATES.STOP && ref1 !== STATES.END) {
           return self.engine.trigger(EVENTS.WAITING_TIMEOUT);
         }
       }).start();
