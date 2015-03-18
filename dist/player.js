@@ -2430,7 +2430,7 @@ var slice = [].slice;
       var baseDir, opts;
       this.opts = opts = $.extend({}, Player.defaults, options);
       this.waitingTimer = new Timer(100);
-      this._checkFrozen(['play', 'pause', 'stop', 'setCurrentPosition', 'setVolume', 'setMute', 'setVolume', 'setCur', 'setUrl', 'next', 'prev', 'retry']);
+      this._checkFrozen(['play', 'pause', 'stop', 'setCurrentPosition', 'setVolume', 'setMute', 'setCur', 'setUrl', 'next', 'prev', 'retry']);
       baseDir = opts.baseDir;
       if (baseDir === false) {
         baseDir = '';
