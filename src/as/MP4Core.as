@@ -120,6 +120,7 @@ package {
             ns = new NetStream(nc);
             ns.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
             ns.client = customClient;
+            ns.soundTransform = stf;
 
             _url = url;
             setState(State.PREBUFFER);
