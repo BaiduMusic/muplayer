@@ -11,7 +11,7 @@ package {
         private var nc:NetConnection;
         private var ns:NetStream;
 
-        override public function init():void {
+        override public function init(e:Event = null):void {
             super.init();
             if (ExternalInterface.available) {
                 reset();
@@ -23,7 +23,7 @@ package {
                 ExternalInterface.addCallback('f_stop', f_stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
-                callJS(Consts.SWF_ON_LOAD);
+                callOnLoad();
             }
         }
 

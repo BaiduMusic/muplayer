@@ -34,7 +34,7 @@ class Builder
             self.complie_as()
         .then ->
             self.clean()
-        .done ->
+        .then ->
             log '>> Build done.'.yellow
 
     copy_to_dist: (from, to) ->

@@ -1,5 +1,7 @@
 package {
     import flash.display.Sprite;
+    import flash.display.StageAlign;
+    import flash.display.StageScaleMode;
     import flash.events.*;
     import flash.media.SoundTransform;
     import flash.system.Security;
@@ -35,16 +37,18 @@ package {
         private var _bufferTime:uint = 5000;
 
         public function BaseCore() {
-            function check(e:Event = null):void {
-                if (stage.stageWidth > 0) {
-                    removeEventListener(Event.ENTER_FRAME, check);
-                    init();
-                }
+            // http://www.markledford.com/blog/2008/08/13/why-some-as3-swfs-work-stand-alone-but-fail-to-load-into-other-swfs/
+            if (stage) {
+                init();
+            } else {
+                addEventListener(Event.ADDED_TO_STAGE, init);
             }
-            addEventListener(Event.ENTER_FRAME, check);
         }
 
-        public function init():void {
+        public function init(e:Event = null):void {
+            removeEventListener(Event.ADDED_TO_STAGE, init);
+            stage.align = StageAlign.TOP_LEFT;
+            stage.scaleMode = StageScaleMode.NO_SCALE;
             Security.allowDomain('*');
             Security.allowInsecureDomain('*');
             loadFlashVars(loaderInfo.parameters);
@@ -53,6 +57,18 @@ package {
 
         protected function callJS(fn:String, data:Object = undefined):void {
             Utils.callJS(jsInstance + fn, data);
+        }
+
+        protected function callOnLoad():void {
+            // 借鉴自SoundManager2，防止ActionScript3的TypeError: Error #1009
+            // https://github.com/scottschiller/SoundManager2/blob/master/src/SoundManager2_AS3.as
+            // call after delay, to be safe (ensure callbacks are registered by the time JS is called below)
+            var timer:Timer = new Timer(300);
+            timer.addEventListener(TimerEvent.TIMER, function():void {
+                timer.reset();
+                callJS(Consts.SWF_ON_LOAD);
+            });
+            timer.start();
         }
 
         protected function loadFlashVars(p:Object):void {

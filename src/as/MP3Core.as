@@ -8,11 +8,11 @@ package {
     import flash.net.URLRequest;
 
     public class MP3Core extends BaseCore {
-        private var s:Sound;
-        private var sc:SoundChannel;
+        private var s:Sound = new Sound();
+        private var sc:SoundChannel = new SoundChannel();
         private var isPlaying:Boolean;
 
-        override public function init():void {
+        override public function init(e:Event = null):void {
             super.init();
             if (ExternalInterface.available) {
                 reset();
@@ -22,7 +22,7 @@ package {
                 ExternalInterface.addCallback('f_stop', f_stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
-                callJS(Consts.SWF_ON_LOAD);
+                callOnLoad();
             }
         }
 
