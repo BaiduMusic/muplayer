@@ -148,7 +148,8 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             @
 
         play: ->
-            @flash.f_play()
+            if @getUrl()
+                @flash.f_play()
             @
 
         pause: ->

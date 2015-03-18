@@ -22,6 +22,7 @@ package {
                 ExternalInterface.addCallback('f_stop', f_stop);
                 ExternalInterface.addCallback('getData', getData);
                 ExternalInterface.addCallback('setData', setData);
+                Utils.log('onLoad');
                 callOnLoad();
             }
         }
@@ -88,6 +89,7 @@ package {
         }
 
         override public function f_load(url:String):void {
+            Utils.log('f_load: ' + url);
             f_stop();
 
             try {
@@ -112,6 +114,7 @@ package {
         }
 
         override public function f_play(p:Number = 0):void {
+            Utils.log('f_play');
             super.f_play(p);
 
             if (p === 0 && _pausePosition) {
@@ -124,9 +127,11 @@ package {
                 sc = null;
             }
 
-            sc = s.play(p, 0, stf);
-            sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
-            isPlaying = true;
+            if (_url) {
+                sc = s.play(p, 0, stf);
+                sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+                isPlaying = true;
+            }
         }
 
         override public function f_pause():void {
