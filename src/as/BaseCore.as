@@ -63,7 +63,7 @@ package {
             // 借鉴自SoundManager2，防止ActionScript3的TypeError: Error #1009
             // https://github.com/scottschiller/SoundManager2/blob/master/src/SoundManager2_AS3.as
             // call after delay, to be safe (ensure callbacks are registered by the time JS is called below)
-            var timer:Timer = new Timer(0);
+            var timer:Timer = new Timer(500);
             timer.addEventListener(TimerEvent.TIMER, function():void {
                 timer.reset();
                 callJS(Consts.SWF_ON_LOAD);
