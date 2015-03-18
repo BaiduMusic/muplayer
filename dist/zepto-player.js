@@ -116,15 +116,17 @@
     return root._mu.utils = factory(root._mu.cfg);
   }
 })(this, function(cfg) {
-  var ArrayProto, NumProto, ObjProto, StrProto, extReg, hasOwnProperty, j, len, name, push, ref, toString, utils;
+  var ArrayProto, NumProto, ObjProto, StrProto, baseCreate, executeBound, extReg, hasOwnProperty, j, len, name, nativeCreate, push, ref, slice, toString, utils;
   utils = {};
   StrProto = String.prototype;
   NumProto = Number.prototype;
   ObjProto = Object.prototype;
   ArrayProto = Array.prototype;
   push = ArrayProto.push;
-  hasOwnProperty = ObjProto.hasOwnProperty;
+  slice = ArrayProto.slice;
   toString = ObjProto.toString;
+  hasOwnProperty = ObjProto.hasOwnProperty;
+  nativeCreate = Object.create;
   extReg = /\.(\w+)(\?.*)?$/;
   ref = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'];
   for (j = 0, len = ref.length; j < len; j++) {
@@ -160,6 +162,31 @@
       fixed += '0';
     }
     return fixed;
+  };
+  baseCreate = function(prototype) {
+    var result;
+    if (!$.isPlainObject(prototype)) {
+      return {};
+    }
+    if (nativeCreate) {
+      return nativeCreate(prototype);
+    }
+    Ctor.prototype = prototype;
+    result = new Ctor;
+    Ctor.prototype = null;
+    return result;
+  };
+  executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
+    var result, self;
+    if (!(callingContext instanceof boundFunc)) {
+      return sourceFunc.apply(context, args);
+    }
+    self = baseCreate(sourceFunc.prototype);
+    result = sourceFunc.apply(self, args);
+    if ($.isPlainObject(result)) {
+      return result;
+    }
+    return self;
   };
   $.extend(utils, {
     isBoolean: function(obj) {
@@ -237,13 +264,28 @@
       }
       return o;
     },
-    wrap: function(func, wrapper) {
-      return function() {
-        var args;
-        args = [func];
-        push.apply(args, arguments);
-        return wrapper.apply(this, args);
+    partial: function(func) {
+      var bound, boundArgs;
+      boundArgs = slice.call(arguments, 1);
+      bound = function() {
+        var args, i, length, position;
+        position = 0;
+        length = boundArgs.length;
+        args = Array(length);
+        i = 0;
+        while (i < length) {
+          args[i] = boundArgs[i] === utils ? arguments[position++] : boundArgs[i];
+          i++;
+        }
+        while (position < arguments.length) {
+          args.push(arguments[position++]);
+        }
+        return executeBound(func, bound, this, this, args);
       };
+      return bound;
+    },
+    wrap: function(func, wrapper) {
+      return utils.partial(wrapper, func);
     },
     toAbsoluteUrl: function(url) {
       var div;

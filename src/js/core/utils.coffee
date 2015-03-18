@@ -7,8 +7,11 @@ do (root = @, factory = (cfg) ->
     ArrayProto = Array.prototype
 
     push = ArrayProto.push
-    hasOwnProperty = ObjProto.hasOwnProperty
+    slice = ArrayProto.slice
     toString = ObjProto.toString
+    hasOwnProperty = ObjProto.hasOwnProperty
+
+    nativeCreate = Object.create
 
     extReg = /\.(\w+)(\?.*)?$/
 
@@ -36,6 +39,22 @@ do (root = @, factory = (cfg) ->
         while padding--
             fixed += '0'
         fixed
+
+    baseCreate = (prototype) ->
+        return {} if not $.isPlainObject(prototype)
+        return nativeCreate(prototype) if nativeCreate
+        Ctor.prototype = prototype
+        result = new Ctor
+        Ctor.prototype = null
+        result
+
+    executeBound = (sourceFunc, boundFunc, context, callingContext, args) ->
+        if not (callingContext instanceof boundFunc)
+            return sourceFunc.apply(context, args)
+        self = baseCreate(sourceFunc.prototype)
+        result = sourceFunc.apply(self, args)
+        return result if $.isPlainObject(result)
+        self
 
     $.extend utils, {
         isBoolean: (obj) ->
@@ -105,12 +124,24 @@ do (root = @, factory = (cfg) ->
                     o = o[arg]
             o
 
+        partial: (func) ->
+            boundArgs = slice.call(arguments, 1)
+            bound = ->
+                position = 0
+                length = boundArgs.length
+                args = Array(length)
+                i = 0
+                while i < length
+                    args[i] = if boundArgs[i] is utils then arguments[position++] else boundArgs[i]
+                    i++
+                while position < arguments.length
+                    args.push arguments[position++]
+                executeBound(func, bound, this, this, args)
+            bound
+
         # 参考underscore
         wrap: (func, wrapper) ->
-            ->
-                args = [func]
-                push.apply(args, arguments)
-                wrapper.apply(@, args)
+            utils.partial(wrapper, func)
 
         # 获得资源的绝对路径
         # 参考: http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
