@@ -45,7 +45,7 @@ do (root = @, factory = (
                 catch
                     throw new Error "Missing constructor: #{String(engine.constructor)}"
 
-                if engine._test()
+                if engine._test and engine._test()
                     @engines.push(engine)
 
             if @engines.length
