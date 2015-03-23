@@ -2132,7 +2132,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
         } catch (_error) {
           throw new Error("Missing constructor: " + (String(engine.constructor)));
         }
-        if (engine._test()) {
+        if (engine._test && engine._test()) {
           this.engines.push(engine);
         }
       }
