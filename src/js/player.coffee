@@ -151,17 +151,10 @@ do (root = this, factory = (
             @engine = engine
             @engine.on(EVENTS.STATECHANGE, (e) ->
                 st = e.newState
-
-                if st not in [
-                    STATES.PREBUFFER, STATES.BUFFERING
-                ]
-                    self.waitingTimer.clear()
-
                 self.trigger('player:statechange', e)
                 self.trigger(st)
-
                 if st is STATES.END
-                    self.next(true)
+                    self._clearWaitingTimer().next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 return unless pos
                 self.trigger('timeupdate', pos)
@@ -184,7 +177,7 @@ do (root = this, factory = (
                 url = @getUrl()
                 ms = @engine.getCurrentPosition()
                 @pause().setUrl(url).engine.setCurrentPosition(ms)
-                @trigger('player:retry', @_retryTimes)
+                @_startWaitingTimer().trigger('player:retry', @_retryTimes)
             else
                 @trigger('player:retry:max')
             @
@@ -201,6 +194,7 @@ do (root = this, factory = (
 
             play = ->
                 if self.getUrl() and not self._frozen
+                    self._startWaitingTimer()
                     engine.play()
                     if $.isNumeric startTime
                         engine.setCurrentPosition(startTime)
@@ -234,7 +228,7 @@ do (root = this, factory = (
         ###
         pause: ->
             @engine.pause()
-            @trigger('player:pause')
+            @_clearWaitingTimer().trigger('player:pause')
             @
 
         ###*
@@ -243,7 +237,7 @@ do (root = this, factory = (
         ###
         stop: ->
             @engine.stop()
-            @trigger('player:stop')
+            @_clearWaitingTimer().trigger('player:stop')
             @
 
         ###*
@@ -380,8 +374,7 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @_startWaitingTimer()
-                .stop().engine.setUrl(url)
+            @stop().engine.setUrl(url)
             @trigger('player:setUrl', url)
             @
 
@@ -482,13 +475,13 @@ do (root = this, factory = (
                     self
 
         _startWaitingTimer: ->
-            self = @
-            @waitingTimer.clear().after("#{@opts.maxWaitingTime} seconds", ->
-                if self.getState() not in [
-                    STATES.PAUSE, STATES.STOP, STATES.END
-                ]
-                    self.engine.trigger(EVENTS.WAITING_TIMEOUT)
+            @waitingTimer.clear().after("#{@opts.maxWaitingTime} seconds", =>
+                @engine.trigger(EVENTS.WAITING_TIMEOUT)
             ).start()
+            @
+
+        _clearWaitingTimer: ->
+            @waitingTimer.clear()
             @
 
     Events.mixTo(Player)
