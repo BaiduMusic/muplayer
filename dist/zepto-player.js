@@ -1931,11 +1931,13 @@ var slice = [].slice;
           return self._clearWaitingTimer().next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
+        var st;
         if (!pos) {
           return;
         }
+        st = self.getState();
         self.trigger('timeupdate', pos);
-        if (self.getUrl()) {
+        if (self.getUrl() && (st === STATES.PLAYING || st === STATES.PREBUFFER || st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH)) {
           return self._startWaitingTimer();
         }
       }).on(EVENTS.PROGRESS, function(progress) {
@@ -1964,6 +1966,7 @@ var slice = [].slice;
         this.pause().setUrl(url).engine.setCurrentPosition(ms);
         this._startWaitingTimer().trigger('player:retry', this._retryTimes);
       } else {
+        this._retryTimes = 0;
         this.trigger('player:retry:max');
       }
       return this;
