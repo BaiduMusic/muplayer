@@ -157,8 +157,12 @@ do (root = this, factory = (
                     self._clearWaitingTimer().next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 return unless pos
+                st = self.getState()
                 self.trigger('timeupdate', pos)
-                if self.getUrl()
+                if self.getUrl() and st in [
+                    STATES.PLAYING, STATES.PREBUFFER,
+                    STATES.BUFFERING, STATES.CANPLAYTHROUGH
+                ]
                     self._startWaitingTimer()
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
@@ -179,6 +183,7 @@ do (root = this, factory = (
                 @pause().setUrl(url).engine.setCurrentPosition(ms)
                 @_startWaitingTimer().trigger('player:retry', @_retryTimes)
             else
+                @_retryTimes = 0
                 @trigger('player:retry:max')
             @
 
