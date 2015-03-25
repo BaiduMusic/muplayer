@@ -149,7 +149,12 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
 
         play: ->
             if @getUrl()
-                @flash.f_play()
+                try
+                    @flash.f_play()
+                catch err
+                    # 处理不能播的音频资源
+                    # 如: http://content.12530.com/upload/rings3/20090604/600646221143600902000006230511/000044572530_000019.mp3
+                    @trigger EVENTS.ERROR, err
             @
 
         pause: ->

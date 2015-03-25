@@ -1925,13 +1925,10 @@ var slice = [].slice;
       return this.engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
         st = e.newState;
-        if (st !== STATES.PREBUFFER && st !== STATES.BUFFERING) {
-          self.waitingTimer.clear();
-        }
         self.trigger('player:statechange', e);
         self.trigger(st);
         if (st === STATES.END) {
-          return self.next(true);
+          return self._clearWaitingTimer().next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
         if (!pos) {
@@ -1965,7 +1962,7 @@ var slice = [].slice;
         url = this.getUrl();
         ms = this.engine.getCurrentPosition();
         this.pause().setUrl(url).engine.setCurrentPosition(ms);
-        this.trigger('player:retry', this._retryTimes);
+        this._startWaitingTimer().trigger('player:retry', this._retryTimes);
       } else {
         this.trigger('player:retry:max');
       }
@@ -1986,6 +1983,7 @@ var slice = [].slice;
       def = $.Deferred();
       play = function() {
         if (self.getUrl() && !self._frozen) {
+          self._startWaitingTimer();
           engine.play();
           if ($.isNumeric(startTime)) {
             engine.setCurrentPosition(startTime);
@@ -2017,7 +2015,7 @@ var slice = [].slice;
 
     Player.prototype.pause = function() {
       this.engine.pause();
-      this.trigger('player:pause');
+      this._clearWaitingTimer().trigger('player:pause');
       return this;
     };
 
@@ -2029,7 +2027,7 @@ var slice = [].slice;
 
     Player.prototype.stop = function() {
       this.engine.stop();
-      this.trigger('player:stop');
+      this._clearWaitingTimer().trigger('player:stop');
       return this;
     };
 
@@ -2228,7 +2226,7 @@ var slice = [].slice;
       if (!url) {
         return this;
       }
-      this._startWaitingTimer().stop().engine.setUrl(url);
+      this.stop().engine.setUrl(url);
       this.trigger('player:setUrl', url);
       return this;
     };
@@ -2373,14 +2371,16 @@ var slice = [].slice;
     };
 
     Player.prototype._startWaitingTimer = function() {
-      var self;
-      self = this;
-      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", function() {
-        var ref1;
-        if ((ref1 = self.getState()) !== STATES.PAUSE && ref1 !== STATES.STOP && ref1 !== STATES.END) {
-          return self.engine.trigger(EVENTS.WAITING_TIMEOUT);
-        }
-      }).start();
+      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", (function(_this) {
+        return function() {
+          return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
+        };
+      })(this)).start();
+      return this;
+    };
+
+    Player.prototype._clearWaitingTimer = function() {
+      this.waitingTimer.clear();
       return this;
     };
 
