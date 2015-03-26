@@ -14,13 +14,13 @@ p = new _mu.Player({
     baseDir: '/base/dist'
     engines: [
         {
-            constructor: 'FlashMP3Core'
+            type: 'FlashMP3Core'
         },
         {
-            constructor: 'FlashMP4Core'
+            type: 'FlashMP4Core'
         },
         {
-            constructor: 'AudioCore'
+            type: 'AudioCore'
         }
     ]
 })

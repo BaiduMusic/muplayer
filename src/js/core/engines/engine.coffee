@@ -13,14 +13,14 @@ do (root = @, factory = (
             engines: `[
                 //>>excludeStart("FlashCoreExclude", pragmas.FlashCoreExclude);
                 {
-                    constructor: FlashMP3Core
+                    type: FlashMP3Core
                 },
                 {
-                    constructor: FlashMP4Core
+                    type: FlashMP4Core
                 },
                 //>>excludeEnd("FlashCoreExclude");
                 {
-                    constructor: AudioCore
+                    type: AudioCore
                 }
             ]`
 
@@ -34,16 +34,16 @@ do (root = @, factory = (
             @$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
 
             for engine, i in opts.engines
-                constructor = engine.constructor
-                args = engine.args or {}
+                { type, args } = engine
+                args = args or {}
                 args.baseDir = opts.baseDir
                 args.$el = $el
 
                 try
-                    constructor = eval(constructor) unless $.isFunction(constructor)
-                    engine = new constructor(args)
+                    type = eval(type) unless $.isFunction(type)
+                    engine = new type(args)
                 catch
-                    throw new Error "Missing constructor: #{String(engine.constructor)}"
+                    throw new Error "Missing engine type: #{String(engine.type)}"
 
                 if engine._test and engine._test()
                     @engines.push(engine)
