@@ -1516,7 +1516,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     Engine.prototype.defaults = {
       engines: [
                                 {
-                    constructor: AudioCore
+                    type: AudioCore
                 }
             ]
     };
@@ -1527,24 +1527,24 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, constructor, engine, i, j, len, opts, ref1;
+      var $el, args, engine, i, j, len, opts, ref1, type;
       this.engines = [];
       opts = this.opts;
       this.$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
       ref1 = opts.engines;
       for (i = j = 0, len = ref1.length; j < len; i = ++j) {
         engine = ref1[i];
-        constructor = engine.constructor;
-        args = engine.args || {};
+        type = engine.type, args = engine.args;
+        args = args || {};
         args.baseDir = opts.baseDir;
         args.$el = $el;
         try {
-          if (!$.isFunction(constructor)) {
-            constructor = eval(constructor);
+          if (!$.isFunction(type)) {
+            type = eval(type);
           }
-          engine = new constructor(args);
+          engine = new type(args);
         } catch (_error) {
-          throw new Error("Missing constructor: " + (String(engine.constructor)));
+          throw new Error("Missing engine type: " + (String(engine.type)));
         }
         if (engine._test && engine._test()) {
           this.engines.push(engine);
@@ -1867,17 +1867,17 @@ var slice = [].slice;
      *    <td>初始化Engine，根据传入的engines来指定具体使用FlashMP3Core还是AudioCore来接管播放，当然也可以传入内核列表，Engine会根据内核所支持的音频格式做自适应。这里只看一下engines参数的可能值（其他参数一般无需配置，如有需要请查看engine.coffee的源码）：
      *    <pre>
      *    [{<br>
-     *    <span class="ts"></span>constructor: 'FlashMP3Core',<br>
+     *    <span class="ts"></span>type: 'FlashMP3Core',<br>
      *    <span class="ts"></span>args: { // 初始化FlashMP3Core的参数<br>
      *    <span class="ts2"></span>swf: 'muplayer_mp3.swf' // 对应的swf文件路径<br>
      *    <span class="ts"></span>}<br>
      *    }, {<br>
-     *    <span class="ts"></span>constructor: 'FlashMP4Core',<br>
+     *    <span class="ts"></span>type: 'FlashMP4Core',<br>
      *    <span class="ts"></span>args: { // 初始化FlashMP4Core的参数, FlashMP4Core支持m4a格式的音频文件<br>
      *    <span class="ts2"></span>swf: 'muplayer_mp4.swf' // 对应的swf文件路径<br>
      *    <span class="ts"></span>}<br>
      *    }, {<br>
-     *    <span class="ts"></span>constructor: 'AudioCore'<br>
+     *    <span class="ts"></span>type: 'AudioCore'<br>
      *    }]
      *    </pre>
      *    </td>
