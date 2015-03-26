@@ -2,7 +2,7 @@
 # EngineCore是FlashMP3Core, AudioCore等播放内核的基类
 ##
 do (root = @, factory = (cfg, utils, Events) ->
-    {EVENTS, STATES} = cfg.engine
+    { EVENTS, STATES } = cfg.engine
     availableStates = (v for k, v of STATES)
 
     class EngineCore
