@@ -4,6 +4,7 @@
 *.swo
 .idea
 .sass-cache
+.coffee
 dist/*.swf.b
 dist/*.swf.cache
 
