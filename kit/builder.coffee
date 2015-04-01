@@ -31,8 +31,6 @@ module.exports = ->
         complie_as()
     .then ->
         clean()
-    .then ->
-        log '>> Build done.'.yellow
 
 copy_to_dist = (from, to) ->
     to = join dist_path, to
@@ -62,23 +60,11 @@ update_build_dir = ->
         ])
 
 compile_all_coffee = ->
-    coffeescript = require 'coffee-script'
+    kit.require 'drives'
 
-    glob join(build_temp_path, '**', '*.coffee')
-    .then (coffee_list) ->
-        Promise.all coffee_list.map (path) ->
-            js_path = path.replace(/(\.coffee)$/, '') + '.js'
-
-            kit.readFile(path, 'utf8').then (str) ->
-                try
-                    return coffeescript.compile(str, { bare: true })
-                catch e
-                    log ">> Error: #{path} \n#{e}".red
-            .then (code) ->
-                kit.outputFile(js_path, code).then ->
-                    remove(path)
-                .then ->
-                    log '>> Compiled: '.cyan + path
+    kit.warp join(build_temp_path, '**', '*.coffee')
+    .load kit.drives.auto 'compile'
+    .run build_temp_path
 
 combine_js = (options = {}) ->
     log '>> Compile client js with requirejs ...'.cyan
@@ -175,7 +161,7 @@ compress_js = (files = []) ->
 add_license = (match = '*.js') ->
     cfg = require '../bower'
     info = """
-        // license
+        // @license
         // Baidu Music Player: #{cfg.version}
         // -------------------------
         // (c) 2014 FE Team of Baidu Music

@@ -1,4 +1,4 @@
-// license
+// @license
 // Baidu Music Player: 0.9.2
 // -------------------------
 // (c) 2014 FE Team of Baidu Music
@@ -63,11 +63,11 @@
     };
 
     Lrc.prototype.render = function() {
-      var $el, $ul, item, itemCls, itemTmpl, scrollingCls, _i, _len, _ref, _ref1;
-      $el = this.$el, $ul = this.$ul, (_ref = this.opts, itemTmpl = _ref.itemTmpl, scrollingCls = _ref.scrollingCls, itemCls = _ref.itemCls);
-      _ref1 = this._parsed;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        item = _ref1[_i];
+      var $el, $ul, i, item, itemCls, itemTmpl, len, ref, ref1, scrollingCls;
+      $el = this.$el, $ul = this.$ul, (ref = this.opts, itemTmpl = ref.itemTmpl, scrollingCls = ref.scrollingCls, itemCls = ref.itemCls);
+      ref1 = this._parsed;
+      for (i = 0, len = ref1.length; i < len; i++) {
+        item = ref1[i];
         $ul.append(itemTmpl({
           cls: itemsCls,
           time: item[0],
@@ -84,12 +84,12 @@
     };
 
     Lrc.prototype.scrollTo = _.throttle(function(ms) {
-      var $el, $item, duration, line, offset, opts, scrollingCls, top, _ref;
+      var $el, $item, duration, line, offset, opts, ref, scrollingCls, top;
       ms = ~~ms;
       if (!ms || this.getState() !== 'lrc') {
         return;
       }
-      $el = this.$el, $item = this.$item, opts = this.opts, (_ref = this.opts, scrollingCls = _ref.scrollingCls, offset = _ref.offset, duration = _ref.duration);
+      $el = this.$el, $item = this.$item, opts = this.opts, (ref = this.opts, scrollingCls = ref.scrollingCls, offset = ref.offset, duration = ref.duration);
       if ($el.hasClass(scrollingCls)) {
         return;
       }
@@ -124,21 +124,21 @@
     };
 
     Lrc.prototype.parseLrc = function(lrc) {
-      var item, items, line, match, offset, r, time, txt, _i, _j, _len, _len1, _ref;
+      var i, item, items, j, len, len1, line, match, offset, r, ref, time, txt;
       r = [];
       offset = 0;
       if (match = lrc.match(offsetReg)) {
         offset = ~~match[0].slice(8);
       }
-      _ref = lrc.split(splitReg);
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        line = _ref[_i];
+      ref = lrc.split(splitReg);
+      for (i = 0, len = ref.length; i < len; i++) {
+        line = ref[i];
         items = line.match(timeReg);
         if ($.isArray(items)) {
           txt = $.trim(line.replace(items.join(''), ''));
         }
-        for (_j = 0, _len1 = items.length; _j < _len1; _j++) {
-          item = items[_j];
+        for (j = 0, len1 = items.length; j < len1; j++) {
+          item = items[j];
           time = time2ms(item.slice(1, -1)) + offset;
           r.push([time, txt]);
         }
@@ -154,11 +154,11 @@
     };
 
     Lrc.prototype.parseTxt = function(txt) {
-      var line, lines, r, _i, _len;
+      var i, len, line, lines, r;
       r = [];
       lines = txt.replace(txtReg, '').split(splitReg);
-      for (_i = 0, _len = lines.length; _i < _len; _i++) {
-        line = lines[_i];
+      for (i = 0, len = lines.length; i < len; i++) {
+        line = lines[i];
         line = $.trim(line);
         if (line) {
           r.push([-1, line]);

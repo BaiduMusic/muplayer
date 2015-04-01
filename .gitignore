@@ -5,6 +5,7 @@
 .idea
 .sass-cache
 .coffee
+.nokit
 dist/*.swf.b
 dist/*.swf.cache
 

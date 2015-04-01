@@ -1,4 +1,4 @@
-// license
+// @license
 // Baidu Music Player: 0.9.2
 // -------------------------
 // (c) 2014 FE Team of Baidu Music
@@ -148,8 +148,8 @@
   })();
 });
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 (function(root, factory) {
   if (typeof exports === 'object') {
@@ -162,8 +162,8 @@ var __hasProp = {}.hasOwnProperty,
 })(this, function(AudioNode) {
   var Equalizer, mathPow;
   mathPow = Math.pow;
-  return Equalizer = (function(_super) {
-    __extends(Equalizer, _super);
+  return Equalizer = (function(superClass) {
+    extend(Equalizer, superClass);
 
     Equalizer.prototype.defaults = {
       frequencies: [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -184,7 +184,7 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     function Equalizer(options) {
-      var context, filter, filterOpts, filters, filtersMap, frequency, lastFilter, opts, _i, _len, _ref;
+      var context, filter, filterOpts, filters, filtersMap, frequency, j, lastFilter, len, opts, ref;
       Equalizer.__super__.constructor.call(this, options);
       opts = this.opts;
       context = this.context;
@@ -193,9 +193,9 @@ var __hasProp = {}.hasOwnProperty,
       lastFilter = null;
       filterOpts = opts.filter;
       this.preGain = context.createGain();
-      _ref = opts.frequencies;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        frequency = _ref[_i];
+      ref = opts.frequencies;
+      for (j = 0, len = ref.length; j < len; j++) {
+        frequency = ref[j];
         filter = context.createBiquadFilter();
         filter.type = filter.PEAKING || 'peaking';
         filter.Q.value = filterOpts.Q;
@@ -217,12 +217,12 @@ var __hasProp = {}.hasOwnProperty,
     }
 
     Equalizer.prototype.setEffect = function(type, callback) {
-      var effect, effects, filter, i, _i, _len, _ref;
+      var effect, effects, filter, i, j, len, ref;
       effects = this.opts.effects;
       effect = effects[type] || effects['reset'];
-      _ref = this.filters;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        filter = _ref[i];
+      ref = this.filters;
+      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+        filter = ref[i];
         filter.gain.value = effect[i];
       }
       return callback && callback(effect);
