@@ -21,42 +21,38 @@ bower install muplayer
 
 ## 为项目贡献代码
 
- 1. 签出项目
+ 0. 签出项目
  ```
  git clone https://github.com/Baidu-Music-FE/muplayer.git
 cd muplayer
  ```
- 2. 如果你没有全局安装 [coffee](http://coffeescript.org/)，请先安装它
- ```
- npm install -g coffee-script
- ```
- 3. 安装依赖
+ 0. 安装依赖
  ```
  npm install
  ```
  这个步骤会提示你是否安装 Flex SDK，如果选择 `no`， 项目会利用现有的编译好的 `swf` 文件。如果你希望更改 action script 源码并编译，请选择 `yes`，注意这个 SDK 可能会需要下载 400MB 的依赖。如果想自动选择默认项安装（安静模式），请运行 `quiet=true npm install`
 
- 4. 编译
+ 0. 编译
  ```
- cake build
+ npm run no -- build
  ```
- 编译好的文件会保存到 `dist` 文件夹。
+ 编译好的文件会保存到 `dist` 文件夹。如果你全局安装了 [nokit](https://github.com/ysmood/nokit)，则可以直接运行 `no build`。
 
 
 ## 修订文档
 
  1. 编译文档
   ```
-  cake doc
+  npm run no -- doc
   ```
 
  2. 预览文档需要启动本地服务器，启动后访问 http://127.0.0.1:8077
   ```
-  cake server
+  npm run no -- server
   ```
   指定端口号
   ```
-  cake -p 8080 server
+  npm run no -- server -p 8080
   ```
 
 ## 使用案例
