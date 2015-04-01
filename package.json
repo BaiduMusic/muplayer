@@ -7,6 +7,7 @@
     "url": "https://github.com/Baidu-Music-FE/muplayer.git"
   },
   "scripts": {
+    "no": "no",
     "install": "bower install",
     "test": "cake --cli test"
   },
@@ -17,7 +18,6 @@
     "coffeelint": "1.9.2",
     "doxx": "0.7.4",
     "flex-sdk": "4.5.0",
-    "glob-expand": "0.1.0",
     "karma": "0.12.31",
     "karma-chrome-launcher": "0.1.7",
     "karma-cli": "0.0.4",

@@ -37,7 +37,7 @@ suite 'player', ->
             t = 0
 
             p.on 'timeupdate', (pos) ->
-                t++;
+                t++
                 if t is 1
                     lastPos = pos
                 if t is 2
