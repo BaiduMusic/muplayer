@@ -12,8 +12,6 @@ module.exports = ->
         if e.message is 'canceled'
             log '\n>> Canceled.'.red
             process.exit 0
-    .then ->
-        log '>> Setup done.'.yellow
 
 build_zepto = ->
     zepto_path = join 'bower_components', 'zeptojs'

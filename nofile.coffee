@@ -69,8 +69,6 @@ module.exports = (task, option) ->
                         kit.log '>> Link: '.cyan + p + ' -> '.cyan + to
                         kit.symlink '../' + p, to
             ]
-        .then ->
-            kit.log '>> Build doc done.'.yellow
 
     task 'server', 'Run dev server.', (opts) ->
         { service, renderer } = nobone()
@@ -103,18 +101,10 @@ module.exports = (task, option) ->
             spawn 'karma', ['start', 'karma.conf.js']
 
     task 'coffeelint', 'Lint all coffee files.', (opts) ->
-        lint = (path) ->
-            args = ['-f', 'coffeelint.json', path]
-            if opts.quite
-                args.unshift('-q')
-            spawn 'coffeelint', args
+        kit.require 'drives'
 
-        kit.glob [
-            '**/*.coffee',
-            '!lib/**/*.coffee',
-            '!node_modules/**/*.coffee',
-            '!bower_components/**/*.coffee'
-            '!doc/bower_components/**/*.coffee'
-        ]
-        .then (file_list) ->
-            Promise.map file_list, lint
+        kit.warp ['{src,kit,test}/**/*.coffee', '*.coffee']
+        .load kit.drives.auto 'lint'
+        .load (f) ->
+            f.set null
+        .run()
