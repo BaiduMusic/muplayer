@@ -9,7 +9,7 @@
   "scripts": {
     "no": "no",
     "install": "bower install",
-    "test": "cake --cli test"
+    "test": "no --cli test"
   },
   "license": "BSD",
   "devDependencies": {
