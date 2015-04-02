@@ -2840,6 +2840,16 @@ var slice = [].slice;
 
 
     /**
+     * 根据后缀名获取当前播放资源的类型。
+     * @return {String}
+     */
+
+    Player.prototype.getExt = function() {
+      return utils.getExt(this.getUrl());
+    };
+
+
+    /**
      * 设置播放器音量。
      * @param {Number} volume 合法范围：0 - 100，0是静音。注意volume与mute不会相互影响，即便setVolume(0)，getMute()的结果依然维持不变。反之亦然。
      */
