@@ -2577,11 +2577,13 @@ var slice = [].slice;
       engine = this.engine;
       def = $.Deferred();
       play = function() {
-        if (self.getUrl() && !self._frozen) {
+        if (!self._frozen) {
           self._startWaitingTimer();
-          engine.play();
-          if ($.isNumeric(startTime)) {
-            engine.setCurrentPosition(startTime);
+          if (self.getUrl()) {
+            engine.play();
+            if ($.isNumeric(startTime)) {
+              engine.setCurrentPosition(startTime);
+            }
           }
         }
         return def.resolve();

@@ -199,11 +199,12 @@ do (root = this, factory = (
             def = $.Deferred()
 
             play = ->
-                if self.getUrl() and not self._frozen
+                unless self._frozen
                     self._startWaitingTimer()
-                    engine.play()
-                    if $.isNumeric startTime
-                        engine.setCurrentPosition(startTime)
+                    if self.getUrl()
+                        engine.play()
+                        if $.isNumeric startTime
+                            engine.setCurrentPosition(startTime)
                 def.resolve()
 
             st = @getState()
