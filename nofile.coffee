@@ -8,8 +8,7 @@ kit.require 'colors'
 
 module.exports = (task, option) ->
 
-    option '-p, --port <8077>', 'Which port to listen to. Example: cake -p 8077 server', 8077
-    option '-q, --quite', 'Running lint script at quite mode results in only printing errors. Example: cake -q coffeelint'
+    option '-p, --port <8077>', 'Which port to listen to. Example: no -p 8077 server', 8077
     option '-r, --rebuild', 'Wheather to rebuild src and doc files before run dev server?'
     option '-c, --cli', 'Wheather to run test cases in CLI?'
 
