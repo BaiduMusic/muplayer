@@ -480,6 +480,11 @@ do (root = this, factory = (
             @_frozen = !!frozen
             @
 
+        cheatPlayer: ->
+            if @getEngineType() is 'AudioCore'
+                @player.engine.curEngine._playEmpty()
+            @
+
         _checkFrozen: (fnames) ->
             self = @
             for name in fnames
