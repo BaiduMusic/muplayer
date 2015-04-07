@@ -1135,7 +1135,8 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     })(this, this.document);
 });
 
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
@@ -1167,7 +1168,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     AudioCore.prototype.engineType = TYPES.AUDIO;
 
     function AudioCore(options) {
-      var _eventHandlers, audio, k, least, levels, opts, playEmpty, v;
+      this._playEmpty = bind(this._playEmpty, this);
+      var _eventHandlers, audio, k, least, levels, opts, v;
       this.opts = $.extend({}, AudioCore.defaults, options);
       this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
       opts = this.opts;
@@ -1222,15 +1224,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       this.setState(STATES.STOP);
       this._initEvents();
       if (opts.needPlayEmpty) {
-        playEmpty = (function(_this) {
-          return function() {
-            if (!_this.getUrl()) {
-              _this.setUrl(opts.emptyMP3).play();
-            }
-            return win.removeEventListener('touchstart', playEmpty, false);
-          };
-        })(this);
-        win.addEventListener('touchstart', playEmpty, false);
+        win.addEventListener('touchstart', this._playEmpty, false);
       }
     }
 
@@ -1239,6 +1233,13 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
         return false;
       }
       return true;
+    };
+
+    AudioCore.prototype._playEmpty = function() {
+      if (!this.getUrl()) {
+        this.setUrl(opts.emptyMP3).play();
+      }
+      return win.removeEventListener('touchstart', this._playEmpty, false);
     };
 
     AudioCore.prototype._initEvents = function() {
@@ -2956,6 +2957,13 @@ var slice = [].slice;
 
     Player.prototype.setFrozen = function(frozen) {
       this._frozen = !!frozen;
+      return this;
+    };
+
+    Player.prototype.cheatPlayer = function() {
+      if (this.getEngineType() === 'AudioCore') {
+        this.player.engine.curEngine._playEmpty();
+      }
       return this;
     };
 

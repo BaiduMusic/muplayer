@@ -64,17 +64,18 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             if opts.needPlayEmpty
-                playEmpty = =>
-                    # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
-                    unless @getUrl()
-                        @setUrl(opts.emptyMP3).play()
-                    win.removeEventListener('touchstart', playEmpty, false)
-                win.addEventListener('touchstart', playEmpty, false)
+                win.addEventListener('touchstart', @_playEmpty, false)
 
         _test: ->
             if not Modernizr.audio or not @_supportedTypes.length
                 return false
             true
+
+        _playEmpty: =>
+            # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
+            unless @getUrl()
+                @setUrl(opts.emptyMP3).play()
+            win.removeEventListener('touchstart', @_playEmpty, false)
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
         _initEvents: ->
