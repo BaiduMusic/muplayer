@@ -152,15 +152,15 @@ do (root = @, factory = (
             @
 
         pause: ->
-            @curEngine.pause()
             @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
             @setState(STATES.PAUSE)
+            @curEngine.pause()
             @
 
         stop: ->
-            @curEngine.stop()
             @trigger(EVENTS.POSITIONCHANGE, 0)
             @setState(STATES.STOP)
+            @curEngine.stop()
             @
 
         setState: (st) ->
