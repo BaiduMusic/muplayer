@@ -49,23 +49,7 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
-            var st:int = getState(),
-                pos:uint = sc.position;
-
-            // 页面因网速较慢导致缓冲不够播放停止的情况
-            if (st === State.PLAYING && _position === pos) {
-                setState(State.PREBUFFER);
-            } else if (st !== State.PLAYING && _position < pos) {
-                setState(st === State.PREBUFFER && State.BUFFERING || State.PLAYING);
-            }
-
-            _position = sc.position;
-
-            if (_position > _length) {
-                _length = _position;
-            }
-
-            _positionPct = Math.round(100 * _position / _length) / 100;
+            updatePostion(sc.position);
         }
 
         override public function setVolume(v:uint):Boolean {
