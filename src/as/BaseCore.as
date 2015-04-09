@@ -36,6 +36,24 @@ package {
         // 默认值为1000毫秒。
         private var _bufferTime:uint = 5000;
 
+        protected function updatePostion(pos:uint):void {
+            var st:int = getState();
+
+            // 页面因网速较慢导致缓冲不够播放停止的情况
+            if (st === State.PLAYING && _position === pos) {
+                setState(State.PREBUFFER);
+            } else if (st !== State.PLAYING && _position < pos) {
+                setState(st === State.PREBUFFER && State.BUFFERING || State.PLAYING);
+            }
+
+            _position = pos;
+
+            if (_position > _length) {
+                _length = _position;
+            }
+            _positionPct = Math.round(100 * _position / _length) / 100;
+        }
+
         public function BaseCore() {
             // http://www.markledford.com/blog/2008/08/13/why-some-as3-swfs-work-stand-alone-but-fail-to-load-into-other-swfs/
             if (stage) {

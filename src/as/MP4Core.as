@@ -78,15 +78,8 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
-            if (_state === State.BUFFERING) {
-                onProgress();
-            }
-
-            _position = ns.time * 1000;
-            if (_position > _length) {
-                _length = _position;
-            }
-            _positionPct = Math.round(100 * _position / _length) / 100;
+            updatePostion(ns.time * 1000);
+            onProgress();
         }
 
         override public function setVolume(v:uint):Boolean {
