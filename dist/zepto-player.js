@@ -2370,7 +2370,7 @@ var slice = [].slice;
 
     Player.prototype.cheatPlayer = function() {
       if (this.getEngineType() === 'AudioCore') {
-        this.player.engine.curEngine._playEmpty();
+        this.engine.curEngine._playEmpty();
       }
       return this;
     };

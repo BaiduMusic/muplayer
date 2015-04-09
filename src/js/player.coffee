@@ -482,7 +482,7 @@ do (root = this, factory = (
 
         cheatPlayer: ->
             if @getEngineType() is 'AudioCore'
-                @player.engine.curEngine._playEmpty()
+                @engine.curEngine._playEmpty()
             @
 
         _checkFrozen: (fnames) ->

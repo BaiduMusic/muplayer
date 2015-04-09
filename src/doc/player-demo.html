@@ -56,7 +56,13 @@ require([
     'muplayer/player'
 ], function(Player) {
     var player = new Player({
-            baseDir: 'dist'
+            baseDir: 'dist',
+            engines: [
+                {
+                    //type: 'AudioCore'
+                    type: 'FlashMP4Core'
+                }
+            ]
         }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
@@ -78,6 +84,7 @@ require([
         };
 
     player.add([
+        'http://yinyueshiting.baidu.com/data2/music/136963778/205601720520064.m4a?xcode=10b77982497870c35cd029b692b003862b0a678262530f0c',
         'mp3/rain.mp3',
         'mp3/coins.mp4a',
         'mp3/walking.mp3'
@@ -174,7 +181,11 @@ require([
                 src: info.pic_small
             });
         }
+    }).on('progress', function(progress) {
+        console.log('progress: ', progress);
     });
+
+    window.player = player;
 });
 </script>
 
