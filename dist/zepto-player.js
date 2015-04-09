@@ -1287,7 +1287,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 
     AudioCore.prototype._playEmpty = function() {
       if (!this.getUrl()) {
-        this.setUrl(opts.emptyMP3).play();
+        this.setUrl(this.opts.emptyMP3).play();
       }
       return win.removeEventListener('touchstart', this._playEmpty, false);
     };
