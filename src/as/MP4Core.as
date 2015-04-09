@@ -10,6 +10,7 @@ package {
     public class MP4Core extends BaseCore {
         private var nc:NetConnection;
         private var ns:NetStream;
+        private var canPlayThrough:Boolean = false;
 
         override public function init(e:Event = null):void {
             super.init();
@@ -61,13 +62,12 @@ package {
         }
 
         private function onProgress():void {
-            if (!_bytesTotal) {
-                _bytesTotal = ns.bytesTotal;
-            }
+            _bytesTotal = ns.bytesTotal;
             _bytesLoaded = ns.bytesLoaded;
             _loadedPct = Math.round(100 * _bytesLoaded / _bytesTotal) / 100;
 
-            if (_loadedPct === 1) {
+            if (_loadedPct === 1 && !canPlayThrough) {
+                canPlayThrough = true;
                 setState(State.CANPLAYTHROUGH);
             }
 
@@ -79,7 +79,9 @@ package {
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
             updatePostion(ns.time * 1000);
-            onProgress();
+            if (!canPlayThrough) {
+                onProgress();
+            }
         }
 
         override public function setVolume(v:uint):Boolean {
