@@ -2272,16 +2272,16 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     };
 
     Engine.prototype.pause = function() {
-      this.curEngine.pause();
       this.trigger(EVENTS.POSITIONCHANGE, this.getCurrentPosition());
       this.setState(STATES.PAUSE);
+      this.curEngine.pause();
       return this;
     };
 
     Engine.prototype.stop = function() {
-      this.curEngine.stop();
       this.trigger(EVENTS.POSITIONCHANGE, 0);
       this.setState(STATES.STOP);
+      this.curEngine.stop();
       return this;
     };
 
