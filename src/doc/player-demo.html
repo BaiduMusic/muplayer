@@ -181,8 +181,8 @@ require([
                 src: info.pic_small
             });
         }
-    }).on('progress', function(progress) {
-        console.log('progress: ', progress);
+    }).on('ended', function() {
+        console.log('ended');
     });
 
     window.player = player;

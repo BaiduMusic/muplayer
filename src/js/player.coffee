@@ -9,7 +9,7 @@ do (root = this, factory = (
         unless fname in ['prev', 'next']
             return @
 
-        @stop()
+        @stop(false)
 
         pl = @playlist
         play = =>
@@ -233,18 +233,20 @@ do (root = this, factory = (
          * 若player正在播放，则暂停播放 (这时，如果再执行play方法，则从暂停位置继续播放)。会派发 <code>player:pause</code> 事件。
          * @return {player}
         ###
-        pause: ->
+        pause: (trigger = true) ->
             @engine.pause()
-            @_clearWaitingTimer().trigger('player:pause')
+            @_clearWaitingTimer()
+            @trigger('player:pause') if trigger
             @
 
         ###*
          * 停止播放，会将当前播放位置重置。即stop后执行play，将从音频头部重新播放。会派发 <code>player:stop</code> 事件。
          * @return {player}
         ###
-        stop: ->
+        stop: (trigger = true) ->
             @engine.stop()
-            @_clearWaitingTimer().trigger('player:stop')
+            @_clearWaitingTimer()
+            @trigger('player:stop') if trigger
             @
 
         ###*
@@ -252,7 +254,7 @@ do (root = this, factory = (
          * @return {player}
         ###
         replay: ->
-            @stop().play()
+            @stop(false).play()
 
         ###*
          * 播放前一首歌。会派发 <code>player:prev</code> 事件，事件参数：
@@ -297,7 +299,7 @@ do (root = this, factory = (
             if sid and @_sid isnt sid
                 pl.setCur(sid)
                 @_sid = sid
-                @stop()
+                @stop(false)
             @trigger('player:setCur', sid)
             @
 
@@ -353,7 +355,7 @@ do (root = this, factory = (
             @playlist.reset()
             @engine.reset()
             @trigger('player:reset')
-            @stop()
+            @stop(false)
 
         ###*
          * 销毁 <code>MuPlayer</code> 实例（解绑事件并销毁DOM）。
@@ -381,7 +383,7 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @stop().engine.setUrl(url)
+            @stop(false).engine.setUrl(url)
             @trigger('player:setUrl', url)
             @
 
