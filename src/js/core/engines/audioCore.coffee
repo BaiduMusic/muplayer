@@ -74,7 +74,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         _playEmpty: =>
             # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
             unless @getUrl()
-                @setUrl(opts.emptyMP3).play()
+                @setUrl(@opts.emptyMP3).play()
             win.removeEventListener('touchstart', @_playEmpty, false)
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
