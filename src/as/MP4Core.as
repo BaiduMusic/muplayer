@@ -184,8 +184,8 @@ package {
         }
 
         override public function f_stop(p:Number = -1):void {
-            seeking(false);
             super.f_stop(p);
+            seeking(false);
             // 判断ns是否存在是因为ns在load方法调用时才被延迟初始化
             if (ns) {
                 ns.pause();

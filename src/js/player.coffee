@@ -9,17 +9,15 @@ do (root = this, factory = (
         unless fname in ['prev', 'next']
             return @
 
-        @stop(false)
-
-        pl = @playlist
         play = =>
             args =
                 cur: @getCur()
             args.auto = auto if auto
             @trigger "player:#{fname}", args
-            @play()
+            @stop(false).play()
 
         if @getSongsNum()
+            pl = @playlist
             unless pl.cur
                 play()
             else if pl[fname].call(pl, auto)

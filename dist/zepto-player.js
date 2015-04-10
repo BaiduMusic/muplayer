@@ -1770,8 +1770,6 @@ var slice = [].slice;
     if (fname !== 'prev' && fname !== 'next') {
       return this;
     }
-    this.stop(false);
-    pl = this.playlist;
     play = (function(_this) {
       return function() {
         var args;
@@ -1782,10 +1780,11 @@ var slice = [].slice;
           args.auto = auto;
         }
         _this.trigger("player:" + fname, args);
-        return _this.play();
+        return _this.stop(false).play();
       };
     })(this);
     if (this.getSongsNum()) {
+      pl = this.playlist;
       if (!pl.cur) {
         play();
       } else if (pl[fname].call(pl, auto)) {
