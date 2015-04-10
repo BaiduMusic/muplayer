@@ -99,7 +99,7 @@ package {
         protected function onPlayComplete(e:Event = null):void {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
-            f_pause()
+            f_stop()
             setState(State.END);
         }
 
@@ -239,7 +239,7 @@ package {
                 playerTimer.stop();
                 playerTimer = null;
             }
-            setState(p && State.PAUSE || State.STOP);
+            setState(p === -1 ? State.STOP : State.PAUSE);
         }
     }
 }
