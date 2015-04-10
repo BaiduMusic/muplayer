@@ -11,13 +11,18 @@ package {
         private var nc:NetConnection;
         private var ns:NetStream;
         private var canPlayThrough:Boolean = false;
+        private var isSeeking:Boolean = false;
+        private var seekingTimer:Timer = new Timer(100, 0);
 
         override public function init(e:Event = null):void {
             super.init();
+
+            seekingTimer.addEventListener(TimerEvent.TIMER, onSeekingTimer);
+
             if (ExternalInterface.available) {
                 reset();
                 nc = new NetConnection();
-                nc.connect(null);
+                nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
                 ExternalInterface.addCallback('f_load', f_load);
                 ExternalInterface.addCallback('f_play', f_play);
                 ExternalInterface.addCallback('f_pause', f_pause);
@@ -28,11 +33,36 @@ package {
             }
         }
 
+        private function seeking(active:Boolean):void {
+            if (active) {
+                isSeeking = true;
+                seekingTimer.start();
+            } else {
+                isSeeking = false;
+                seekingTimer.stop();
+            }
+        }
+
+        private function connectStream():void {
+            var customClient:Object = new Object();
+            customClient.onMetaData = onMetaData;
+            ns = new NetStream(nc);
+            ns.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+            ns.client = customClient;
+            ns.soundTransform = stf;
+            ns.play(_url);
+            ns.pause();
+        }
+
         // 事件含义可参考: http://help.adobe.com/zh_CN/AS2LCR/Flash_10.0/help.html?content=00001409.html
         private function onNetStatus(e:NetStatusEvent):void {
             // 实测发现，Play.Start会先于Buffer.Full触发，
             // 因此这段时间可认为是onProgress做些buffering
             switch (e.info.code) {
+                // nc.connect后触发
+                case 'NetConnection.Connect.Success':
+                    connectStream();
+                    break;
                 case 'NetStream.Play.Start':
                     setState(State.BUFFERING);
                     onPlayTimer();
@@ -56,9 +86,8 @@ package {
         }
 
         private function onMetaData(meta:Object):void {
-            if (meta.duration) {
-                _length = meta.duration * 1000;
-            }
+            // Only available via Meta Data.
+            _length = meta.duration * 1000;
         }
 
         private function onProgress():void {
@@ -70,10 +99,22 @@ package {
                 canPlayThrough = true;
                 setState(State.CANPLAYTHROUGH);
             }
+        }
 
-            if (!_length) {
-                // 估算的音频时长，精确值在onMetaData中获得
-                _length = Math.ceil(ns.time * 1000 / _bytesLoaded * _bytesTotal);
+        private function onSeekingTimer(e:TimerEvent):void {
+            if (_length) {
+                if (_pausePosition > _length) {
+                    seeking(false);
+                    f_play();
+                } else {
+                    var seekPct:Number = Math.floor(100 * _pausePosition / _length) / 100;
+                    if (seekPct <= _loadedPct) {
+                        seeking(false);
+                        // 注意换算单位，seek的参数是秒，而position则是毫秒
+                        ns.seek(_pausePosition / 1000);
+                        ns.resume();
+                    }
+                }
             }
         }
 
@@ -93,6 +134,8 @@ package {
         }
 
         override public function reset():void {
+            seeking(false);
+            canPlayThrough = false;
             if (ns) {
                 ns.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
                 ns = null;
@@ -101,38 +144,29 @@ package {
 
         override public function f_load(url:String):void {
             f_stop();
-
             try {
                 ns && ns.close();
             } catch (err:Error) {
             } finally {
                 reset();
             }
-
-            var customClient:Object = new Object();
-            customClient.onMetaData = onMetaData;
-
-            ns = new NetStream(nc);
-            ns.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-            ns.client = customClient;
-            ns.soundTransform = stf;
-
             _url = url;
+            nc.connect(null);
             setState(State.PREBUFFER);
         }
 
         override public function f_play(p:Number = 0):void {
-            if (p === 0 && _pausePosition) {
+            if (!p && _pausePosition) {
                 p = _pausePosition;
             }
 
             try {
+                ns.pause();
                 if (p !== 0) {
-                    // 注意换算单位，seek的参数是秒，而position则是毫秒
-                    ns.seek(p / 1000);
-                    ns.resume();
+                    seeking(true);
+                    _pausePosition = p;
                 } else {
-                    ns.play(_url);
+                    ns.resume();
                 }
             } catch (err:Error) {
                 return handleErr(err);
@@ -150,6 +184,7 @@ package {
         }
 
         override public function f_stop(p:Number = -1):void {
+            seeking(false);
             super.f_stop(p);
             // 判断ns是否存在是因为ns在load方法调用时才被延迟初始化
             if (ns) {
