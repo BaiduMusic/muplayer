@@ -1936,7 +1936,9 @@ var slice = [].slice;
           return;
         }
         st = self.getState();
-        self.trigger('timeupdate', pos);
+        if (st === STATES.PLAYING) {
+          self.trigger('timeupdate', pos);
+        }
         if (self.getUrl() && (st === STATES.PLAYING || st === STATES.PREBUFFER || st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH)) {
           return self._startWaitingTimer();
         }
