@@ -2521,7 +2521,6 @@ var slice = [].slice;
         self.trigger('player:statechange', e);
         self.trigger(st);
         if (st === STATES.END) {
-          console.log('next');
           return self._clearWaitingTimer().next(true);
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
