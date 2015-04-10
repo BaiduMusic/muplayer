@@ -155,6 +155,7 @@ do (root = this, factory = (
                 self.trigger('player:statechange', e)
                 self.trigger(st)
                 if st is STATES.END
+                    console.log 'next'
                     self._clearWaitingTimer().next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 return unless pos
