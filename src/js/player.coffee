@@ -157,7 +157,8 @@ do (root = this, factory = (
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
                 return unless pos
                 st = self.getState()
-                self.trigger('timeupdate', pos)
+                if st is STATES.PLAYING
+                    self.trigger('timeupdate', pos)
                 if self.getUrl() and st in [
                     STATES.PLAYING, STATES.PREBUFFER,
                     STATES.BUFFERING, STATES.CANPLAYTHROUGH
