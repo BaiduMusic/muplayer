@@ -228,18 +228,19 @@ package {
         public function f_pause():void {}
 
         public function f_stop(p:Number = -1):void {
-            if (p === -1) {
-                _position = 0;
-                _pausePosition = 0;
-            } else {
-                _pausePosition = p;
-            }
             if (playerTimer) {
                 playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
                 playerTimer.stop();
                 playerTimer = null;
             }
-            setState(p === -1 ? State.STOP : State.PAUSE);
+            if (p === -1) {
+                _position = 0;
+                _pausePosition = 0;
+                setState(State.STOP)
+            } else {
+                _pausePosition = p;
+                setState(State.PAUSE)
+            }
         }
     }
 }
