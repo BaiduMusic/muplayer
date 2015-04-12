@@ -180,7 +180,9 @@ package {
         }
 
         override public function f_pause():void {
-            f_stop(ns.time * 1000);
+            if (ns) {
+                f_stop(ns.time * 1000);
+            }
         }
 
         override public function f_stop(p:Number = -1):void {
