@@ -106,7 +106,6 @@ package {
         protected function onPlayTimer(e:TimerEvent = null):void {}
 
         protected function handleErr(e:* = null):void {
-            f_stop();
             callJS(Consts.SWF_ON_ERR, e);
         }
 
