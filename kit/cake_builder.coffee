@@ -72,7 +72,7 @@ tasks = [
         'coffeelint'
         'Lint all coffee files.'
         (opts) ->
-            expand = kit.require 'glob-expand'
+            expand = require 'glob-expand'
 
             lint = (path) ->
                 args = ['-f', 'coffeelint.json', path]
