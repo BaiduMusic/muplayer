@@ -31,6 +31,6 @@
     "mocha": "2.2.4",
     "nobone": "1.5.0",
     "requirejs": "2.1.17",
-    "uglify-js": "2.4.19"
+    "uglify-js": "2.4.20"
   }
 }
