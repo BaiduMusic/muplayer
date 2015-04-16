@@ -69,7 +69,6 @@
   root = this;
   return $.extend({
     namespace: root._mu,
-    debug: false,
     version: '0.9.2',
     timerResolution: 25,
     cdn: 'http://apps.bdimg.com/libs/muplayer/',
