@@ -3,7 +3,6 @@ do (root = @, factory = ->
 
     return $.extend({
         namespace: root._mu
-        debug: false
         version: '0.9.2'
 
         # XXX: timerResolution = 25ms是最小的计时粒度,
