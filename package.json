@@ -16,7 +16,7 @@
     "coffee-script": "1.9.1",
     "coffeelint": "1.9.3",
     "doxx": "0.7.4",
-    "flex-sdk": "4.5.0",
+    "flex-sdk": "4.6.0-0",
     "glob-expand": "0.1.0",
     "karma": "0.12.31",
     "karma-chrome-launcher": "0.1.7",
