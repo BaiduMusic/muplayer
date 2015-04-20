@@ -1,5 +1,5 @@
 suite 'player', ->
-    @timeout(6000)
+    @timeout(7000)
 
     setup ->
         p.off().reset().setVolume(0)
