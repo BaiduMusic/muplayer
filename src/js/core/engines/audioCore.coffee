@@ -1,5 +1,6 @@
 do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
     win = window
+    ua = navigator.userAgent
     {TYPES, EVENTS, STATES, ERRCODE} = cfg.engine
 
     class AudioCore extends EngineCore
@@ -59,8 +60,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @_needCanPlay([
                 'play', 'setCurrentPosition'
             ])
-            @setState(STATES.STOP)
-            @_initEvents()
+            @setState(STATES.STOP)._initEvents()
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             if opts.needPlayEmpty
@@ -106,8 +106,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             ).on('playing', ->
                 clearTimeout(errorTimer)
                 self.setState(STATES.PLAYING)
-            ).on('pause', ->
-                self.setState(self.getCurrentPosition() and STATES.PAUSE or STATES.STOP)
             ).on('ended', ->
                 self.setState(STATES.END)
             ).on('error', (e) ->
@@ -141,7 +139,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                         fn.apply(self, args)
                         audio.off('canplay', handle)
 
-                    if /webkit/.test navigator.userAgent.toLowerCase()
+                    if /webkit/.test ua.toLowerCase()
                         # 对应的编码含义见: http://www.w3schools.com/tags/av_prop_readystate.asp
                         # 小于3认为还没有加载足够数据去播放。
                         if audio.readyState < 3
@@ -170,7 +168,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
         pause: ->
             @audio.pause()
-            @
+            @setState(EVENTS.PAUSE)
 
         stop: ->
             # FIXED: https://github.com/Baidu-Music-FE/muplayer/issues/2
@@ -181,8 +179,8 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             catch
                 return
             finally
-                @pause()
-            @
+                @audio.pause()
+            @setState(EVENTS.STOP)
 
         setUrl: (url) ->
             if url

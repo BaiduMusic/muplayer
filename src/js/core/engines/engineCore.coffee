@@ -46,15 +46,10 @@ do (root = @, factory = (cfg, utils, Events) ->
                 return
 
             if st in [
-                STATES.BUFFERING,  STATES.CANPLAYTHROUGH
-            ] and @_state in [
-                STATES.END, STATES.STOP
-            ]
-                return
-
-            if st in [
                 STATES.PREBUFFER, STATES.BUFFERING
-            ] and @_state is STATES.PAUSE
+            ] and @_state in [
+                STATES.PAUSE, STATES.END, STATES.STOP
+            ]
                 return
 
             oldState = @_state
@@ -63,6 +58,13 @@ do (root = @, factory = (cfg, utils, Events) ->
                 oldState: oldState
                 newState: st
             )
+
+            # canplaythrough是暂态，派发后还要恢复到之前的状态
+            if st is STATES.CANPLAYTHROUGH
+                @setState(oldState)
+
+            @
+
 
         getState: ->
             @_state

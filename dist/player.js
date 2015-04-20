@@ -878,18 +878,19 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
       if (indexOf.call(availableStates, st) < 0 || st === this._state) {
         return;
       }
-      if ((st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH) && ((ref1 = this._state) === STATES.END || ref1 === STATES.STOP)) {
-        return;
-      }
-      if ((st === STATES.PREBUFFER || st === STATES.BUFFERING) && this._state === STATES.PAUSE) {
+      if ((st === STATES.PREBUFFER || st === STATES.BUFFERING) && ((ref1 = this._state) === STATES.PAUSE || ref1 === STATES.END || ref1 === STATES.STOP)) {
         return;
       }
       oldState = this._state;
       this._state = st;
-      return this.trigger(EVENTS.STATECHANGE, {
+      this.trigger(EVENTS.STATECHANGE, {
         oldState: oldState,
         newState: st
       });
+      if (st === STATES.CANPLAYTHROUGH) {
+        this.setState(oldState);
+      }
+      return this;
     };
 
     EngineCore.prototype.getState = function() {
@@ -1148,8 +1149,9 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     return root._mu.AudioCore = factory(_mu.cfg, _mu.utils, _mu.EngineCore, _mu.Modernizr);
   }
 })(this, function(cfg, utils, EngineCore, Modernizr) {
-  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, ref, win;
+  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, ref, ua, win;
   win = window;
+  ua = navigator.userAgent;
   ref = cfg.engine, TYPES = ref.TYPES, EVENTS = ref.EVENTS, STATES = ref.STATES, ERRCODE = ref.ERRCODE;
   AudioCore = (function(superClass) {
     extend(AudioCore, superClass);
@@ -1220,8 +1222,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       };
       this.audio = audio;
       this._needCanPlay(['play', 'setCurrentPosition']);
-      this.setState(STATES.STOP);
-      this._initEvents();
+      this.setState(STATES.STOP)._initEvents();
       if (opts.needPlayEmpty) {
         win.addEventListener('touchstart', this._playEmpty, false);
       }
@@ -1270,8 +1271,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       }).on('playing', function() {
         clearTimeout(errorTimer);
         return self.setState(STATES.PLAYING);
-      }).on('pause', function() {
-        return self.setState(self.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
       }).on('ended', function() {
         return self.setState(STATES.END);
       }).on('error', function(e) {
@@ -1312,7 +1311,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
             fn.apply(self, args);
             return audio.off('canplay', handle);
           };
-          if (/webkit/.test(navigator.userAgent.toLowerCase())) {
+          if (/webkit/.test(ua.toLowerCase())) {
             if (audio.readyState < 3) {
               audio.on('canplay', handle);
             } else {
@@ -1349,7 +1348,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 
     AudioCore.prototype.pause = function() {
       this.audio.pause();
-      return this;
+      return this.setState(EVENTS.PAUSE);
     };
 
     AudioCore.prototype.stop = function() {
@@ -1358,9 +1357,9 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       } catch (_error) {
         return;
       } finally {
-        this.pause();
+        this.audio.pause();
       }
-      return this;
+      return this.setState(EVENTS.STOP);
     };
 
     AudioCore.prototype.setUrl = function(url) {
@@ -1799,6 +1798,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
             return self.positionTimer.start();
           case STATES.PAUSE:
           case STATES.STOP:
+          case STATES.END:
             self.positionTimer.stop();
             return triggerPosition();
           case STATES.END:
@@ -1876,6 +1876,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       var err;
       if (this.getUrl()) {
         try {
+          this.positionTimer.start();
           this.flash.f_play();
         } catch (_error) {
           err = _error;
@@ -2161,10 +2162,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
           oldState: oldState,
           newState: newState
         };
-        self.trigger(EVENTS.STATECHANGE, e);
-        if (newState === STATES.CANPLAYTHROUGH && (oldState === STATES.PLAYING || oldState === STATES.PAUSE)) {
-          return self.setState(oldState);
-        }
+        return self.trigger(EVENTS.STATECHANGE, e);
       };
       positionHandle = function(pos) {
         return self.trigger(EVENTS.POSITIONCHANGE, pos);
@@ -2270,15 +2268,13 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
     Engine.prototype.pause = function() {
       this.trigger(EVENTS.POSITIONCHANGE, this.getCurrentPosition());
-      this.setState(STATES.PAUSE);
-      this.curEngine.pause();
+      this.setState(STATES.PAUSE).curEngine.pause();
       return this;
     };
 
     Engine.prototype.stop = function() {
       this.trigger(EVENTS.POSITIONCHANGE, 0);
-      this.setState(STATES.STOP);
-      this.curEngine.stop();
+      this.setState(STATES.STOP).curEngine.stop();
       return this;
     };
 
@@ -2318,6 +2314,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     };
 
     Engine.prototype.getCurrentPosition = function() {
+      if (this.getState() === STATES.STOP) {
+        this.setCurrentPosition(0);
+      }
       return this.curEngine.getCurrentPosition();
     };
 
@@ -2521,14 +2520,13 @@ var slice = [].slice;
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
         var st;
+        pos = ~~pos;
         if (!pos) {
           return;
         }
         st = self.getState();
-        if (st === STATES.PLAYING) {
-          self.trigger('timeupdate', pos);
-        }
         if (self.getUrl() && (st === STATES.PLAYING || st === STATES.PREBUFFER || st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH)) {
+          self.trigger('timeupdate', pos);
           return self._startWaitingTimer();
         }
       }).on(EVENTS.PROGRESS, function(progress) {

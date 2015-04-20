@@ -155,14 +155,14 @@ do (root = this, factory = (
                 if st is STATES.END
                     self._clearWaitingTimer().next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
+                pos = ~~pos
                 return unless pos
                 st = self.getState()
-                if st is STATES.PLAYING
-                    self.trigger('timeupdate', pos)
                 if self.getUrl() and st in [
                     STATES.PLAYING, STATES.PREBUFFER,
                     STATES.BUFFERING, STATES.CANPLAYTHROUGH
                 ]
+                    self.trigger('timeupdate', pos)
                     self._startWaitingTimer()
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
