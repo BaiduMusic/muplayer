@@ -40,14 +40,13 @@ package {
             var st:int = getState();
 
             // 页面因网速较慢导致缓冲不够播放停止的情况
-            if (st === State.PLAYING && _position === pos) {
-                setState(st === State.PREBUFFER && State.BUFFERING || State.PREBUFFER);
+            if (st === State.PREBUFFER && _position === pos) {
+                setState(State.BUFFERING);
             } else if (_position < pos) {
-                _position = pos;
                 setState(State.PLAYING);
-            } else {
-                _position = pos;
             }
+
+            _position = pos;
 
             if (_position > _length) {
                 _length = _position;
@@ -220,6 +219,7 @@ package {
         public function f_play(p:Number = 0):void {
             playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
             playerTimer.start();
+            setState(State.PREBUFFER)
         }
 
         public function f_pause():void {}
