@@ -76,7 +76,7 @@ suite 'player', ->
             p.setUrl(mp3).play()
 
         test '暂停后播放位置不会被重置', (done) ->
-            p.once 'playing', ->
+            p.once 'timeupdate', ->
                 p.pause()
 
             p.once 'pause', ->
