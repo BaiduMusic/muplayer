@@ -1,4 +1,6 @@
 suite 'player', ->
+    @timeout(6000)
+
     setup ->
         p.off().reset().setVolume(0)
 
@@ -10,8 +12,6 @@ suite 'player', ->
             p.setUrl(mp3).play()
 
         test '事件派发顺序', (done) ->
-            @timeout(3000)
-
             evts = []
 
             p.on 'player:statechange', (e) ->
@@ -21,13 +21,11 @@ suite 'player', ->
                 waitingIndex = $.inArray('waiting', evts)
                 loadeddataIndex = $.inArray('loadeddata', evts)
                 playingIndex = $.inArray('playing', evts)
-                pauseIndex = $.inArray('pause', evts)
                 endedIndex = $.inArray('ended', evts)
 
                 assert.ok waitingIndex <= loadeddataIndex
                 assert.ok loadeddataIndex < playingIndex
-                assert.ok playingIndex < pauseIndex
-                assert.ok pauseIndex < endedIndex
+                assert.ok playingIndex < endedIndex
 
                 done()
 
@@ -47,7 +45,7 @@ suite 'player', ->
             p.on 'pause', ->
                 done()
 
-            p.setUrl(empty_mp3).play()
+            p.setUrl(mp3).play()
 
         test '传入startTime可以改变播放位置', (done) ->
             p.once 'timeupdate', (pos) ->
@@ -78,10 +76,10 @@ suite 'player', ->
             p.setUrl(mp3).play()
 
         test '暂停后播放位置不会被重置', (done) ->
-            p.once 'timeupdate', ->
+            p.once 'playing', ->
                 p.pause()
 
-            p.on 'pause', ->
+            p.once 'pause', ->
                 assert.ok p.curPos() > 0
                 done()
 

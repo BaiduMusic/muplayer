@@ -15,13 +15,14 @@ p = new _mu.Player({
     engines: [
         {
             type: 'FlashMP3Core'
+            #type: 'AudioCore'
         },
-        {
-            type: 'FlashMP4Core'
-        },
-        {
-            type: 'AudioCore'
-        }
+#        {
+            #type: 'FlashMP4Core'
+        #},
+        #{
+            #type: 'AudioCore'
+        #}
     ]
 })
 pl = p.playlist

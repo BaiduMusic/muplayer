@@ -12,7 +12,7 @@ package {
         private var jsInstance:String = '';
         private var canPlayThrough:Boolean = false;
 
-        protected var playerTimer:Timer;
+        protected var playerTimer:Timer = new Timer(Consts.TIMER_INTERVAL);
         protected var stf:SoundTransform;
 
         // 实例属性
@@ -22,7 +22,7 @@ package {
         protected var _muteVolume:uint;                // 静音时的音量
         protected var _url:String;                     // 外部文件地址
         protected var _length:uint;                    // 音频总长度(ms)
-        protected var _position:uint;                  // 当前播放进度(ms)
+        protected var _position:uint = 0;              // 当前播放进度(ms)
         protected var _loadedPct:Number;               // 载入进度百分比[0-1]
         protected var _positionPct:Number;             // 播放进度百分比[0-1]
         protected var _pausePosition:Number;           // 暂停时的播放进度(ms)
@@ -36,17 +36,18 @@ package {
         // 默认值为1000毫秒。
         private var _bufferTime:uint = 5000;
 
-        protected function updatePostion(pos:uint):void {
+        protected function updatePostion(pos:uint = 0):void {
             var st:int = getState();
 
             // 页面因网速较慢导致缓冲不够播放停止的情况
             if (st === State.PLAYING && _position === pos) {
-                setState(State.PREBUFFER);
-            } else if (st !== State.PLAYING && _position < pos) {
-                setState(st === State.PREBUFFER && State.BUFFERING || State.PLAYING);
+                setState(st === State.PREBUFFER && State.BUFFERING || State.PREBUFFER);
+            } else if (_position < pos) {
+                _position = pos;
+                setState(State.PLAYING);
+            } else {
+                _position = pos;
             }
-
-            _position = pos;
 
             if (_position > _length) {
                 _length = _position;
@@ -217,21 +218,16 @@ package {
         public function f_load(url:String):void {}
 
         public function f_play(p:Number = 0):void {
-            if (!playerTimer) {
-                playerTimer = new Timer(Consts.TIMER_INTERVAL);
-                playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.start();
-            }
+            playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
+            playerTimer.start();
         }
 
         public function f_pause():void {}
 
         public function f_stop(p:Number = -1):void {
-            if (playerTimer) {
-                playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.stop();
-                playerTimer = null;
-            }
+            playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
+            playerTimer.stop();
+
             if (p === -1) {
                 _position = 0;
                 _pausePosition = 0;

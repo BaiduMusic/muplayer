@@ -17,15 +17,15 @@
     "doc"
   ],
   "devDependencies": {
-    "bootstrap": "~3.0.0",
-    "jquery": "~1.10.2",
-    "requirejs": "~2.1.8",
-    "jquery-ui": "~1.10.3",
+    "bootstrap": "3.3.4",
+    "jquery": "2.1.3",
+    "requirejs": "2.1.17",
+    "jquery-ui": "~1.11.4",
     "prefixfree": "*",
     "prism": "gh-pages",
-    "zeptojs": "~1.1.6",
-    "lodash": "~2.4.1",
-    "chai": "~1.10.0",
-    "mocha": "~2.1.0"
+    "zeptojs": "1.1.6",
+    "lodash": "3.7.0",
+    "chai": "2.2.0",
+    "mocha": "2.2.4"
   }
 }

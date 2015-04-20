@@ -69,8 +69,6 @@ do (root = @, factory = (
                     oldState: oldState
                     newState: newState
                 self.trigger(EVENTS.STATECHANGE, e)
-                if newState is STATES.CANPLAYTHROUGH and oldState in [STATES.PLAYING, STATES.PAUSE]
-                    self.setState(oldState)
             positionHandle = (pos) ->
                 self.trigger(EVENTS.POSITIONCHANGE, pos)
             progressHandle = (progress) ->
@@ -153,14 +151,12 @@ do (root = @, factory = (
 
         pause: ->
             @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
-            @setState(STATES.PAUSE)
-            @curEngine.pause()
+            @setState(STATES.PAUSE).curEngine.pause()
             @
 
         stop: ->
             @trigger(EVENTS.POSITIONCHANGE, 0)
-            @setState(STATES.STOP)
-            @curEngine.stop()
+            @setState(STATES.STOP).curEngine.stop()
             @
 
         setState: (st) ->
@@ -178,7 +174,7 @@ do (root = @, factory = (
         getMute: ->
             @curEngine.getMute()
 
-        # 0 <= volume <= 100
+        # 0 <= volume <= 100。
         setVolume: (volume) ->
             if $.isNumeric(volume) and volume >= 0 and volume <= 100
                 @curEngine.setVolume(volume)
@@ -187,20 +183,24 @@ do (root = @, factory = (
         getVolume: ->
             @curEngine.getVolume()
 
-        # 设置播放进度(单位毫秒)
+        # 设置播放进度（单位毫秒）秒
         setCurrentPosition: (ms) ->
             ms = ~~ms
             @curEngine.setCurrentPosition(ms)
             @
 
         getCurrentPosition: ->
+            # HACK: 不清楚为什么有时停止状态时，
+            # getCurrentPosition却不为0，这里做了强制设置。
+            if @getState() is STATES.STOP
+                @setCurrentPosition(0)
             @curEngine.getCurrentPosition()
 
-        # 音频下载的百分比, 取值: 0 ~ 1
+        # 音频下载的百分比, 取值: 0 ~ 1。
         getLoadedPercent: ->
             @curEngine.getLoadedPercent()
 
-        # 音频总时长, 单位毫秒
+        # 音频总时长, 单位毫秒。
         getTotalTime: ->
             @curEngine.getTotalTime()
 
