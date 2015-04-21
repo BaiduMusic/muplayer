@@ -61,6 +61,7 @@ package {
             } else {
                 addEventListener(Event.ADDED_TO_STAGE, init);
             }
+            playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
         }
 
         public function init(e:Event = null):void {
@@ -217,7 +218,6 @@ package {
         public function f_load(url:String):void {}
 
         public function f_play(p:Number = 0):void {
-            playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
             playerTimer.start();
             setState(State.PREBUFFER)
         }
@@ -225,7 +225,6 @@ package {
         public function f_pause():void {}
 
         public function f_stop(p:Number = -1):void {
-            playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
             playerTimer.stop();
 
             if (p === -1) {
