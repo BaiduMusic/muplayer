@@ -1361,8 +1361,11 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype.setUrl = function(url) {
+      if (url == null) {
+        url = '';
+      }
+      this.audio.src = url;
       if (url) {
-        this.audio.src = url;
         this.audio.load();
       }
       return AudioCore.__super__.setUrl.call(this, url);
