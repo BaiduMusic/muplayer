@@ -2545,12 +2545,17 @@ var slice = [].slice;
     };
 
     Player.prototype.retry = function() {
-      var ms, url;
+      var engine, ms, self, url;
+      self = this;
       if (this._retryTimes++ < this.opts.maxRetryTimes) {
         this._startWaitingTimer().trigger('player:retry', this._retryTimes);
+        engine = this.engine;
         url = this.getUrl();
-        ms = this.engine.getCurrentPosition();
-        this.pause().setUrl(url).engine.setCurrentPosition(ms);
+        ms = engine.getCurrentPosition();
+        this.pause().once('timeupdate', function() {
+          return engine.setCurrentPosition(ms);
+        });
+        engine.setUrl(url).play();
       } else {
         this._retryTimes = 0;
         this.trigger('player:retry:max');
