@@ -180,10 +180,9 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             finally
                 @audio.pause()
 
-        setUrl: (url) ->
-            if url
-                @audio.src = url
-                @audio.load()
+        setUrl: (url = '') ->
+            @audio.src = url
+            @audio.load() if url
             super(url)
 
         setVolume: (volume) ->
