@@ -168,7 +168,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
         pause: ->
             @audio.pause()
-            @setState(EVENTS.PAUSE)
 
         stop: ->
             # FIXED: https://github.com/Baidu-Music-FE/muplayer/issues/2
@@ -180,7 +179,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 return
             finally
                 @audio.pause()
-            @setState(EVENTS.STOP)
 
         setUrl: (url) ->
             if url
