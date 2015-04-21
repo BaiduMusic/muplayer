@@ -176,12 +176,11 @@ do (root = this, factory = (
             )
 
         retry: ->
-            if @_retryTimes < @opts.maxRetryTimes
-                @_retryTimes++
+            if @_retryTimes++ < @opts.maxRetryTimes
+                @_startWaitingTimer().trigger('player:retry', @_retryTimes)
                 url = @getUrl()
                 ms = @engine.getCurrentPosition()
                 @pause().setUrl(url).engine.setCurrentPosition(ms)
-                @_startWaitingTimer().trigger('player:retry', @_retryTimes)
             else
                 @_retryTimes = 0
                 @trigger('player:retry:max')

@@ -1397,19 +1397,17 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype.pause = function() {
-      this.audio.pause();
-      return this.setState(EVENTS.PAUSE);
+      return this.audio.pause();
     };
 
     AudioCore.prototype.stop = function() {
       try {
-        this.audio.currentTime = 0;
+        return this.audio.currentTime = 0;
       } catch (_error) {
-        return;
+
       } finally {
         this.audio.pause();
       }
-      return this.setState(EVENTS.STOP);
     };
 
     AudioCore.prototype.setUrl = function(url) {
@@ -1956,12 +1954,11 @@ var slice = [].slice;
 
     Player.prototype.retry = function() {
       var ms, url;
-      if (this._retryTimes < this.opts.maxRetryTimes) {
-        this._retryTimes++;
+      if (this._retryTimes++ < this.opts.maxRetryTimes) {
+        this._startWaitingTimer().trigger('player:retry', this._retryTimes);
         url = this.getUrl();
         ms = this.engine.getCurrentPosition();
         this.pause().setUrl(url).engine.setCurrentPosition(ms);
-        this._startWaitingTimer().trigger('player:retry', this._retryTimes);
       } else {
         this._retryTimes = 0;
         this.trigger('player:retry:max');
