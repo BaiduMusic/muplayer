@@ -2533,12 +2533,14 @@ var slice = [].slice;
       }).on(EVENTS.PROGRESS, function(progress) {
         return self.trigger('progress', progress);
       }).on(EVENTS.ERROR, function(e) {
-        if (typeof console !== "undefined" && console !== null) {
-          if (typeof console.error === "function") {
-            console.error('error: ', e);
+        if (self.getUrl()) {
+          if (typeof console !== "undefined" && console !== null) {
+            if (typeof console.error === "function") {
+              console.error('error: ', e);
+            }
           }
+          return self.trigger('error', e);
         }
-        return self.trigger('error', e);
       }).on(EVENTS.WAITING_TIMEOUT, function() {
         if (recover === 'retry' || recover === 'next') {
           self[recover]();

@@ -167,8 +167,9 @@ do (root = this, factory = (
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) ->
-                console?.error?('error: ', e)
-                self.trigger('error', e)
+                if self.getUrl()
+                    console?.error?('error: ', e)
+                    self.trigger('error', e)
             ).on(EVENTS.WAITING_TIMEOUT, ->
                 if recover in ['retry', 'next']
                     self[recover]()
