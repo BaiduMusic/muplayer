@@ -501,9 +501,11 @@ do (root = this, factory = (
                     self
 
         _startWaitingTimer: ->
-            @waitingTimer.clear().after("#{@opts.maxWaitingTime} seconds", =>
-                @engine.trigger(EVENTS.WAITING_TIMEOUT)
-            ).start()
+            { opts: { maxWaitingTime } } = @
+            if maxWaitingTime > 0
+                @waitingTimer.clear().after("#{maxWaitingTime} seconds", =>
+                    @engine.trigger(EVENTS.WAITING_TIMEOUT)
+                ).start()
             @
 
         _clearWaitingTimer: ->

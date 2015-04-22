@@ -2406,11 +2406,15 @@ var slice = [].slice;
     };
 
     Player.prototype._startWaitingTimer = function() {
-      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", (function(_this) {
-        return function() {
-          return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
-        };
-      })(this)).start();
+      var maxWaitingTime;
+      maxWaitingTime = this.opts.maxWaitingTime;
+      if (maxWaitingTime > 0) {
+        this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
+          return function() {
+            return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
+          };
+        })(this)).start();
+      }
       return this;
     };
 
