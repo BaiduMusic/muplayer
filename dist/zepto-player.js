@@ -1410,7 +1410,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       }
     };
 
-    AudioCore.prototype.setUrl = function() {
+    AudioCore.prototype.setUrl = function(url) {
       if (url) {
         this.audio.src = url;
         this.audio.load();
