@@ -14,7 +14,7 @@
   "devDependencies": {
     "bower": "1.4.1",
     "coffee-script": "1.9.2",
-    "coffeelint": "1.9.3",
+    "coffeelint": "1.9.4",
     "doxx": "0.7.4",
     "flex-sdk": "4.6.0-0",
     "glob-expand": "0.1.0",
@@ -29,7 +29,7 @@
     "karma-opera-launcher": "0.1.0",
     "karma-safari-launcher": "0.1.1",
     "mocha": "2.2.4",
-    "nobone": "1.5.0",
+    "nobone": "1.5.1",
     "requirejs": "2.1.17",
     "uglify-js": "2.4.20"
   }

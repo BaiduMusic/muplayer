@@ -156,6 +156,8 @@ package {
         }
 
         override public function f_play(p:Number = 0):void {
+            super.f_play(p);
+
             if (!p && _pausePosition) {
                 p = _pausePosition;
             }
@@ -170,12 +172,6 @@ package {
                 }
             } catch (err:Error) {
                 return handleErr(err);
-            }
-
-            if (!playerTimer) {
-                playerTimer = new Timer(Consts.TIMER_INTERVAL);
-                playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.start();
             }
         }
 
