@@ -61,7 +61,6 @@ package {
             } else {
                 addEventListener(Event.ADDED_TO_STAGE, init);
             }
-            playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
         }
 
         public function init(e:Event = null):void {
@@ -72,6 +71,7 @@ package {
             Security.allowInsecureDomain('*');
             loadFlashVars(loaderInfo.parameters);
             stf = new SoundTransform(_volume / 100, 0);
+            playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
         }
 
         protected function callJS(fn:String, data:Object = undefined):void {
@@ -226,7 +226,6 @@ package {
 
         public function f_stop(p:Number = -1):void {
             playerTimer.stop();
-
             if (p === -1) {
                 _position = 0;
                 _pausePosition = 0;
