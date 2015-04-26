@@ -50,7 +50,6 @@ package {
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
             if (sc) {
-                Utils.log('onPlayTimer: ' + sc.position);
                 updatePostion(sc.position);
             }
         }
