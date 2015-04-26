@@ -55,7 +55,15 @@ require([
     'muplayer/player'
 ], function(Player) {
     var player = new Player({
-            baseDir: 'dist'
+            baseDir: 'dist',
+            engines: [
+                {
+                    type: 'FlashMP4Core'
+                },
+                {
+                    type: 'FlashMP3Core'
+                }
+            ]
         }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
