@@ -1796,7 +1796,6 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
             return self.positionTimer.start();
           case STATES.PAUSE:
           case STATES.STOP:
-          case STATES.END:
             self.positionTimer.stop();
             return triggerPosition();
           case STATES.END:
