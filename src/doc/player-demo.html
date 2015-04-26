@@ -55,14 +55,7 @@ require([
     'muplayer/player'
 ], function(Player) {
     var player = new Player({
-            baseDir: 'dist',
-            engines: [
-                {
-                    //type: 'AudioCore'
-                    type: 'FlashMP4Core'
-                    //type: 'FlashMP3Core'
-                }
-            ]
+            baseDir: 'dist'
         }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
@@ -85,10 +78,9 @@ require([
 
     player.add([
         'http://yinyueshiting.baidu.com/data2/music/136963778/205601720520064.m4a?xcode=10b77982497870c35cd029b692b003862b0a678262530f0c',
-        //'http://yinyueshiting.baidu.com/data2/music/134271699/2056017205200128.mp3?xcode=9a668a1f7ce3b31d89caae3c4179826dd2e00057680172c8',
         'mp3/coins.mp4a',
-        //'mp3/rain.mp3',
-        //'mp3/walking.mp3'
+        'mp3/rain.mp3',
+        'mp3/walking.mp3'
     ]);
 
     // 在各个按钮上监听点击事件，触发时改变按钮的对应样式，并执行player的相应方法
@@ -182,8 +174,6 @@ require([
                 src: info.pic_small
             });
         }
-    }).on('player:statechange', function(e) {
-        console.log(e.newState);
     });
 
     window.player = player;
