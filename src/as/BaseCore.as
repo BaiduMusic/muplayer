@@ -218,7 +218,6 @@ package {
         public function f_load(url:String):void {}
 
         public function f_play(p:Number = 0):void {
-            Utils.log('start ......');
             playerTimer.start();
             setState(State.PREBUFFER)
         }
@@ -226,7 +225,6 @@ package {
         public function f_pause():void {}
 
         public function f_stop(p:Number = -1):void {
-            Utils.log('stop !!!!!');
             playerTimer.stop();
             if (p === -1) {
                 _position = 0;
