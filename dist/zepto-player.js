@@ -933,14 +933,10 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
       }
       oldState = this._state;
       this._state = st;
-      this.trigger(EVENTS.STATECHANGE, {
+      return this.trigger(EVENTS.STATECHANGE, {
         oldState: oldState,
         newState: st
       });
-      if (st === STATES.CANPLAYTHROUGH) {
-        this.setState(oldState);
-      }
-      return this;
     };
 
     EngineCore.prototype.getState = function() {
@@ -1568,7 +1564,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           oldState: oldState,
           newState: newState
         };
-        return self.trigger(EVENTS.STATECHANGE, e);
+        self.trigger(EVENTS.STATECHANGE, e);
+        if (newState === STATES.CANPLAYTHROUGH && (oldState === STATES.PLAYING || oldState === STATES.PAUSE || oldState === STATES.STOP)) {
+          return self.setState(oldState);
+        }
       };
       positionHandle = function(pos) {
         return self.trigger(EVENTS.POSITIONCHANGE, pos);
@@ -1673,15 +1672,15 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     Engine.prototype.pause = function() {
+      this.curEngine.pause();
       this.trigger(EVENTS.POSITIONCHANGE, this.getCurrentPosition());
-      this.setState(STATES.PAUSE).curEngine.pause();
-      return this;
+      return this.setState(STATES.PAUSE);
     };
 
     Engine.prototype.stop = function() {
+      this.curEngine.stop();
       this.trigger(EVENTS.POSITIONCHANGE, 0);
-      this.setState(STATES.STOP).curEngine.stop();
-      return this;
+      return this.setState(STATES.STOP);
     };
 
     Engine.prototype.setState = function(st) {

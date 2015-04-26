@@ -69,6 +69,10 @@ do (root = @, factory = (
                     oldState: oldState
                     newState: newState
                 self.trigger(EVENTS.STATECHANGE, e)
+                if newState is STATES.CANPLAYTHROUGH and oldState in [
+                    STATES.PLAYING, STATES.PAUSE, STATES.STOP
+                ]
+                    self.setState(oldState)
             positionHandle = (pos) ->
                 self.trigger(EVENTS.POSITIONCHANGE, pos)
             progressHandle = (progress) ->
@@ -150,14 +154,14 @@ do (root = @, factory = (
             @
 
         pause: ->
+            @curEngine.pause()
             @trigger(EVENTS.POSITIONCHANGE, @getCurrentPosition())
-            @setState(STATES.PAUSE).curEngine.pause()
-            @
+            @setState(STATES.PAUSE)
 
         stop: ->
+            @curEngine.stop()
             @trigger(EVENTS.POSITIONCHANGE, 0)
-            @setState(STATES.STOP).curEngine.stop()
-            @
+            @setState(STATES.STOP)
 
         setState: (st) ->
             @curEngine.setState(st)

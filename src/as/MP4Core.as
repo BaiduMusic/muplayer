@@ -119,6 +119,7 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
+            Utils.log(ns.time * 1000);
             updatePostion(ns.time * 1000);
             if (!canPlayThrough) {
                 onProgress();
