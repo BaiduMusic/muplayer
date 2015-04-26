@@ -1808,7 +1808,7 @@ var slice = [].slice;
       absoluteUrl: true,
       maxRetryTimes: 1,
       maxWaitingTime: 4,
-      recoverMethodWhenWaitingTimeout: 'retry',
+      recoverMethod: 'retry',
       fetch: function() {
         var cur, def;
         def = $.Deferred();
@@ -1913,7 +1913,7 @@ var slice = [].slice;
     Player.prototype._initEngine = function(engine) {
       var recover, self;
       self = this;
-      recover = this.opts.recoverMethodWhenWaitingTimeout;
+      recover = this.opts.recoverMethod;
       this.engine = engine;
       return this.engine.on(EVENTS.STATECHANGE, function(e) {
         var st;

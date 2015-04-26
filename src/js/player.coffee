@@ -44,7 +44,7 @@ do (root = this, factory = (
             absoluteUrl: true
             maxRetryTimes: 1
             maxWaitingTime: 4
-            recoverMethodWhenWaitingTimeout: 'retry'
+            recoverMethod: 'retry'
 
             # 在基类的默认实现中将fetch设计成Promise模式的接口调用似乎没有必要,
             # 但对于依赖API远程调用进行歌曲异步选链的场景下, Promise的处理无疑更具灵活性。
@@ -145,7 +145,7 @@ do (root = this, factory = (
 
         _initEngine: (engine) ->
             self = @
-            recover = @opts.recoverMethodWhenWaitingTimeout
+            recover = @opts.recoverMethod
 
             @engine = engine
             @engine.on(EVENTS.STATECHANGE, (e) ->
