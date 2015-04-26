@@ -49,7 +49,10 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
-            updatePostion(sc.position);
+            if (sc) {
+                Utils.log('onPlayTimer: ' + sc.position);
+                updatePostion(sc.position);
+            }
         }
 
         override public function setVolume(v:uint):Boolean {
@@ -108,11 +111,9 @@ package {
                 sc = null;
             }
 
-            if (_url) {
-                sc = s.play(p, 0, stf);
-                sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
-                isPlaying = true;
-            }
+            sc = s.play(p, 0, stf);
+            sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+            isPlaying = true;
         }
 
         override public function f_pause():void {
