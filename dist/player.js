@@ -1799,7 +1799,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
             self.positionTimer.stop();
             return triggerPosition();
           case STATES.END:
-            return self.positionTimer.reset();
+            self.positionTimer.reset();
+            return delete self._lastPos;
         }
       });
     };
@@ -1873,7 +1874,6 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       var err;
       if (this.getUrl()) {
         try {
-          this.positionTimer.start();
           this.flash.f_play();
         } catch (_error) {
           err = _error;
@@ -1898,28 +1898,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     };
 
     FlashCore.prototype.setUrl = function(url) {
-      var self;
-      self = this;
       if (url) {
         this._setUrl(url);
-        (function() {
-          var check, checker;
-          checker = null;
-          check = function(e) {
-            if (e.newState === STATES.PLAYING && e.oldState === STATES.PREBUFFER) {
-              return checker = setTimeout(function() {
-                self.off(EVENTS.STATECHANGE, check);
-                if (self.getCurrentPosition() < 100) {
-                  self.setState(STATES.END);
-                  return self.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED);
-                }
-              }, 2000);
-            } else {
-              return clearTimeout(checker);
-            }
-          };
-          return self.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check);
-        })();
       }
       return FlashCore.__super__.setUrl.call(this, url);
     };
