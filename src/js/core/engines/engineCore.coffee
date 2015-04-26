@@ -59,13 +59,6 @@ do (root = @, factory = (cfg, utils, Events) ->
                 newState: st
             )
 
-            # canplaythrough是暂态，派发后还要恢复到之前的状态
-            if st is STATES.CANPLAYTHROUGH
-                @setState(oldState)
-
-            @
-
-
         getState: ->
             @_state
 

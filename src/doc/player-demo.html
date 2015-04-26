@@ -58,8 +58,8 @@ require([
             baseDir: 'dist',
             engines: [
                 {
-                    type: 'AudioCore'
-                    //type: 'FlashMP4Core'
+                    //type: 'AudioCore'
+                    type: 'FlashMP4Core'
                     //type: 'FlashMP3Core'
                 }
             ]
@@ -80,13 +80,12 @@ require([
         handleTimeupdate = function() {
             var pos = player.curPos(),
                 duration = player.duration();
-            //console.log(pos);
             $progress.slider('option', 'value', duration ? pos / duration * 1000 : 0);
         };
 
     player.add([
-        //'http://yinyueshiting.baidu.com/data2/music/136963778/205601720520064.m4a?xcode=10b77982497870c35cd029b692b003862b0a678262530f0c',
-        'http://yinyueshiting.baidu.com/data2/music/134271699/2056017205200128.mp3?xcode=9a668a1f7ce3b31d89caae3c4179826dd2e00057680172c8',
+        'http://yinyueshiting.baidu.com/data2/music/136963778/205601720520064.m4a?xcode=10b77982497870c35cd029b692b003862b0a678262530f0c',
+        //'http://yinyueshiting.baidu.com/data2/music/134271699/2056017205200128.mp3?xcode=9a668a1f7ce3b31d89caae3c4179826dd2e00057680172c8',
         'mp3/coins.mp4a',
         //'mp3/rain.mp3',
         //'mp3/walking.mp3'
