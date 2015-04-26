@@ -103,7 +103,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                 switch st
                     when STATES.PLAYING
                         self.positionTimer.start()
-                    when STATES.PAUSE, STATES.STOP, STATES.END
+                    when STATES.PAUSE, STATES.STOP
                         self.positionTimer.stop()
                         # 防止轮询延迟, 暂停时主动trigger, 保证进度准确。
                         triggerPosition()
