@@ -98,6 +98,10 @@ package {
         }
 
         override public function f_play(p:Number = 0):void {
+            if (!_url) {
+                return;
+            }
+
             super.f_play(p);
 
             if (p === 0 && _pausePosition) {

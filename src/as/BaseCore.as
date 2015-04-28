@@ -100,7 +100,7 @@ package {
         protected function onPlayComplete(e:Event = null):void {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
-            f_stop()
+            f_stop();
             setState(State.END);
         }
 
@@ -219,7 +219,7 @@ package {
 
         public function f_play(p:Number = 0):void {
             playerTimer.start();
-            setState(State.PREBUFFER)
+            setState(State.PREBUFFER);
         }
 
         public function f_pause():void {}
@@ -229,10 +229,10 @@ package {
             if (p === -1) {
                 _position = 0;
                 _pausePosition = 0;
-                setState(State.STOP)
+                setState(State.STOP);
             } else {
                 _pausePosition = p;
-                setState(State.PAUSE)
+                setState(State.PAUSE);
             }
         }
     }
