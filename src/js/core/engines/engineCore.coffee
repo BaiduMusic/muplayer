@@ -17,7 +17,7 @@ do (root = @, factory = (cfg, utils, Events) ->
 
         reset: ->
             @stop()
-            @setUrl()
+            @_url = ''
             @trigger(EVENTS.PROGRESS, 0)
             @trigger(EVENTS.POSITIONCHANGE, 0)
             @
@@ -34,8 +34,8 @@ do (root = @, factory = (cfg, utils, Events) ->
         stop: ->
             @
 
-        setUrl: (url = '') ->
-            @_url = url
+        setUrl: (url) ->
+            @_url = url if url
             @
 
         getUrl: ->

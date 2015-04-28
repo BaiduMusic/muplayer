@@ -889,7 +889,7 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
 
     EngineCore.prototype.reset = function() {
       this.stop();
-      this.setUrl();
+      this._url = '';
       this.trigger(EVENTS.PROGRESS, 0);
       this.trigger(EVENTS.POSITIONCHANGE, 0);
       return this;
@@ -912,10 +912,9 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     };
 
     EngineCore.prototype.setUrl = function(url) {
-      if (url == null) {
-        url = '';
+      if (url) {
+        this._url = url;
       }
-      this._url = url;
       return this;
     };
 
