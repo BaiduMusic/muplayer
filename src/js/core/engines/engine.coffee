@@ -137,6 +137,8 @@ do (root = @, factory = (
             @
 
         setUrl: (url) ->
+            return @ unless url
+
             ext = utils.getExt(url)
             if @canPlayType(ext)
                 @switchEngineByType(ext) unless @curEngine.canPlayType(ext)

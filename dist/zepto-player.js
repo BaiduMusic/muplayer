@@ -1649,6 +1649,9 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 
     Engine.prototype.setUrl = function(url) {
       var ext;
+      if (!url) {
+        return this;
+      }
       ext = utils.getExt(url);
       if (this.canPlayType(ext)) {
         if (!this.curEngine.canPlayType(ext)) {
