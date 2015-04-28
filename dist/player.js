@@ -2220,6 +2220,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
     Engine.prototype.setUrl = function(url) {
       var ext;
+      if (!url) {
+        return this;
+      }
       ext = utils.getExt(url);
       if (this.canPlayType(ext)) {
         if (!this.curEngine.canPlayType(ext)) {
