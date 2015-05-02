@@ -109,6 +109,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
                         triggerPosition()
                     when STATES.END
                         self.positionTimer.reset()
+                        delete self._lastPos
 
         # 需要依赖flash加载后执行的方法包装器。
         # 更优雅的方式应该是用类似Java的annotation语法。
@@ -169,24 +170,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             @flash.f_load(url)
 
         setUrl: (url) ->
-            self = @
-            if url
-                @_setUrl(url)
-                # 检测后缀与实际资源不符的情况。
-                # 错误统一抛EVENTS.ERROR事件, 由调用方决定如何处理。
-                do ->
-                    checker = null
-                    check = (e) ->
-                        if e.newState is STATES.PLAYING and e.oldState is STATES.PREBUFFER
-                            checker = setTimeout( ->
-                                self.off(EVENTS.STATECHANGE, check)
-                                if self.getCurrentPosition() < 100
-                                    self.setState(STATES.END)
-                                    self.trigger(EVENTS.ERROR, ERRCODE.MEDIA_ERR_SRC_NOT_SUPPORTED)
-                            , 2000)
-                        else
-                            clearTimeout(checker)
-                    self.off(EVENTS.STATECHANGE, check).on(EVENTS.STATECHANGE, check)
+            @_setUrl(url) if url
             super(url)
 
         getState: ->
@@ -232,9 +216,7 @@ do (root = @, factory = (cfg, utils, Timer, EngineCore) ->
             @setState(st) if st
 
         _swfOnErr: (e) ->
-            @setState(STATES.END)
             @trigger(EVENTS.ERROR, e)
-            console?.error?(e)
 
     FlashCore
 ) ->

@@ -32,7 +32,7 @@ module.exports = function(config) {
         pattern: 'doc/mp3/*',
         included: false
       },
-      'bower_components/jquery/jquery.js',
+      'bower_components/jquery/dist/jquery.js',
       'bower_components/chai/chai.js',
       'bower_components/mocha/mocha.js',
       'bower_components/mocha/mocha.css',

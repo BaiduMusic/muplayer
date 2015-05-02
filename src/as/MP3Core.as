@@ -49,23 +49,9 @@ package {
         }
 
         override protected function onPlayTimer(e:TimerEvent = null):void {
-            var st:int = getState(),
-                pos:uint = sc.position;
-
-            // 页面因网速较慢导致缓冲不够播放停止的情况
-            if (st === State.PLAYING && _position === pos) {
-                setState(State.PREBUFFER);
-            } else if (st !== State.PLAYING && _position < pos) {
-                setState(st === State.PREBUFFER && State.BUFFERING || State.PLAYING);
+            if (sc) {
+                updatePostion(sc.position);
             }
-
-            _position = sc.position;
-
-            if (_position > _length) {
-                _length = _position;
-            }
-
-            _positionPct = Math.round(100 * _position / _length) / 100;
         }
 
         override public function setVolume(v:uint):Boolean {
@@ -112,6 +98,10 @@ package {
         }
 
         override public function f_play(p:Number = 0):void {
+            if (!_url) {
+                return;
+            }
+
             super.f_play(p);
 
             if (p === 0 && _pausePosition) {
@@ -124,11 +114,9 @@ package {
                 sc = null;
             }
 
-            if (_url) {
-                sc = s.play(p, 0, stf);
-                sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
-                isPlaying = true;
-            }
+            sc = s.play(p, 0, stf);
+            sc.addEventListener(Event.SOUND_COMPLETE, onPlayComplete);
+            isPlaying = true;
         }
 
         override public function f_pause():void {

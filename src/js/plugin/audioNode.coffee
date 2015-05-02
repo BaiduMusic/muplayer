@@ -19,7 +19,7 @@ do (root = @, factory = ->
             @output = opts.output or context.destination
 
         connect: ->
-            @output.connect.apply @output, arguments
+            @output.connect.apply(@output, arguments)
 
         disconnect: ->
             @output.disconnect(0)

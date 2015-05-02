@@ -1,4 +1,6 @@
 suite 'engine', ->
+    @timeout(5000)
+
     setup ->
         p.off().reset().setVolume(0)
 
@@ -7,8 +9,6 @@ suite 'engine', ->
         assert.ok t in ['FlashMP3Core', 'FlashMP4Core', 'AudioCore']
 
     test '会自动switch到合适内核处理播放', (done) ->
-        @timeout(4000)
-
         p.on 'playing', ->
             t = p.getEngineType()
             url = p.getUrl()

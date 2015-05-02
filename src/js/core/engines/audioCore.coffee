@@ -1,5 +1,6 @@
 do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
     win = window
+    ua = navigator.userAgent
     {TYPES, EVENTS, STATES, ERRCODE} = cfg.engine
 
     class AudioCore extends EngineCore
@@ -59,22 +60,22 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             @_needCanPlay([
                 'play', 'setCurrentPosition'
             ])
-            @setState(STATES.STOP)
-            @_initEvents()
+            @setState(STATES.STOP)._initEvents()
 
             # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             if opts.needPlayEmpty
-                playEmpty = =>
-                    # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
-                    unless @getUrl()
-                        @setUrl(opts.emptyMP3).play()
-                    win.removeEventListener('touchstart', playEmpty, false)
-                win.addEventListener('touchstart', playEmpty, false)
+                win.addEventListener('touchstart', @_playEmpty, false)
 
         _test: ->
             if not Modernizr.audio or not @_supportedTypes.length
                 return false
             true
+
+        _playEmpty: =>
+            # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
+            unless @getUrl()
+                @setUrl(@opts.emptyMP3).play()
+            win.removeEventListener('touchstart', @_playEmpty, false)
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
         _initEvents: ->
@@ -105,8 +106,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             ).on('playing', ->
                 clearTimeout(errorTimer)
                 self.setState(STATES.PLAYING)
-            ).on('pause', ->
-                self.setState(self.getCurrentPosition() and STATES.PAUSE or STATES.STOP)
             ).on('ended', ->
                 self.setState(STATES.END)
             ).on('error', (e) ->
@@ -140,7 +139,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                         fn.apply(self, args)
                         audio.off('canplay', handle)
 
-                    if /webkit/.test navigator.userAgent.toLowerCase()
+                    if /webkit/.test ua.toLowerCase()
                         # 对应的编码含义见: http://www.w3schools.com/tags/av_prop_readystate.asp
                         # 小于3认为还没有加载足够数据去播放。
                         if audio.readyState < 3
@@ -169,7 +168,6 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
 
         pause: ->
             @audio.pause()
-            @
 
         stop: ->
             # FIXED: https://github.com/Baidu-Music-FE/muplayer/issues/2
@@ -180,8 +178,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             catch
                 return
             finally
-                @pause()
-            @
+                @audio.pause()
 
         setUrl: (url) ->
             if url
