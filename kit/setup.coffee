@@ -2,8 +2,6 @@
 
 { _, spawn, log, path: { join } } = kit
 
-kit.require 'colors'
-
 module.exports = ->
     spawn 'bower', ['install']
     .then ->
