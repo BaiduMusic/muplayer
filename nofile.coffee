@@ -7,7 +7,6 @@ nobone = require 'nobone'
 kit.require 'colors'
 
 module.exports = (task, option) ->
-
     option '-p, --port <8077>', 'Which port to listen to. Example: no -p 8077 server', 8077
     option '-r, --rebuild', 'Wheather to rebuild src and doc files before run dev server?'
     option '-c, --cli', 'Wheather to run test cases in CLI?'
@@ -17,8 +16,8 @@ module.exports = (task, option) ->
         setup()
 
     task 'build', 'Build all source code.', build = ->
-        builder = require './kit/builder'
-        builder()
+        builder = new (require './kit/builder')
+        builder.start()
 
     task 'doc', 'Build doc.', buildDoc = ->
         kit.remove('doc', {
