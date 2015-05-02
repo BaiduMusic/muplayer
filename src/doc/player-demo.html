@@ -35,9 +35,8 @@
     </div>
 </div>
 
-<script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
-<script src="bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="bower_components/requirejs/require.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/prism/prism.js"></script>
@@ -56,7 +55,15 @@ require([
     'muplayer/player'
 ], function(Player) {
     var player = new Player({
-            baseDir: 'dist'
+            baseDir: 'dist',
+            engines: [
+                {
+                    type: 'FlashMP4Core'
+                },
+                {
+                    type: 'FlashMP3Core'
+                }
+            ]
         }),
         $player = $('.player-widget'),
         $opts = $player.find('.opts'),
@@ -78,8 +85,9 @@ require([
         };
 
     player.add([
-        'mp3/rain.mp3',
+        'http://yinyueshiting.baidu.com/data2/music/136963778/205601720520064.m4a?xcode=10b77982497870c35cd029b692b003862b0a678262530f0c',
         'mp3/coins.mp4a',
+        'mp3/rain.mp3',
         'mp3/walking.mp3'
     ]);
 
@@ -175,6 +183,8 @@ require([
             });
         }
     });
+
+    window.player = player;
 });
 </script>
 

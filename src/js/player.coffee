@@ -9,17 +9,15 @@ do (root = this, factory = (
         unless fname in ['prev', 'next']
             return @
 
-        @stop()
-
-        pl = @playlist
         play = =>
             args =
                 cur: @getCur()
             args.auto = auto if auto
             @trigger "player:#{fname}", args
-            @play()
+            @stop(false).play()
 
         if @getSongsNum()
+            pl = @playlist
             unless pl.cur
                 play()
             else if pl[fname].call(pl, auto)
@@ -46,7 +44,7 @@ do (root = this, factory = (
             absoluteUrl: true
             maxRetryTimes: 1
             maxWaitingTime: 4
-            recoverMethodWhenWaitingTimeout: 'retry'
+            recoverMethod: 'retry'
 
             # 在基类的默认实现中将fetch设计成Promise模式的接口调用似乎没有必要,
             # 但对于依赖API远程调用进行歌曲异步选链的场景下, Promise的处理无疑更具灵活性。
@@ -147,7 +145,7 @@ do (root = this, factory = (
 
         _initEngine: (engine) ->
             self = @
-            recover = @opts.recoverMethodWhenWaitingTimeout
+            recover = @opts.recoverMethod
 
             @engine = engine
             @engine.on(EVENTS.STATECHANGE, (e) ->
@@ -157,19 +155,21 @@ do (root = this, factory = (
                 if st is STATES.END
                     self._clearWaitingTimer().next(true)
             ).on(EVENTS.POSITIONCHANGE, (pos) ->
+                pos = ~~pos
                 return unless pos
                 st = self.getState()
-                self.trigger('timeupdate', pos)
                 if self.getUrl() and st in [
                     STATES.PLAYING, STATES.PREBUFFER,
                     STATES.BUFFERING, STATES.CANPLAYTHROUGH
                 ]
+                    self.trigger('timeupdate', pos)
                     self._startWaitingTimer()
             ).on(EVENTS.PROGRESS, (progress) ->
                 self.trigger('progress', progress)
             ).on(EVENTS.ERROR, (e) ->
-                console?.error?('error: ', e)
-                self.trigger('error', e)
+                if self.getUrl()
+                    console?.error?('error: ', e)
+                    self.trigger('error', e)
             ).on(EVENTS.WAITING_TIMEOUT, ->
                 if recover in ['retry', 'next']
                     self[recover]()
@@ -177,12 +177,17 @@ do (root = this, factory = (
             )
 
         retry: ->
-            if @_retryTimes < @opts.maxRetryTimes
-                @_retryTimes++
-                url = @getUrl()
-                ms = @engine.getCurrentPosition()
-                @pause().setUrl(url).engine.setCurrentPosition(ms)
+            self = @
+            if @_retryTimes++ < @opts.maxRetryTimes
                 @_startWaitingTimer().trigger('player:retry', @_retryTimes)
+
+                { engine } = @
+                url = @getUrl()
+                ms = engine.getCurrentPosition()
+
+                @pause().once 'timeupdate', ->
+                    engine.setCurrentPosition(ms)
+                engine.setUrl(url).play()
             else
                 @_retryTimes = 0
                 @trigger('player:retry:max')
@@ -199,11 +204,12 @@ do (root = this, factory = (
             def = $.Deferred()
 
             play = ->
-                if self.getUrl() and not self._frozen
+                unless self._frozen
                     self._startWaitingTimer()
-                    engine.play()
-                    if $.isNumeric startTime
-                        engine.setCurrentPosition(startTime)
+                    if self.getUrl()
+                        engine.play()
+                        if $.isNumeric startTime
+                            engine.setCurrentPosition(startTime)
                 def.resolve()
 
             st = @getState()
@@ -232,18 +238,20 @@ do (root = this, factory = (
          * 若player正在播放，则暂停播放 (这时，如果再执行play方法，则从暂停位置继续播放)。会派发 <code>player:pause</code> 事件。
          * @return {player}
         ###
-        pause: ->
+        pause: (trigger = true) ->
             @engine.pause()
-            @_clearWaitingTimer().trigger('player:pause')
+            @_clearWaitingTimer()
+            @trigger('player:pause') if trigger
             @
 
         ###*
          * 停止播放，会将当前播放位置重置。即stop后执行play，将从音频头部重新播放。会派发 <code>player:stop</code> 事件。
          * @return {player}
         ###
-        stop: ->
+        stop: (trigger = true) ->
             @engine.stop()
-            @_clearWaitingTimer().trigger('player:stop')
+            @_clearWaitingTimer()
+            @trigger('player:stop') if trigger
             @
 
         ###*
@@ -251,7 +259,7 @@ do (root = this, factory = (
          * @return {player}
         ###
         replay: ->
-            @stop().play()
+            @stop(false).play()
 
         ###*
          * 播放前一首歌。会派发 <code>player:prev</code> 事件，事件参数：
@@ -296,7 +304,7 @@ do (root = this, factory = (
             if sid and @_sid isnt sid
                 pl.setCur(sid)
                 @_sid = sid
-                @stop()
+                @stop(false)
             @trigger('player:setCur', sid)
             @
 
@@ -352,7 +360,7 @@ do (root = this, factory = (
             @playlist.reset()
             @engine.reset()
             @trigger('player:reset')
-            @stop()
+            @stop(false)
 
         ###*
          * 销毁 <code>MuPlayer</code> 实例（解绑事件并销毁DOM）。
@@ -380,7 +388,7 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @stop().engine.setUrl(url)
+            @stop(false).engine.setUrl(url)
             @trigger('player:setUrl', url)
             @
 
@@ -390,6 +398,13 @@ do (root = this, factory = (
         ###
         getUrl: ->
             @engine.getUrl()
+
+        ###*
+         * 根据后缀名获取当前播放资源的类型。
+         * @return {String}
+        ###
+        getExt: ->
+            utils.getExt @getUrl()
 
         ###*
          * 设置播放器音量。
@@ -472,6 +487,11 @@ do (root = this, factory = (
             @_frozen = !!frozen
             @
 
+        cheatPlayer: ->
+            if @getEngineType() is 'AudioCore'
+                @engine.curEngine._playEmpty()
+            @
+
         _checkFrozen: (fnames) ->
             self = @
             for name in fnames
@@ -481,9 +501,11 @@ do (root = this, factory = (
                     self
 
         _startWaitingTimer: ->
-            @waitingTimer.clear().after("#{@opts.maxWaitingTime} seconds", =>
-                @engine.trigger(EVENTS.WAITING_TIMEOUT)
-            ).start()
+            { opts: { maxWaitingTime } } = @
+            if maxWaitingTime > 0
+                @waitingTimer.clear().after("#{maxWaitingTime} seconds", =>
+                    @engine.trigger(EVENTS.WAITING_TIMEOUT)
+                ).start()
             @
 
         _clearWaitingTimer: ->

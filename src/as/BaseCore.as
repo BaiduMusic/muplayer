@@ -12,7 +12,7 @@ package {
         private var jsInstance:String = '';
         private var canPlayThrough:Boolean = false;
 
-        protected var playerTimer:Timer;
+        protected var playerTimer:Timer = new Timer(Consts.TIMER_INTERVAL);
         protected var stf:SoundTransform;
 
         // 实例属性
@@ -22,7 +22,7 @@ package {
         protected var _muteVolume:uint;                // 静音时的音量
         protected var _url:String;                     // 外部文件地址
         protected var _length:uint;                    // 音频总长度(ms)
-        protected var _position:uint;                  // 当前播放进度(ms)
+        protected var _position:uint = 0;              // 当前播放进度(ms)
         protected var _loadedPct:Number;               // 载入进度百分比[0-1]
         protected var _positionPct:Number;             // 播放进度百分比[0-1]
         protected var _pausePosition:Number;           // 暂停时的播放进度(ms)
@@ -35,6 +35,24 @@ package {
         // 象将一直等待直至至少拥有这一数量的数据为止。
         // 默认值为1000毫秒。
         private var _bufferTime:uint = 5000;
+
+        protected function updatePostion(pos:uint = 0):void {
+            var st:int = getState();
+
+            // 页面因网速较慢导致缓冲不够播放停止的情况
+            if (st === State.PREBUFFER && _position === pos) {
+                setState(State.BUFFERING);
+            } else if (_position < pos) {
+                setState(State.PLAYING);
+            }
+
+            _position = pos;
+
+            if (_position > _length) {
+                _length = _position;
+            }
+            _positionPct = Math.round(100 * _position / _length) / 100;
+        }
 
         public function BaseCore() {
             // http://www.markledford.com/blog/2008/08/13/why-some-as3-swfs-work-stand-alone-but-fail-to-load-into-other-swfs/
@@ -53,6 +71,7 @@ package {
             Security.allowInsecureDomain('*');
             loadFlashVars(loaderInfo.parameters);
             stf = new SoundTransform(_volume / 100, 0);
+            playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
         }
 
         protected function callJS(fn:String, data:Object = undefined):void {
@@ -81,14 +100,13 @@ package {
         protected function onPlayComplete(e:Event = null):void {
             // 保证length和positionPct赋值正确。
             onPlayTimer();
-            f_pause()
+            f_stop();
             setState(State.END);
         }
 
         protected function onPlayTimer(e:TimerEvent = null):void {}
 
         protected function handleErr(e:* = null):void {
-            f_stop();
             callJS(Consts.SWF_ON_ERR, e);
         }
 
@@ -200,28 +218,22 @@ package {
         public function f_load(url:String):void {}
 
         public function f_play(p:Number = 0):void {
-            if (!playerTimer) {
-                playerTimer = new Timer(Consts.TIMER_INTERVAL);
-                playerTimer.addEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.start();
-            }
+            playerTimer.start();
+            setState(State.PREBUFFER);
         }
 
         public function f_pause():void {}
 
         public function f_stop(p:Number = -1):void {
+            playerTimer.stop();
             if (p === -1) {
                 _position = 0;
                 _pausePosition = 0;
+                setState(State.STOP);
             } else {
                 _pausePosition = p;
+                setState(State.PAUSE);
             }
-            if (playerTimer) {
-                playerTimer.removeEventListener(TimerEvent.TIMER, onPlayTimer);
-                playerTimer.stop();
-                playerTimer = null;
-            }
-            setState(p && State.PAUSE || State.STOP);
         }
     }
 }

@@ -16,7 +16,7 @@ do (root = @, factory = (cfg) ->
     extReg = /\.(\w+)(\?.*)?$/
 
     for name in ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']
-        utils['is' + name] = do (name=name) ->
+        utils['is' + name] = do (name = name) ->
             (obj) ->
                 toString.call(obj) is '[object ' + name + ']'
 

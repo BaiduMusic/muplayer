@@ -17,7 +17,7 @@ do (root = @, factory = (cfg, utils, Events) ->
 
         reset: ->
             @stop()
-            @setUrl()
+            @_url = ''
             @trigger(EVENTS.PROGRESS, 0)
             @trigger(EVENTS.POSITIONCHANGE, 0)
             @
@@ -34,8 +34,8 @@ do (root = @, factory = (cfg, utils, Events) ->
         stop: ->
             @
 
-        setUrl: (url = '') ->
-            @_url = url
+        setUrl: (url) ->
+            @_url = url if url
             @
 
         getUrl: ->
@@ -46,15 +46,10 @@ do (root = @, factory = (cfg, utils, Events) ->
                 return
 
             if st in [
-                STATES.BUFFERING,  STATES.CANPLAYTHROUGH
-            ] and @_state in [
-                STATES.END, STATES.STOP
-            ]
-                return
-
-            if st in [
                 STATES.PREBUFFER, STATES.BUFFERING
-            ] and @_state is STATES.PAUSE
+            ] and @_state in [
+                STATES.PAUSE, STATES.END, STATES.STOP
+            ]
                 return
 
             oldState = @_state

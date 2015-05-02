@@ -69,7 +69,6 @@
   root = this;
   return $.extend({
     namespace: root._mu,
-    debug: false,
     version: '0.9.2',
     timerResolution: 25,
     cdn: 'http://apps.bdimg.com/libs/muplayer/',
@@ -890,7 +889,7 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
 
     EngineCore.prototype.reset = function() {
       this.stop();
-      this.setUrl();
+      this._url = '';
       this.trigger(EVENTS.PROGRESS, 0);
       this.trigger(EVENTS.POSITIONCHANGE, 0);
       return this;
@@ -913,10 +912,9 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     };
 
     EngineCore.prototype.setUrl = function(url) {
-      if (url == null) {
-        url = '';
+      if (url) {
+        this._url = url;
       }
-      this._url = url;
       return this;
     };
 
@@ -929,10 +927,7 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
       if (indexOf.call(availableStates, st) < 0 || st === this._state) {
         return;
       }
-      if ((st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH) && ((ref1 = this._state) === STATES.END || ref1 === STATES.STOP)) {
-        return;
-      }
-      if ((st === STATES.PREBUFFER || st === STATES.BUFFERING) && this._state === STATES.PAUSE) {
+      if ((st === STATES.PREBUFFER || st === STATES.BUFFERING) && ((ref1 = this._state) === STATES.PAUSE || ref1 === STATES.END || ref1 === STATES.STOP)) {
         return;
       }
       oldState = this._state;
@@ -1185,7 +1180,8 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     })(this, this.document);
 });
 
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
@@ -1198,8 +1194,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     return root._mu.AudioCore = factory(_mu.cfg, _mu.utils, _mu.EngineCore, _mu.Modernizr);
   }
 })(this, function(cfg, utils, EngineCore, Modernizr) {
-  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, ref, win;
+  var AudioCore, ERRCODE, EVENTS, STATES, TYPES, ref, ua, win;
   win = window;
+  ua = navigator.userAgent;
   ref = cfg.engine, TYPES = ref.TYPES, EVENTS = ref.EVENTS, STATES = ref.STATES, ERRCODE = ref.ERRCODE;
   AudioCore = (function(superClass) {
     extend(AudioCore, superClass);
@@ -1217,7 +1214,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     AudioCore.prototype.engineType = TYPES.AUDIO;
 
     function AudioCore(options) {
-      var _eventHandlers, audio, k, least, levels, opts, playEmpty, v;
+      this._playEmpty = bind(this._playEmpty, this);
+      var _eventHandlers, audio, k, least, levels, opts, v;
       this.opts = $.extend({}, AudioCore.defaults, options);
       this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
       opts = this.opts;
@@ -1269,18 +1267,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       };
       this.audio = audio;
       this._needCanPlay(['play', 'setCurrentPosition']);
-      this.setState(STATES.STOP);
-      this._initEvents();
+      this.setState(STATES.STOP)._initEvents();
       if (opts.needPlayEmpty) {
-        playEmpty = (function(_this) {
-          return function() {
-            if (!_this.getUrl()) {
-              _this.setUrl(opts.emptyMP3).play();
-            }
-            return win.removeEventListener('touchstart', playEmpty, false);
-          };
-        })(this);
-        win.addEventListener('touchstart', playEmpty, false);
+        win.addEventListener('touchstart', this._playEmpty, false);
       }
     }
 
@@ -1289,6 +1278,13 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
         return false;
       }
       return true;
+    };
+
+    AudioCore.prototype._playEmpty = function() {
+      if (!this.getUrl()) {
+        this.setUrl(this.opts.emptyMP3).play();
+      }
+      return win.removeEventListener('touchstart', this._playEmpty, false);
     };
 
     AudioCore.prototype._initEvents = function() {
@@ -1320,8 +1316,6 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       }).on('playing', function() {
         clearTimeout(errorTimer);
         return self.setState(STATES.PLAYING);
-      }).on('pause', function() {
-        return self.setState(self.getCurrentPosition() && STATES.PAUSE || STATES.STOP);
       }).on('ended', function() {
         return self.setState(STATES.END);
       }).on('error', function(e) {
@@ -1362,7 +1356,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
             fn.apply(self, args);
             return audio.off('canplay', handle);
           };
-          if (/webkit/.test(navigator.userAgent.toLowerCase())) {
+          if (/webkit/.test(ua.toLowerCase())) {
             if (audio.readyState < 3) {
               audio.on('canplay', handle);
             } else {
@@ -1398,19 +1392,17 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     };
 
     AudioCore.prototype.pause = function() {
-      this.audio.pause();
-      return this;
+      return this.audio.pause();
     };
 
     AudioCore.prototype.stop = function() {
       try {
-        this.audio.currentTime = 0;
+        return this.audio.currentTime = 0;
       } catch (_error) {
-        return;
+
       } finally {
-        this.pause();
+        this.audio.pause();
       }
-      return this;
     };
 
     AudioCore.prototype.setUrl = function(url) {
@@ -1572,7 +1564,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
           newState: newState
         };
         self.trigger(EVENTS.STATECHANGE, e);
-        if (newState === STATES.CANPLAYTHROUGH && (oldState === STATES.PLAYING || oldState === STATES.PAUSE)) {
+        if (newState === STATES.CANPLAYTHROUGH && (oldState === STATES.PLAYING || oldState === STATES.PAUSE || oldState === STATES.STOP)) {
           return self.setState(oldState);
         }
       };
@@ -1657,6 +1649,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
     Engine.prototype.setUrl = function(url) {
       var ext;
+      if (!url) {
+        return this;
+      }
       ext = utils.getExt(url);
       if (this.canPlayType(ext)) {
         if (!this.curEngine.canPlayType(ext)) {
@@ -1681,15 +1676,13 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     Engine.prototype.pause = function() {
       this.curEngine.pause();
       this.trigger(EVENTS.POSITIONCHANGE, this.getCurrentPosition());
-      this.setState(STATES.PAUSE);
-      return this;
+      return this.setState(STATES.PAUSE);
     };
 
     Engine.prototype.stop = function() {
       this.curEngine.stop();
       this.trigger(EVENTS.POSITIONCHANGE, 0);
-      this.setState(STATES.STOP);
-      return this;
+      return this.setState(STATES.STOP);
     };
 
     Engine.prototype.setState = function(st) {
@@ -1728,6 +1721,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     };
 
     Engine.prototype.getCurrentPosition = function() {
+      if (this.getState() === STATES.STOP) {
+        this.setCurrentPosition(0);
+      }
       return this.curEngine.getCurrentPosition();
     };
 
@@ -1769,8 +1765,6 @@ var slice = [].slice;
     if (fname !== 'prev' && fname !== 'next') {
       return this;
     }
-    this.stop();
-    pl = this.playlist;
     play = (function(_this) {
       return function() {
         var args;
@@ -1781,10 +1775,11 @@ var slice = [].slice;
           args.auto = auto;
         }
         _this.trigger("player:" + fname, args);
-        return _this.play();
+        return _this.stop(false).play();
       };
     })(this);
     if (this.getSongsNum()) {
+      pl = this.playlist;
       if (!pl.cur) {
         play();
       } else if (pl[fname].call(pl, auto)) {
@@ -1815,7 +1810,7 @@ var slice = [].slice;
       absoluteUrl: true,
       maxRetryTimes: 1,
       maxWaitingTime: 4,
-      recoverMethodWhenWaitingTimeout: 'retry',
+      recoverMethod: 'retry',
       fetch: function() {
         var cur, def;
         def = $.Deferred();
@@ -1920,7 +1915,7 @@ var slice = [].slice;
     Player.prototype._initEngine = function(engine) {
       var recover, self;
       self = this;
-      recover = this.opts.recoverMethodWhenWaitingTimeout;
+      recover = this.opts.recoverMethod;
       this.engine = engine;
       return this.engine.on(EVENTS.STATECHANGE, function(e) {
         var st;
@@ -1932,23 +1927,26 @@ var slice = [].slice;
         }
       }).on(EVENTS.POSITIONCHANGE, function(pos) {
         var st;
+        pos = ~~pos;
         if (!pos) {
           return;
         }
         st = self.getState();
-        self.trigger('timeupdate', pos);
         if (self.getUrl() && (st === STATES.PLAYING || st === STATES.PREBUFFER || st === STATES.BUFFERING || st === STATES.CANPLAYTHROUGH)) {
+          self.trigger('timeupdate', pos);
           return self._startWaitingTimer();
         }
       }).on(EVENTS.PROGRESS, function(progress) {
         return self.trigger('progress', progress);
       }).on(EVENTS.ERROR, function(e) {
-        if (typeof console !== "undefined" && console !== null) {
-          if (typeof console.error === "function") {
-            console.error('error: ', e);
+        if (self.getUrl()) {
+          if (typeof console !== "undefined" && console !== null) {
+            if (typeof console.error === "function") {
+              console.error('error: ', e);
+            }
           }
+          return self.trigger('error', e);
         }
-        return self.trigger('error', e);
       }).on(EVENTS.WAITING_TIMEOUT, function() {
         if (recover === 'retry' || recover === 'next') {
           self[recover]();
@@ -1958,13 +1956,17 @@ var slice = [].slice;
     };
 
     Player.prototype.retry = function() {
-      var ms, url;
-      if (this._retryTimes < this.opts.maxRetryTimes) {
-        this._retryTimes++;
-        url = this.getUrl();
-        ms = this.engine.getCurrentPosition();
-        this.pause().setUrl(url).engine.setCurrentPosition(ms);
+      var engine, ms, self, url;
+      self = this;
+      if (this._retryTimes++ < this.opts.maxRetryTimes) {
         this._startWaitingTimer().trigger('player:retry', this._retryTimes);
+        engine = this.engine;
+        url = this.getUrl();
+        ms = engine.getCurrentPosition();
+        this.pause().once('timeupdate', function() {
+          return engine.setCurrentPosition(ms);
+        });
+        engine.setUrl(url).play();
       } else {
         this._retryTimes = 0;
         this.trigger('player:retry:max');
@@ -1985,11 +1987,13 @@ var slice = [].slice;
       engine = this.engine;
       def = $.Deferred();
       play = function() {
-        if (self.getUrl() && !self._frozen) {
+        if (!self._frozen) {
           self._startWaitingTimer();
-          engine.play();
-          if ($.isNumeric(startTime)) {
-            engine.setCurrentPosition(startTime);
+          if (self.getUrl()) {
+            engine.play();
+            if ($.isNumeric(startTime)) {
+              engine.setCurrentPosition(startTime);
+            }
           }
         }
         return def.resolve();
@@ -2016,9 +2020,15 @@ var slice = [].slice;
      * @return {player}
      */
 
-    Player.prototype.pause = function() {
+    Player.prototype.pause = function(trigger) {
+      if (trigger == null) {
+        trigger = true;
+      }
       this.engine.pause();
-      this._clearWaitingTimer().trigger('player:pause');
+      this._clearWaitingTimer();
+      if (trigger) {
+        this.trigger('player:pause');
+      }
       return this;
     };
 
@@ -2028,9 +2038,15 @@ var slice = [].slice;
      * @return {player}
      */
 
-    Player.prototype.stop = function() {
+    Player.prototype.stop = function(trigger) {
+      if (trigger == null) {
+        trigger = true;
+      }
       this.engine.stop();
-      this._clearWaitingTimer().trigger('player:stop');
+      this._clearWaitingTimer();
+      if (trigger) {
+        this.trigger('player:stop');
+      }
       return this;
     };
 
@@ -2041,7 +2057,7 @@ var slice = [].slice;
      */
 
     Player.prototype.replay = function() {
-      return this.stop().play();
+      return this.stop(false).play();
     };
 
 
@@ -2102,7 +2118,7 @@ var slice = [].slice;
       if (sid && this._sid !== sid) {
         pl.setCur(sid);
         this._sid = sid;
-        this.stop();
+        this.stop(false);
       }
       this.trigger('player:setCur', sid);
       return this;
@@ -2190,7 +2206,7 @@ var slice = [].slice;
       this.playlist.reset();
       this.engine.reset();
       this.trigger('player:reset');
-      return this.stop();
+      return this.stop(false);
     };
 
 
@@ -2229,7 +2245,7 @@ var slice = [].slice;
       if (!url) {
         return this;
       }
-      this.stop().engine.setUrl(url);
+      this.stop(false).engine.setUrl(url);
       this.trigger('player:setUrl', url);
       return this;
     };
@@ -2242,6 +2258,16 @@ var slice = [].slice;
 
     Player.prototype.getUrl = function() {
       return this.engine.getUrl();
+    };
+
+
+    /**
+     * 根据后缀名获取当前播放资源的类型。
+     * @return {String}
+     */
+
+    Player.prototype.getExt = function() {
+      return utils.getExt(this.getUrl());
     };
 
 
@@ -2355,6 +2381,13 @@ var slice = [].slice;
       return this;
     };
 
+    Player.prototype.cheatPlayer = function() {
+      if (this.getEngineType() === 'AudioCore') {
+        this.engine.curEngine._playEmpty();
+      }
+      return this;
+    };
+
     Player.prototype._checkFrozen = function(fnames) {
       var i, len, name, results, self;
       self = this;
@@ -2374,11 +2407,15 @@ var slice = [].slice;
     };
 
     Player.prototype._startWaitingTimer = function() {
-      this.waitingTimer.clear().after(this.opts.maxWaitingTime + " seconds", (function(_this) {
-        return function() {
-          return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
-        };
-      })(this)).start();
+      var maxWaitingTime;
+      maxWaitingTime = this.opts.maxWaitingTime;
+      if (maxWaitingTime > 0) {
+        this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
+          return function() {
+            return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
+          };
+        })(this)).start();
+      }
       return this;
     };
 
