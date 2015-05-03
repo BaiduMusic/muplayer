@@ -2,7 +2,6 @@
 
 {
     readFile, outputFile, Promise
-    path: { join }
 } = kit
 
 module.exports =
