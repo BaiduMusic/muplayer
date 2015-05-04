@@ -18,7 +18,7 @@ class Builder
             tasks:
                 'setup': [
                     'Setup project.',
-                    ->
+                    =>
                         setup = kit.require './kit/setup', @opts.dirname
                         setup()
                 ]
