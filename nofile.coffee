@@ -1,15 +1,11 @@
 nobone = require 'nobone'
-nofile_builder = require './kit/nofile_builder'
 
-{
-    kit,
-    kit: { path, spawn, Promise }
-} = nobone
+{ kit } = nobone
 
 kit.require 'colors'
 
 module.exports = (task, option) ->
-    nofile_builder._dirname = __dirname
+    nofile_builder = new (require './kit/nofile_builder')(dirname: __dirname)
 
     nofile_builder.build(option, 'option', [
         '-p, --port <8077>'
