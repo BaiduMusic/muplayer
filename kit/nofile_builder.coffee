@@ -90,12 +90,12 @@ class Builder
                 args.unshift(name)
                 handler.apply(null, args)
 
-    _build: (options) ->
-        Builder = kit.require './kit/builder', r._dirname
+    _build: (options) =>
+        Builder = kit.require './kit/builder', @opts.dirname
         builder = new Builder(options)
         builder.start()
 
-    _build_doc: ->
+    _build_doc: =>
         remove('doc', {
             isFollowLink: false
         }).then ->
