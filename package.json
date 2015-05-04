@@ -1,6 +1,6 @@
 {
   "name": "muplayer",
-  "version": "0.9.2",
+  "version": "1.0.0",
   "authors": "https://github.com/Baidu-Music-FE",
   "repository": {
     "type": "git",
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "no": "no",
-    "install": "bower install",
+    "install": "no setup",
     "test": "no --cli test"
   },
   "license": "BSD",
