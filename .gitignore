@@ -3,9 +3,9 @@
 *.swp
 *.swo
 .idea
-.sass-cache
-.coffee
 .nokit
+.coffee
+.sass-cache
 dist/*.swf.b
 dist/*.swf.cache
 
