@@ -37,23 +37,16 @@ class NofileBuilder
                     'Run dev server.',
                     (opts) =>
                         self = @
+                        { port, rebuild } = opts
 
-                        run = ->
-                            service.use '/', renderer.static('doc')
-                            service.use '/dist', renderer.static('dist')
-                            service.use '/bower_components', renderer.static('bower_components')
-                            { port } = opts
-                            service.listen port, ->
-                                log '>> Server start at port: '.cyan + port
-
-                        if opts.rebuild
+                        if rebuild
                             @_build()
                             .then ->
                                 self._build_doc()
                             .then ->
-                                run()
+                                self._server_run(port)
                         else
-                            run()
+                            @_server_run(port)
                 ]
 
                 'test': [
@@ -150,5 +143,10 @@ class NofileBuilder
             ]
         .lastly ->
             remove 'doc_temp'
+
+    _server_run: (port) =>
+        service.use '/', renderer.static('doc')
+        service.listen port, ->
+            log '>> Server start at port: '.cyan + port
 
 module.exports = NofileBuilder
