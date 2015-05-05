@@ -5,7 +5,7 @@ nobone = require 'nobone'
     kit: { _, log, remove, spawn, Promise }
 } = nobone
 
-class Builder
+class NofileBuilder
     constructor: (options) ->
         defaults =
             dirname: __dirname
@@ -33,7 +33,8 @@ class Builder
 
                 'server': [
                     'Run dev server.',
-                    (opts) ->
+                    (opts) =>
+                        self = @
                         { service, renderer } = nobone()
 
                         run = ->
@@ -42,9 +43,9 @@ class Builder
                                 log '>> Server start at port: '.cyan + opts.port
 
                         if opts.rebuild
-                            @_build(opts)
+                            @_build()
                             .then ->
-                                @_build_doc opts
+                                self._build_doc()
                             .then ->
                                 run()
                         else
@@ -53,9 +54,9 @@ class Builder
 
                 'test': [
                     'Run test runner.',
-                    (opts) ->
+                    (opts) =>
                         if opts.cli
-                            @_build(opts)
+                            @_build()
                             .then ->
                                 spawn 'karma', ['start', 'karma.conf.js'].concat([
                                     '--single-run',
@@ -90,9 +91,9 @@ class Builder
                 args.unshift(name)
                 handler.apply(null, args)
 
-    _build: (options) =>
+    _build: =>
         Builder = kit.require './kit/builder', @opts.dirname
-        builder = new Builder(options)
+        builder = new Builder()
         builder.start()
 
     _build_doc: =>
@@ -144,4 +145,4 @@ class Builder
                         kit.symlink '../' + p, to
             ]
 
-module.exports = Builder
+module.exports = NofileBuilder
