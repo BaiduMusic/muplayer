@@ -94,7 +94,7 @@ class NofileBuilder
         builder = new Builder()
         builder.start()
 
-    _build_doc: =>
+    _build_doc: ->
         symlink_to = (from, to, type = 'dir') ->
             symlink '../' + from, 'doc/' + to, type
 
@@ -145,7 +145,7 @@ class NofileBuilder
         .lastly ->
             remove 'doc_temp'
 
-    _server_run: (port) =>
+    _server_run: (port) ->
         { service, renderer } = nobone()
         service.use '/', renderer.static('doc')
         service.listen port, ->
