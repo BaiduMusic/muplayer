@@ -53,26 +53,24 @@
 <li>签出项目<pre><code>git clone https://github.com/Baidu-Music-FE/muplayer.git
 cd muplayer</code></pre>
 </li>
-<li>如果你没有全局安装 <a href="http://coffeescript.org/">coffee</a>，请先安装它<pre><code>npm install -g coffee-script</code></pre>
-</li>
 <li><p>安装依赖</p>
 <pre><code>npm install</code></pre>
 <p>这个步骤会提示你是否安装 Flex SDK，如果选择 <code>no</code>， 项目会利用现有的编译好的 <code>swf</code> 文件。如果你希望更改 action script 源码并编译，请选择 <code>yes</code>，注意这个 SDK 可能会需要下载 400MB 的依赖。如果想自动选择默认项安装（安静模式），请运行 <code>quiet=true npm install</code></p>
 </li>
 <li><p>编译</p>
-<pre><code>cake build</code></pre>
-<p>编译好的文件会保存到 <code>dist</code> 文件夹。</p>
+<pre><code>npm run no -- build</code></pre>
+<p>编译好的文件会保存到 <code>dist</code> 文件夹。如果你全局安装了 <a href="https://github.com/ysmood/nokit">nokit</a>，则可以直接运行 <code>no build</code>。</p>
 </li>
 </ol>
 <h2 id="-">修订文档</h2>
 <ol>
 <li><p>编译文档</p>
-<pre><code>cake doc</code></pre>
+<pre><code>npm run no -- doc</code></pre>
 </li>
 <li><p>预览文档需要启动本地服务器，启动后访问 <a href="http://127.0.0.1:8077">http://127.0.0.1:8077</a></p>
-<pre><code>cake server</code></pre>
+<pre><code>npm run no -- server</code></pre>
 <p>指定端口号</p>
-<pre><code>cake -p 8080 server</code></pre>
+<pre><code>npm run no -- server -p 8080</code></pre>
 </li>
 </ol>
 <h2 id="-">使用案例</h2>
