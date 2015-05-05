@@ -1,9 +1,11 @@
 nobone = require 'nobone'
 
+{ kit, service, renderer } = nobone()
+
 {
-    kit,
-    kit: { _, log, copy, remove, spawn, symlink, Promise }
-} = nobone
+    _, log, copy, remove, spawn, symlink, Promise,
+    path: { join }
+} = kit
 
 class NofileBuilder
     constructor: (options) ->
@@ -35,7 +37,6 @@ class NofileBuilder
                     'Run dev server.',
                     (opts) =>
                         self = @
-                        { service, renderer } = nobone()
 
                         run = ->
                             service.use '/', renderer.static('doc')
@@ -131,15 +132,15 @@ class NofileBuilder
                 copy_to 'index.html', 'index.html'
             ])
         .then ->
-            remove 'doc_temp'
-        .then ->
             Promise.all [
+                # XXX: symlink dist 和 bower_components 是因为为了方便文档站的静态部署：
+                # http://labs.music.baidu.com/muplayer/doc/
                 symlink_to 'dist', 'dist'
                 symlink_to 'bower_components', 'bower_components'
-                symlink_to 'src/doc/img', 'img'
-                symlink_to 'src/doc/mp3', 'mp3'
-                symlink_to 'src/doc/js', 'js'
-                symlink_to 'src/img/favicon.ico', 'favicon.ico', 'file'
+                symlink_to join('src', 'doc', 'img'), 'img'
+                symlink_to join('src', 'doc', 'mp3'), 'mp3'
+                symlink_to join('src', 'doc', 'js'), 'js'
+                symlink_to join('src', 'img', 'favicon.ico'), 'favicon.ico', 'file'
                 kit.glob 'src/doc/*.html'
                 .then (paths) ->
                     for p in paths
@@ -147,5 +148,7 @@ class NofileBuilder
                         log '>> Link: '.cyan + p + ' -> '.cyan + to
                         symlink '../' + p, to
             ]
+        .lastly ->
+            remove 'doc_temp'
 
 module.exports = NofileBuilder
