@@ -2,7 +2,7 @@ nobone = require 'nobone'
 
 {
     kit,
-    kit: { _, log, remove, spawn, Promise }
+    kit: { _, log, copy, remove, spawn, symlink, Promise }
 } = nobone
 
 class NofileBuilder
@@ -39,8 +39,11 @@ class NofileBuilder
 
                         run = ->
                             service.use '/', renderer.static('doc')
-                            service.listen opts.port, ->
-                                log '>> Server start at port: '.cyan + opts.port
+                            service.use '/dist', renderer.static('dist')
+                            service.use '/bower_components', renderer.static('bower_components')
+                            { port } = opts
+                            service.listen port, ->
+                                log '>> Server start at port: '.cyan + port
 
                         if opts.rebuild
                             @_build()
@@ -97,28 +100,31 @@ class NofileBuilder
         builder.start()
 
     _build_doc: =>
+        symlink_to = (from, to, type = 'dir') ->
+            symlink '../' + from, 'doc/' + to, type
+
         remove('doc', {
             isFollowLink: false
         }).then ->
             Promise.all([
                 spawn('compass', [
-                    'compile'
-                    '--sass-dir', 'src/css'
-                    '--css-dir', 'doc/css'
+                    'compile',
+                    '--sass-dir', 'src/css',
+                    '--css-dir', 'doc/css',
                     '--no-line-comments'
                 ])
                 spawn('doxx', [
-                    '-d'
-                    '-R', 'README.md'
-                    '-t', 'MuPlayer 『百度音乐播放内核』'
-                    '-s', 'dist'
-                    '-T', 'doc_temp'
+                    '-d',
+                    '-R', 'README.md',
+                    '-t', 'MuPlayer 『百度音乐播放内核』',
+                    '-s', 'dist',
+                    '-T', 'doc_temp',
                     '--template', 'src/doc/base.jade'
                 ])
             ])
         .then ->
             copy_to = (from, to) ->
-                kit.copy 'doc_temp/' + from, 'doc/' + to
+                copy 'doc_temp/' + from, 'doc/' + to
 
             Promise.all([
                 copy_to 'player.js.html', 'api.html'
@@ -127,9 +133,6 @@ class NofileBuilder
         .then ->
             remove 'doc_temp'
         .then ->
-            symlink_to = (from, to, type = 'dir') ->
-                kit.symlink '../' + from, 'doc/' + to, type
-
             Promise.all [
                 symlink_to 'dist', 'dist'
                 symlink_to 'bower_components', 'bower_components'
@@ -142,7 +145,7 @@ class NofileBuilder
                     for p in paths
                         to = 'doc/' + kit.path.basename p
                         log '>> Link: '.cyan + p + ' -> '.cyan + to
-                        kit.symlink '../' + p, to
+                        symlink '../' + p, to
             ]
 
 module.exports = NofileBuilder
