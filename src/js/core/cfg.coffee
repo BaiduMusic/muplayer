@@ -3,7 +3,7 @@ do (root = @, factory = ->
 
     return $.extend({
         namespace: root._mu
-        version: '0.9.2'
+        version: '1.0.0'
 
         # XXX: timerResolution = 25ms是最小的计时粒度,
         # 这个不经测试调优就尽量不要改, 会影响部分统计数据和性能。
