@@ -56,7 +56,7 @@ cd muplayer
   ```
 
 ## 使用案例
-`MuPlayer`本就源自百度音乐前端团队在产品开发上的积累，被用于多条在线产品及音乐服务上，如[百度音乐人](http://y.baidu.com)，[百度乐播](http://lebo.baidu.com)，及WebApp，是音乐前端的核心基础库之一。下面继续列举一些我们已知的第三方使用案例，以供参考：
+`MuPlayer`本就源自百度音乐前端团队在产品开发上的积累，被用于多条在线产品及音乐服务上，如[百度音乐盒](http://play.baidu.com/)，[百度随心听](http://fm.baidu.com/)，[百度音乐人](http://y.baidu.com)，[百度乐播](http://lebo.baidu.com)，及WebApp，是音乐前端的核心基础库之一。下面继续列举一些我们已知的第三方使用案例，以供参考：
 
  1. 百度个人中心的音乐随心听模块：http://i.baidu.com/#ibx-mod-music
  2. [@mozillazg](https://github.com/mozillazg) 实现的音乐FM：https://github.com/mozillazg/lark
