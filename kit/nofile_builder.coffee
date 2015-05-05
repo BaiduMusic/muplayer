@@ -1,11 +1,12 @@
 nobone = require 'nobone'
 
-{ kit, service, renderer } = nobone()
-
 {
-    _, log, copy, remove, spawn, symlink, Promise,
-    path: { join }
-} = kit
+    kit,
+    kit: {
+        _, log, copy, remove, spawn, symlink, Promise,
+        path: { join }
+    }
+} = nobone
 
 class NofileBuilder
     constructor: (options) ->
@@ -145,6 +146,7 @@ class NofileBuilder
             remove 'doc_temp'
 
     _server_run: (port) =>
+        { service, renderer } = nobone()
         service.use '/', renderer.static('doc')
         service.listen port, ->
             log '>> Server start at port: '.cyan + port
