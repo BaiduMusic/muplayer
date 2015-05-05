@@ -255,11 +255,11 @@ do (root = this, factory = (
             @
 
         ###*
-         * stop() + play()的快捷方式。
+         * 重头播放，但不会重新选链。
          * @return {player}
         ###
         replay: ->
-            @stop(false).play()
+            @pause(false).play(0)
 
         ###*
          * 播放前一首歌。会派发 <code>player:prev</code> 事件，事件参数：

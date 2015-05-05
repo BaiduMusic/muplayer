@@ -2052,12 +2052,12 @@ var slice = [].slice;
 
 
     /**
-     * stop() + play()的快捷方式。
+     * 重头播放，但不会重新选链。
      * @return {player}
      */
 
     Player.prototype.replay = function() {
-      return this.stop(false).play();
+      return this.pause(false).play(0);
     };
 
 
