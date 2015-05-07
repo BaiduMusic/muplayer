@@ -1952,6 +1952,12 @@ var slice = [].slice;
           return self.trigger('error', e);
         }
       }).on(EVENTS.WAITING_TIMEOUT, function() {
+        if (self.getEngineType() === 'AudioCore' && self.engine.curEngine._isEmpty()) {
+          return;
+        }
+        if (!self.getUrl()) {
+          return;
+        }
         if (recover === 'retry' || recover === 'next') {
           self[recover]();
         }
@@ -2416,9 +2422,6 @@ var slice = [].slice;
       if (maxWaitingTime > 0) {
         this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
           return function() {
-            if (_this.getEngineType() === 'AudioCore' && _this.engine.curEngine._isEmpty()) {
-              return;
-            }
             return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
           };
         })(this)).start();
