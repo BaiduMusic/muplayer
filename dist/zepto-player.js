@@ -1287,13 +1287,17 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       return win.removeEventListener('touchstart', this._playEmpty, false);
     };
 
+    AudioCore.prototype._isEmpty = function() {
+      return this.getUrl() === this.opts.emptyMP3;
+    };
+
     AudioCore.prototype._initEvents = function() {
       var audio, canPlayThrough, errorTimer, progress, progressTimer, ref1, self, trigger;
       self = this;
       audio = this.audio, trigger = this.trigger;
       ref1 = [null, null, false], errorTimer = ref1[0], progressTimer = ref1[1], canPlayThrough = ref1[2];
       this.trigger = function(type, listener) {
-        if (self.getUrl() !== self.opts.emptyMP3) {
+        if (!self._isEmpty()) {
           return trigger.call(self, type, listener);
         }
       };
@@ -2409,14 +2413,16 @@ var slice = [].slice;
     Player.prototype._startWaitingTimer = function() {
       var maxWaitingTime;
       maxWaitingTime = this.opts.maxWaitingTime;
-      if (maxWaitingTime === 0 || (this.getEngineType() === 'AudioCore' && this.getUrl() === this.engine.curEngine.opts.emptyMP3)) {
-        return this;
+      if (maxWaitingTime > 0) {
+        this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
+          return function() {
+            if (_this.getEngineType() === 'AudioCore' && _this.engine.curEngine._isEmpty()) {
+              return;
+            }
+            return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
+          };
+        })(this)).start();
       }
-      this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
-        return function() {
-          return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
-        };
-      })(this)).start();
       return this;
     };
 

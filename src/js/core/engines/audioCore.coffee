@@ -77,6 +77,9 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 @setUrl(@opts.emptyMP3).play()
             win.removeEventListener('touchstart', @_playEmpty, false)
 
+        _isEmpty: ->
+            @getUrl() is @opts.emptyMP3
+
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
         _initEvents: ->
             self = @
@@ -84,7 +87,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             [ errorTimer, progressTimer, canPlayThrough ]  = [ null, null, false ]
 
             @trigger = (type, listener) ->
-                trigger.call(self, type, listener) if self.getUrl() isnt self.opts.emptyMP3
+                trigger.call(self, type, listener) unless self._isEmpty()
 
             progress = (per) ->
                 per = per or self.getLoadedPercent()
