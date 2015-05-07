@@ -2980,13 +2980,14 @@ var slice = [].slice;
     Player.prototype._startWaitingTimer = function() {
       var maxWaitingTime;
       maxWaitingTime = this.opts.maxWaitingTime;
-      if (maxWaitingTime > 0) {
-        this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
-          return function() {
-            return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
-          };
-        })(this)).start();
+      if (maxWaitingTime === 0 || (this.getEngineType() === 'AudioCore' && this.getUrl() === this.engine.curEngine.opts.emptyMP3)) {
+        return this;
       }
+      this.waitingTimer.clear().after(maxWaitingTime + " seconds", (function(_this) {
+        return function() {
+          return _this.engine.trigger(EVENTS.WAITING_TIMEOUT);
+        };
+      })(this)).start();
       return this;
     };
 
