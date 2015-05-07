@@ -502,14 +502,12 @@ do (root = this, factory = (
 
         _startWaitingTimer: ->
             { opts: { maxWaitingTime } } = @
-
-            return @ if maxWaitingTime is 0 or
-                (@getEngineType() is 'AudioCore' and
-                @getUrl() is @engine.curEngine.opts.emptyMP3)
-
-            @waitingTimer.clear().after("#{maxWaitingTime} seconds", =>
-                @engine.trigger(EVENTS.WAITING_TIMEOUT)
-            ).start()
+            if maxWaitingTime > 0
+                @waitingTimer.clear().after("#{maxWaitingTime} seconds", =>
+                    if @getEngineType() is 'AudioCore' and @engine.curEngine._isEmpty()
+                        return
+                    @engine.trigger(EVENTS.WAITING_TIMEOUT)
+                ).start()
             @
 
         _clearWaitingTimer: ->
