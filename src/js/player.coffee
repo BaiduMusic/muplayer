@@ -171,8 +171,15 @@ do (root = this, factory = (
                     console?.error?('error: ', e)
                     self.trigger('error', e)
             ).on(EVENTS.WAITING_TIMEOUT, ->
+                if self.getEngineType() is 'AudioCore' and self.engine.curEngine._isEmpty()
+                    return
+
+                unless self.getUrl()
+                    return
+
                 if recover in ['retry', 'next']
                     self[recover]()
+
                 self.trigger('player:waiting_timeout')
             )
 
@@ -504,8 +511,6 @@ do (root = this, factory = (
             { opts: { maxWaitingTime } } = @
             if maxWaitingTime > 0
                 @waitingTimer.clear().after("#{maxWaitingTime} seconds", =>
-                    if @getEngineType() is 'AudioCore' and @engine.curEngine._isEmpty()
-                        return
                     @engine.trigger(EVENTS.WAITING_TIMEOUT)
                 ).start()
             @
