@@ -177,7 +177,6 @@ do (root = this, factory = (
             )
 
         retry: ->
-            self = @
             if @_retryTimes++ < @opts.maxRetryTimes
                 @_startWaitingTimer().trigger('player:retry', @_retryTimes)
 
@@ -260,6 +259,7 @@ do (root = this, factory = (
         ###
         replay: ->
             @pause(false).play(0)
+            @
 
         ###*
          * 播放前一首歌。会派发 <code>player:prev</code> 事件，事件参数：
