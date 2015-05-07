@@ -1956,8 +1956,7 @@ var slice = [].slice;
     };
 
     Player.prototype.retry = function() {
-      var engine, ms, self, url;
-      self = this;
+      var engine, ms, url;
       if (this._retryTimes++ < this.opts.maxRetryTimes) {
         this._startWaitingTimer().trigger('player:retry', this._retryTimes);
         engine = this.engine;
@@ -2057,7 +2056,8 @@ var slice = [].slice;
      */
 
     Player.prototype.replay = function() {
-      return this.pause(false).play(0);
+      this.pause(false).play(0);
+      return this;
     };
 
 
