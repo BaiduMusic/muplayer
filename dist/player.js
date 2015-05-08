@@ -1859,6 +1859,13 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       return results;
     };
 
+    FlashCore.prototype.reset = function() {
+      FlashCore.__super__.reset.call(this);
+      this.progressTimer.reset();
+      this.positionTimer.reset();
+      return this;
+    };
+
     FlashCore.prototype.destroy = function() {
       FlashCore.__super__.destroy.call(this);
       this.flash.off().remove();
@@ -2127,7 +2134,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     Engine.prototype.setEngine = function(engine) {
       var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents;
       self = this;
-      this._lastE = {};
+      if (!this._lastE) {
+        this._lastE = {};
+      }
       statechangeHandle = function(e) {
         var newState, oldState;
         newState = e.newState, oldState = e.oldState;
