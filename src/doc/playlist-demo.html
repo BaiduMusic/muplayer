@@ -27,7 +27,18 @@
 // 通过全局变量的方式初始化
 var player = new _mu.Player({
         mode: 'list',
-        baseDir: 'dist'
+        baseDir: 'dist',
+        engines: [
+            {
+                type: 'AudioCore'
+            },
+            {
+                type: 'FlashMP3Core'
+            },
+            {
+                type: 'FlashMP4Core'
+            }
+        ]
     }),
     $pl = $('#playlist-demo'),
     reset = function() {
