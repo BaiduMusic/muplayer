@@ -56,10 +56,11 @@ do (root = @, factory = (
 
         setEngine: (engine) ->
             self = @
+
             # HACK: 怀疑aralejs事件库有潜在bug, 内核切换时（比如从FlashMP4Core切到FlashMP3Core），
             # statechangeHandle有可能派发连续的重复事件，导致STATES.END被重复触发引发跳歌。
             # 升级事件库后有其他问题，暂时通过lastE标记解决。后续可以更新事件库或深入研究下。
-            @_lastE = {}
+            @_lastE = {} unless @_lastE
 
             statechangeHandle = (e) ->
                 { newState, oldState } = e

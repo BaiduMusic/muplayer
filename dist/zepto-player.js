@@ -1556,7 +1556,9 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     Engine.prototype.setEngine = function(engine) {
       var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents;
       self = this;
-      this._lastE = {};
+      if (!this._lastE) {
+        this._lastE = {};
+      }
       statechangeHandle = function(e) {
         var newState, oldState;
         newState = e.newState, oldState = e.oldState;
