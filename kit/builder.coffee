@@ -29,7 +29,9 @@ class Builder
             self.add_license()
         .then ->
             self.complie_as()
-        .lastly ->
+        .then ->
+            self.clean()
+        .catch ->
             self.clean()
 
     copy_to_dist: (from, to) =>
