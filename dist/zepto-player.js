@@ -1527,6 +1527,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       this.engines = [];
       opts = this.opts;
       this.$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
+      this._lastE = {};
       ref1 = opts.engines;
       for (i = j = 0, len = ref1.length; j < len; i = ++j) {
         engine = ref1[i];
@@ -1556,9 +1557,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     Engine.prototype.setEngine = function(engine) {
       var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents;
       self = this;
-      if (!this._lastE) {
-        this._lastE = {};
-      }
       statechangeHandle = function(e) {
         var newState, oldState;
         newState = e.newState, oldState = e.oldState;

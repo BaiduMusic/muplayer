@@ -98,6 +98,9 @@ class NofileBuilder
         symlink_to = (from, to, type = 'dir') ->
             symlink '../' + from, 'doc/' + to, type
 
+        clean = ->
+            remove 'doc_temp'
+
         remove('doc', {
             isFollowLink: false
         }).then ->
@@ -142,8 +145,10 @@ class NofileBuilder
                         log '>> Link: '.cyan + p + ' -> '.cyan + to
                         symlink '../' + p, to
             ]
-        .lastly ->
-            remove 'doc_temp'
+        .then ->
+            clean()
+        .catch ->
+            clean()
 
     _server_run: (port) ->
         { service, renderer } = nobone()

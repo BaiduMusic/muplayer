@@ -15,22 +15,22 @@
   "devDependencies": {
     "bower": "1.4.1",
     "coffee-script": "1.9.2",
-    "coffeelint": "1.9.4",
+    "coffeelint": "1.9.6",
     "doxx": "0.7.4",
     "flex-sdk": "4.6.0-0",
     "karma": "0.12.31",
-    "karma-chrome-launcher": "0.1.8",
+    "karma-chrome-launcher": "0.1.10",
     "karma-cli": "0.0.4",
     "karma-coffee-preprocessor": "0.2.1",
-    "karma-firefox-launcher": "0.1.4",
+    "karma-firefox-launcher": "0.1.5",
     "karma-ie-launcher": "0.1.5",
     "karma-mocha": "0.1.10",
     "karma-mocha-reporter": "1.0.2",
     "karma-opera-launcher": "0.1.0",
     "karma-safari-launcher": "0.1.1",
     "mocha": "2.2.4",
-    "nobone": "1.5.1",
+    "nobone": "1.5.5",
     "requirejs": "2.1.17",
-    "uglify-js": "2.4.20"
+    "uglify-js": "2.4.21"
   }
 }
