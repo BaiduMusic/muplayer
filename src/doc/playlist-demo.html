@@ -41,6 +41,10 @@ var player = new _mu.Player({
     },
     $time = $('<span class="time"></span>');
 
+player.on('player:statechange', function(e) {
+    console.log(e.newState);
+});
+
 $pl.on('click', '> li', function() {
     var $this = $(this),
         sids;

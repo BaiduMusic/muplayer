@@ -840,6 +840,7 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     EngineCore.prototype.reset = function() {
       this.stop();
       this._url = '';
+      this._canPlayThrough = false;
       this.trigger(EVENTS.PROGRESS, 0);
       this.trigger(EVENTS.POSITIONCHANGE, 0);
       return this;
@@ -873,11 +874,11 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     };
 
     EngineCore.prototype.setState = function(st) {
-      var oldState, ref1;
+      var oldState;
       if (indexOf.call(availableStates, st) < 0 || st === this._state) {
         return;
       }
-      if ((st === STATES.PREBUFFER || st === STATES.BUFFERING) && ((ref1 = this._state) === STATES.PAUSE || ref1 === STATES.END || ref1 === STATES.STOP)) {
+      if (this._canPlayThrough && (st === STATES.PREBUFFER || st === STATES.BUFFERING)) {
         return;
       }
       oldState = this._state;
@@ -1242,10 +1243,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype._initEvents = function() {
-      var audio, canPlayThrough, errorTimer, progress, progressTimer, ref1, self, trigger;
+      var audio, errorTimer, progress, progressTimer, ref1, self, trigger;
       self = this;
       audio = this.audio, trigger = this.trigger;
-      ref1 = [null, null, false], errorTimer = ref1[0], progressTimer = ref1[1], canPlayThrough = ref1[2];
+      ref1 = [null, null], errorTimer = ref1[0], progressTimer = ref1[1];
       this.trigger = function(type, listener) {
         if (!self._isEmpty()) {
           return trigger.call(self, type, listener);
@@ -1256,12 +1257,11 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
         self.trigger(EVENTS.PROGRESS, per);
         if (per === 1) {
           clearInterval(progressTimer);
-          canPlayThrough = true;
+          self._canPlayThrough = true;
           return self.setState(STATES.CANPLAYTHROUGH);
         }
       };
       return audio.on('loadstart', function() {
-        canPlayThrough = false;
         clearInterval(progressTimer);
         progressTimer = setInterval(function() {
           return progress();
@@ -1286,7 +1286,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       }).on('progress', function(e) {
         var loaded, total;
         clearInterval(progressTimer);
-        if (!canPlayThrough) {
+        if (!self._canPlayThrough) {
           loaded = e.loaded || 0;
           total = e.total || 1;
           return progress(loaded && (loaded / total).toFixed(2) * 1);
@@ -2136,9 +2136,10 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       var bindEvents, errorHandle, oldEngine, positionHandle, progressHandle, self, statechangeHandle, unbindEvents;
       self = this;
       statechangeHandle = function(e) {
-        var newState, oldState;
+        var _lastE, newState, oldState;
+        _lastE = self._lastE;
         newState = e.newState, oldState = e.oldState;
-        if (oldState === self._lastE.oldState && newState === self._lastE.newState) {
+        if (oldState === _lastE.oldState && newState === _lastE.newState) {
           return;
         }
         self._lastE = {
@@ -2242,7 +2243,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       } else {
         throw new Error("Can not play with: " + ext);
       }
-      this.curEngine.setUrl(url);
+      this.curEngine.reset().setUrl(url);
       return this;
     };
 
