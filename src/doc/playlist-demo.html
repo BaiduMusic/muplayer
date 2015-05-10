@@ -11,6 +11,7 @@
         <ul id="playlist-demo">
             <li data-link="mp3/rain.mp3"><i class="play-btn"></i>雨声(mp3)</li>
             <li data-link="mp3/walking.mp3"><i class="play-btn"></i>脚步声(mp3)</li>
+            <li data-link="mp3/coins.mp4a"><i class="play-btn"></i>钢镚声(m4a)</li>
             <li data-link="mp3/xihu.mp3"><i class="play-btn"></i>西湖(mp3)</li>
         </ul>
         <pre class="line-numbers hotfix"><code class="language-javascript"></code></pre>
@@ -40,10 +41,6 @@ var player = new _mu.Player({
         return $pl.find('[data-link="' + link + '"]');
     },
     $time = $('<span class="time"></span>');
-
-player.on('player:statechange', function(e) {
-    console.log(e.newState);
-});
 
 $pl.on('click', '> li', function() {
     var $this = $(this),
