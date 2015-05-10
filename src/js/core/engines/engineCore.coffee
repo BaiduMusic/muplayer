@@ -18,6 +18,7 @@ do (root = @, factory = (cfg, utils, Events) ->
         reset: ->
             @stop()
             @_url = ''
+            @_canPlayThrough = false
             @trigger(EVENTS.PROGRESS, 0)
             @trigger(EVENTS.POSITIONCHANGE, 0)
             @
@@ -45,19 +46,17 @@ do (root = @, factory = (cfg, utils, Events) ->
             if st not in availableStates or st is @_state
                 return
 
-            if st in [
+            if @_canPlayThrough and st in [
                 STATES.PREBUFFER, STATES.BUFFERING
-            ] and @_state in [
-                STATES.PAUSE, STATES.END, STATES.STOP
             ]
                 return
 
             oldState = @_state
             @_state = st
-            @trigger(EVENTS.STATECHANGE,
+            @trigger(EVENTS.STATECHANGE, {
                 oldState: oldState
                 newState: st
-            )
+            })
 
         getState: ->
             @_state

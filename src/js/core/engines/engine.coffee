@@ -63,8 +63,9 @@ do (root = @, factory = (
             self = @
 
             statechangeHandle = (e) ->
+                { _lastE } = self
                 { newState, oldState } = e
-                if oldState is self._lastE.oldState and newState is self._lastE.newState
+                if oldState is _lastE.oldState and newState is _lastE.newState
                     return
                 self._lastE =
                     oldState: oldState
@@ -146,7 +147,7 @@ do (root = @, factory = (
             else
                 throw new Error("Can not play with: #{ext}")
 
-            @curEngine.setUrl(url)
+            @curEngine.reset().setUrl(url)
             @
 
         getUrl: ->

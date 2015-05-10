@@ -84,7 +84,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         _initEvents: ->
             self = @
             { audio, trigger } = @
-            [ errorTimer, progressTimer, canPlayThrough ]  = [ null, null, false ]
+            [ errorTimer, progressTimer ]  = [ null, null ]
 
             @trigger = (type, listener) ->
                 trigger.call(self, type, listener) unless self._isEmpty()
@@ -94,11 +94,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 self.trigger(EVENTS.PROGRESS, per)
                 if per is 1
                     clearInterval(progressTimer)
-                    canPlayThrough = true
+                    self._canPlayThrough = true
                     self.setState(STATES.CANPLAYTHROUGH)
 
             audio.on('loadstart', ->
-                canPlayThrough = false
                 # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
                 clearInterval(progressTimer)
@@ -124,7 +123,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                 self.trigger(EVENTS.POSITIONCHANGE, self.getCurrentPosition())
             ).on('progress', (e) ->
                 clearInterval(progressTimer)
-                unless canPlayThrough
+                unless self._canPlayThrough
                     # firefox 3.6 implements e.loaded/total (bytes)
                     loaded = e.loaded or 0
                     total = e.total or 1
