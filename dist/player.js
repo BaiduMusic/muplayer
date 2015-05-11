@@ -1248,9 +1248,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       audio = this.audio, trigger = this.trigger;
       ref1 = [null, null], errorTimer = ref1[0], progressTimer = ref1[1];
       this.trigger = function(type, listener) {
-        if (!self._isEmpty()) {
-          return trigger.call(self, type, listener);
+        if (self._isEmpty()) {
+          return self;
         }
+        return trigger.call(self, type, listener);
       };
       progress = function(per) {
         per = per || self.getLoadedPercent();
@@ -1375,6 +1376,13 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     AudioCore.prototype.setMute = function(mute) {
       this.audio.muted = mute;
       return AudioCore.__super__.setMute.call(this, mute);
+    };
+
+    AudioCore.prototype.setState = function(st) {
+      if (this._isEmpty()) {
+        return this;
+      }
+      return AudioCore.__super__.setState.call(this, st);
     };
 
     AudioCore.prototype.setCurrentPosition = function(ms) {
