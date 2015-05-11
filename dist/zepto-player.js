@@ -925,6 +925,9 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
 
     EngineCore.prototype.setState = function(st) {
       var oldState;
+      if (!this.getUrl()) {
+        st = STATES.END;
+      }
       if (indexOf.call(availableStates, st) < 0 || st === this._state) {
         return;
       }
