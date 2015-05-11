@@ -62,7 +62,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             ])
             @setState(STATES.STOP)._initEvents()
 
-            # 用于HACK Audio在IOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
+            # 用于HACK Audio在iOS上的限制, 参考: http://www.ibm.com/developerworks/library/wa-ioshtml5/
             if opts.needPlayEmpty
                 win.addEventListener('touchstart', @_playEmpty, false)
 
@@ -98,7 +98,7 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
                     self.setState(STATES.CANPLAYTHROUGH)
 
             audio.on('loadstart', ->
-                # 某些IOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
+                # 某些iOS浏览器及Chrome会因歌曲缓存导致progress不被触发，此时使用
                 # “万能的”计时器轮询计算加载进度
                 clearInterval(progressTimer)
                 progressTimer = setInterval( ->
