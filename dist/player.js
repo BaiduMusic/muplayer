@@ -2598,7 +2598,7 @@ var slice = [].slice;
         return def.resolve();
       };
       st = this.getState();
-      if ((st === STATES.STOP || st === STATES.END) || !this.getUrl()) {
+      if (st === STATES.STOP || st === STATES.END) {
         this.trigger('player:fetch:start');
         this.opts.fetch.call(this).done(function() {
           play();
