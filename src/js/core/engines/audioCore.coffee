@@ -87,7 +87,8 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             [ errorTimer, progressTimer ]  = [ null, null ]
 
             @trigger = (type, listener) ->
-                trigger.call(self, type, listener) unless self._isEmpty()
+                return self if self._isEmpty()
+                trigger.call(self, type, listener)
 
             progress = (per) ->
                 per = per or self.getLoadedPercent()
@@ -195,6 +196,10 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         setMute: (mute) ->
             @audio.muted = mute
             super(mute)
+
+        setState: (st) ->
+            return @ if @_isEmpty()
+            super(st)
 
         # audio没有loadedmetadata时, 会报INVALID_STATE_ERR。
         # 相关讨论可参考: https://github.com/johndyer/mediaelement/issues/243
