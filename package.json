@@ -29,7 +29,7 @@
     "karma-opera-launcher": "0.1.0",
     "karma-safari-launcher": "0.1.1",
     "mocha": "2.2.4",
-    "nobone": "1.5.5",
+    "nobone": "1.5.6",
     "requirejs": "2.1.17",
     "uglify-js": "2.4.21"
   }
