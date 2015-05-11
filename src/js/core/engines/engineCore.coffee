@@ -43,6 +43,8 @@ do (root = @, factory = (cfg, utils, Events) ->
             @_url
 
         setState: (st) ->
+            st = STATES.END unless @getUrl()
+
             if st not in availableStates or st is @_state
                 return
 
