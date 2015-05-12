@@ -2267,8 +2267,8 @@ var slice = [].slice;
       if (!url) {
         return this;
       }
-      this.engine.setUrl(url);
-      this.stop(false).trigger('player:setUrl', url);
+      this.stop(false).engine.setUrl(url);
+      this.trigger('player:setUrl', url);
       return this;
     };
 
