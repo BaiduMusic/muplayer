@@ -117,8 +117,8 @@ do (root = this, factory = (
             @_checkFrozen([
                 'play', 'pause', 'stop',
                 'next', 'prev', 'retry', 'replay',
-                'setVolume', 'setMute', 'setCurrentPosition',
-                '_startWaitingTimer'
+                'setVolume', 'setMute', 'setUrl',
+                'setCurrentPosition', '_startWaitingTimer'
             ])
 
             baseDir = opts.baseDir
