@@ -115,9 +115,10 @@ do (root = this, factory = (
             @waitingTimer = new Timer(100)
 
             @_checkFrozen([
-                'play', 'pause', 'stop', 'setCurrentPosition'
-                'setVolume', 'setMute', 'next', 'prev', 'retry'
-                '_startWaitingTimer'
+                'play', 'pause', 'stop',
+                'next', 'prev', 'retry', 'replay',
+                'setVolume', 'setMute', 'setUrl',
+                'setCurrentPosition', '_startWaitingTimer'
             ])
 
             baseDir = opts.baseDir
