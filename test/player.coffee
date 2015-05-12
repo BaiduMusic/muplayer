@@ -214,12 +214,9 @@ suite 'player', ->
             assert.equal 0, p.getSongsNum()
 
         test '重置后播放会被停止', ->
-            t = 0
             p.on 'playing', ->
-                assert.ok true
-                t++
-            p.on 'suspend', ->
-                assert.equal 1, t
-                assert.ok true
-                done()
+                p.on 'suspend', ->
+                    assert.ok true
+                    done()
+                .reset()
             p.setUrl(mp3).play()

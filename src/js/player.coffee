@@ -117,8 +117,8 @@ do (root = this, factory = (
             @_checkFrozen([
                 'play', 'pause', 'stop',
                 'next', 'prev', 'retry', 'replay',
-                'setVolume', 'setMute', 'setUrl',
-                'setCurrentPosition', '_startWaitingTimer'
+                'setVolume', 'setMute', 'setCurrentPosition',
+                '_startWaitingTimer'
             ])
 
             baseDir = opts.baseDir
@@ -396,8 +396,8 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @stop(false).engine.setUrl(url)
-            @trigger('player:setUrl', url)
+            @engine.setUrl(url)
+            @stop(false).trigger('player:setUrl', url)
             @
 
         ###*

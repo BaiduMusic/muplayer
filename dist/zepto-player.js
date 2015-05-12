@@ -1899,7 +1899,7 @@ var slice = [].slice;
       var baseDir, opts;
       this.opts = opts = $.extend({}, Player.defaults, options);
       this.waitingTimer = new Timer(100);
-      this._checkFrozen(['play', 'pause', 'stop', 'next', 'prev', 'retry', 'replay', 'setVolume', 'setMute', 'setUrl', 'setCurrentPosition', '_startWaitingTimer']);
+      this._checkFrozen(['play', 'pause', 'stop', 'next', 'prev', 'retry', 'replay', 'setVolume', 'setMute', 'setCurrentPosition', '_startWaitingTimer']);
       baseDir = opts.baseDir;
       if (baseDir === false) {
         baseDir = '';
@@ -2267,8 +2267,8 @@ var slice = [].slice;
       if (!url) {
         return this;
       }
-      this.stop(false).engine.setUrl(url);
-      this.trigger('player:setUrl', url);
+      this.engine.setUrl(url);
+      this.stop(false).trigger('player:setUrl', url);
       return this;
     };
 
