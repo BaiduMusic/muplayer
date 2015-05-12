@@ -396,8 +396,8 @@ do (root = this, factory = (
         ###
         setUrl: (url) ->
             return @ unless url
-            @engine.setUrl(url)
-            @stop(false).trigger('player:setUrl', url)
+            @stop(false).engine.setUrl(url)
+            @trigger('player:setUrl', url)
             @
 
         ###*
