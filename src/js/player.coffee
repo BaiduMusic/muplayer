@@ -36,7 +36,7 @@ do (root = this, factory = (
         instance = null
 
         @defaults:
-            baseDir: "#{cfg.cdn}#{cfg.version}"
+            baseDir: 'http://mu5.bdstatic.com/cms/muplayer/1-0-0/'
             mode: 'loop'
             mute: false
             volume: 80
@@ -121,17 +121,13 @@ do (root = this, factory = (
                 'setCurrentPosition', '_startWaitingTimer'
             ])
 
-            baseDir = opts.baseDir
-            if baseDir is false
-                baseDir = ''
-            else unless baseDir
-                throw new Error "baseDir must be set! Usually, it should point to the MuPlayer's dist directory."
-            if baseDir and not baseDir.endsWith('/')
+            { baseDir, singleton } = opts
+
+            unless baseDir.endsWith('/')
                 baseDir = baseDir + '/'
 
-            if opts.singleton
-                if instance
-                    return instance
+            if singleton
+                return instance if instance
                 instance = @
 
             @playlist = new Playlist(absoluteUrl: opts.absoluteUrl)

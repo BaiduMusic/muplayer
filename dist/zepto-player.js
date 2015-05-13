@@ -71,7 +71,6 @@
     namespace: root._mu,
     version: '1.0.0',
     timerResolution: 25,
-    cdn: 'http://apps.bdimg.com/libs/muplayer/',
     engine: {
       TYPES: {
         FLASH_MP3: 'FlashMP3Core',
@@ -1818,7 +1817,7 @@ var slice = [].slice;
     instance = null;
 
     Player.defaults = {
-      baseDir: "" + cfg.cdn + cfg.version,
+      baseDir: 'http://mu5.bdstatic.com/cms/muplayer/1-0-0/',
       mode: 'loop',
       mute: false,
       volume: 80,
@@ -1896,20 +1895,15 @@ var slice = [].slice;
      */
 
     function Player(options) {
-      var baseDir, opts;
+      var baseDir, opts, singleton;
       this.opts = opts = $.extend({}, Player.defaults, options);
       this.waitingTimer = new Timer(100);
       this._checkFrozen(['play', 'pause', 'stop', 'next', 'prev', 'retry', 'replay', 'setVolume', 'setMute', 'setUrl', 'setCurrentPosition', '_startWaitingTimer']);
-      baseDir = opts.baseDir;
-      if (baseDir === false) {
-        baseDir = '';
-      } else if (!baseDir) {
-        throw new Error("baseDir must be set! Usually, it should point to the MuPlayer's dist directory.");
-      }
-      if (baseDir && !baseDir.endsWith('/')) {
+      baseDir = opts.baseDir, singleton = opts.singleton;
+      if (!baseDir.endsWith('/')) {
         baseDir = baseDir + '/';
       }
-      if (opts.singleton) {
+      if (singleton) {
         if (instance) {
           return instance;
         }
