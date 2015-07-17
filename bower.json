@@ -4,6 +4,7 @@
   "authors": [
     "https://github.com/Baidu-Music-FE"
   ],
+  "main": "dist/player.min.js",
   "license": "BSD",
   "ignore": [
     "**/.*",
