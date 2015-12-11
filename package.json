@@ -8,7 +8,7 @@
   },
   "scripts": {
     "no": "no",
-    "install": "no setup",
+    "start": "no setup",
     "test": "no --cli test"
   },
   "license": "BSD",
