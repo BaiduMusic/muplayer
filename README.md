@@ -45,6 +45,7 @@ cd muplayer
 ## 修订文档
 
  1. 编译文档
+ 编译文档需先安装 compass 依赖，参见：http://compass-style.org/install/ ，之后运行：
   ```
   npm run no -- doc
   ```
