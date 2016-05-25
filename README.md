@@ -1,5 +1,5 @@
 ## 项目已经不再维护
-非常抱歉，我（@hustKiwi）是 `MuPlayer` 的主要开发者，但已在2015年6月时离开百度音乐了。这个项目后续负责的经理好像不太希望持续维护开源的版本，因此github上的这个项目实际已经处于无人接手的停滞状态。作为替代，可以评估使用 [SoundManager2](https://github.com/scottschiller/SoundManager2/)
+非常抱歉，我（@hustKiwi）是 `MuPlayer` 的主要开发者，但已在2015年6月时离开百度音乐了。这个项目后续负责的经理好像不太希望持续维护开源的版本，因此 github 上的这个项目实际已经处于无人接手的停滞状态。作为替代，可以评估使用 [SoundManager2](https://github.com/scottschiller/SoundManager2/) 或 [howler.js](https://github.com/goldfire/howler.js/)
 
 ## 概述
 **MuPlayer** 是百度 [@音乐前端](http://weibo.com/musicfe) 团队开发维护的浏览端音频播放内核，它基于 HTML5 Audio 及 Flash 音频技术，实现了*多端通用（PC & WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件*的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。
