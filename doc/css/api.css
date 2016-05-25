@@ -86,7 +86,7 @@ ul, ul li, ol, ol li {
 #header .navbar-nav a {
   height: 50px;
   line-height: 50px;
-  color: #d6eff6;
+  color: #d6eff7;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -94,16 +94,16 @@ ul, ul li, ol, ol li {
   background: transparent;
 }
 #header .navbar-nav a:visited {
-  color: #d6eff6;
+  color: #d6eff7;
 }
 #header .navbar-nav a:focus {
-  color: #d6eff6;
+  color: #d6eff7;
 }
 #header .navbar-nav a:hover {
-  color: #d6eff6;
+  color: #d6eff7;
 }
 #header .navbar-nav a:active {
-  color: #d6eff6;
+  color: #d6eff7;
 }
 #header .navbar-nav a:hover {
   height: 51px;
@@ -265,7 +265,7 @@ pre.language-javascript.hotfix code {
   -webkit-border-radius: 5px;
   border-radius: 5px;
   text-shadow: 0 1px 0 #fff;
-  background-color: #eef8fb;
+  background-color: #eff9fc;
   display: none;
   padding: 10px 0;
 }

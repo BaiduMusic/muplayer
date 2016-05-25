@@ -147,7 +147,8 @@ class NofileBuilder
             ]
         .then ->
             clean()
-        .catch ->
+        .catch (err) ->
+            kit.err(err)
             clean()
 
     _server_run: (port) ->

@@ -1,3 +1,4 @@
+# nofile-pre-require: coffee-script/register
 nobone = require 'nobone'
 
 { kit } = nobone
