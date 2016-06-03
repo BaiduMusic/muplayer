@@ -142,7 +142,14 @@ class Builder
                         log '>> r.js for WebApp'.cyan
                         log buildResponse
 
-                        glob join(require_temp_path, 'js', 'lib', 'zepto', '**', '*.js')
+                        zepto_path = join(require_temp_path, 'js', 'lib', 'zepto')
+
+                        Promise.resolve [
+                            join(zepto_path, 'mock.js')
+                            join(zepto_path, 'callbacks.js')
+                            join(zepto_path, 'deferred.js')
+                            join(zepto_path, 'jqueryCompatible.js')
+                        ]
                         .then (file_list) ->
                             mod = opts_webapp.modules[0]
                             file = join require_temp_path, (mod.name.replace(/^muplayer/, 'js') + '.js')

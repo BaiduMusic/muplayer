@@ -2089,8 +2089,6 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
   ref = cfg.engine, EVENTS = ref.EVENTS, STATES = ref.STATES;
   timerResolution = cfg.timerResolution;
   Engine = (function() {
-    Engine.el = '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; background: transparent; position: absolute; left: 0; top: 0;"></div>';
-
     Engine.prototype.defaults = {
       engines: [
                                 {
@@ -2111,10 +2109,9 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     }
 
     Engine.prototype._initEngines = function() {
-      var $el, args, engine, i, j, len, opts, ref1, type;
+      var args, engine, i, j, len, opts, ref1, type;
       this.engines = [];
       opts = this.opts;
-      this.$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body');
       this._lastE = {};
       ref1 = opts.engines;
       for (i = j = 0, len = ref1.length; j < len; i = ++j) {
@@ -2122,7 +2119,6 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
         type = engine.type, args = engine.args;
         args = args || {};
         args.baseDir = opts.baseDir;
-        args.$el = $el;
         try {
           if (!$.isFunction(type)) {
             type = eval(type);
@@ -2235,7 +2231,6 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
         engine.destroy();
       }
       this.engines.length = 0;
-      this.$el.off().remove();
       delete this.curEngine;
       return this;
     };

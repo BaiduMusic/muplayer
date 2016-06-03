@@ -7,7 +7,7 @@ do (root = @, factory = (
     class Engine
         # 隐藏容器, 用于容纳swf和audio等标签
         # 参考: http://stackoverflow.com/questions/1168222/hiding-showing-a-swf-in-a-div
-        @el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; background: transparent; position: absolute; left: 0; top: 0;"></div>'
+        # @el: '<div id="muplayer_container_{{DATETIME}}" style="width: 1px; height: 1px; background: transparent; position: absolute; left: 0; top: 0;"></div>'
 
         defaults:
             engines: `[
@@ -31,7 +31,7 @@ do (root = @, factory = (
         _initEngines: ->
             @engines = []
             opts = @opts
-            @$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
+            # @$el = $el = $(Engine.el.replace(/{{DATETIME}}/g, +new Date())).appendTo('body')
 
             # HACK: 怀疑aralejs事件库有潜在bug, 内核切换时（比如从FlashMP4Core切到FlashMP3Core），
             # statechangeHandle有可能派发连续的重复事件，导致STATES.END被重复触发引发跳歌。
@@ -42,7 +42,7 @@ do (root = @, factory = (
                 { type, args } = engine
                 args = args or {}
                 args.baseDir = opts.baseDir
-                args.$el = $el
+                # args.$el = $el
 
                 try
                     type = eval(type) unless $.isFunction(type)
@@ -134,7 +134,7 @@ do (root = @, factory = (
             for engine in @engines
                 engine.destroy()
             @engines.length = 0
-            @$el.off().remove()
+            # @$el.off().remove()
             delete @curEngine
             @
 
