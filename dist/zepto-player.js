@@ -3,6 +3,85 @@
 // -------------------------
 // (c) 2014 FE Team of Baidu Music
 // Can be freely distributed under the BSD license.
+;(function(window) {
+  window.$ = window.Zepto = Window.jQuery = {}
+
+  var emptyArray = [],
+    slice = emptyArray.slice,
+    class2type = {},
+    toString = class2type.toString,
+    isArray = Array.isArray ||
+      function(object){ return object instanceof Array }
+
+
+  function type(obj) {
+    return obj == null ? String(obj) :
+      class2type[toString.call(obj)] || "object"
+  }
+
+  function isFunction(value) { return type(value) == "function" }
+  function isWindow(obj)     { return obj != null && obj == obj.window }
+  function isDocument(obj)   { return obj != null && obj.nodeType == obj.DOCUMENT_NODE }
+  function isObject(obj)     { return type(obj) == "object" }
+  function isPlainObject(obj) {
+    return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
+  }
+  function likeArray(obj) { return typeof obj.length == 'number' }
+
+  function extend(target, source, deep) {
+    for (key in source)
+      if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
+        if (isPlainObject(source[key]) && !isPlainObject(target[key]))
+          target[key] = {}
+        if (isArray(source[key]) && !isArray(target[key]))
+          target[key] = []
+        extend(target[key], source[key], deep)
+      }
+      else if (source[key] !== undefined) target[key] = source[key]
+  }
+
+
+  $.type = type
+  $.isFunction = isFunction
+  $.isWindow = isWindow
+  $.isArray = isArray
+  $.isPlainObject = isPlainObject
+
+  $.isEmptyObject = function(obj) {
+    var name
+    for (name in obj) return false
+    return true
+  }
+
+  $.inArray = function(elem, array, i){
+    return emptyArray.indexOf.call(array, elem, i)
+  }
+
+  $.extend = function(target){
+    var deep, args = slice.call(arguments, 1)
+    if (typeof target == 'boolean') {
+      deep = target
+      target = args.shift()
+    }
+    args.forEach(function(arg){ extend(target, arg, deep) })
+    return target
+  }
+
+  $.each = function(elements, callback){
+    var i, key
+    if (likeArray(elements)) {
+      for (i = 0; i < elements.length; i++)
+        if (callback.call(elements[i], i, elements[i]) === false) return elements
+    } else {
+      for (key in elements)
+        if (callback.call(elements[key], key, elements[key]) === false) return elements
+    }
+
+    return elements
+  }
+
+})(window)
+
 //     Zepto.js
 //     (c) 2010-2014 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -125,85 +204,8 @@
     return Callbacks
   }
 })(Zepto)
-;;(function(window) {
-  window.$ = window.Zepto = Window.jQuery = {}
 
-  var emptyArray = [],
-    slice = emptyArray.slice,
-    class2type = {},
-    toString = class2type.toString,
-    isArray = Array.isArray ||
-      function(object){ return object instanceof Array }
-
-
-  function type(obj) {
-    return obj == null ? String(obj) :
-      class2type[toString.call(obj)] || "object"
-  }
-
-  function isFunction(value) { return type(value) == "function" }
-  function isWindow(obj)     { return obj != null && obj == obj.window }
-  function isDocument(obj)   { return obj != null && obj.nodeType == obj.DOCUMENT_NODE }
-  function isObject(obj)     { return type(obj) == "object" }
-  function isPlainObject(obj) {
-    return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
-  }
-  function likeArray(obj) { return typeof obj.length == 'number' }
-
-  function extend(target, source, deep) {
-    for (key in source)
-      if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
-        if (isPlainObject(source[key]) && !isPlainObject(target[key]))
-          target[key] = {}
-        if (isArray(source[key]) && !isArray(target[key]))
-          target[key] = []
-        extend(target[key], source[key], deep)
-      }
-      else if (source[key] !== undefined) target[key] = source[key]
-  }
-
-
-  $.type = type
-  $.isFunction = isFunction
-  $.isWindow = isWindow
-  $.isArray = isArray
-  $.isPlainObject = isPlainObject
-
-  $.isEmptyObject = function(obj) {
-    var name
-    for (name in obj) return false
-    return true
-  }
-
-  $.inArray = function(elem, array, i){
-    return emptyArray.indexOf.call(array, elem, i)
-  }
-
-  $.extend = function(target){
-    var deep, args = slice.call(arguments, 1)
-    if (typeof target == 'boolean') {
-      deep = target
-      target = args.shift()
-    }
-    args.forEach(function(arg){ extend(target, arg, deep) })
-    return target
-  }
-
-  $.each = function(elements, callback){
-    var i, key
-    if (likeArray(elements)) {
-      for (i = 0; i < elements.length; i++)
-        if (callback.call(elements[i], i, elements[i]) === false) return elements
-    } else {
-      for (key in elements)
-        if (callback.call(elements[key], key, elements[key]) === false) return elements
-    }
-
-    return elements
-  }
-
-})(window)
-;//     Zepto.js
+//     Zepto.js
 //     (c) 2010-2014 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
 //
@@ -321,7 +323,8 @@
 
   $.Deferred = Deferred
 })(Zepto)
-;;(function($) {
+
+;(function($) {
     var ObjProto = Object.prototype,
         toString = ObjProto.toString;
 
@@ -371,7 +374,8 @@
         h.insertBefore(s, h.firstChild);
     }
 })(Zepto);
-;(function(root, factory) {
+
+(function(root, factory) {
   if (typeof root._mu === 'undefined') {
     root._mu = {};
   }
@@ -1689,11 +1693,11 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
             }
           } else {
             t = setTimeout(function() {
-              var e;
+              var e, error;
               try {
                 return fn.apply(self, args);
-              } catch (_error) {
-                e = _error;
+              } catch (error) {
+                e = error;
                 return typeof console !== "undefined" && console !== null ? typeof console.error === "function" ? console.error('error: ', e) : void 0 : void 0;
               }
             }, 1000);
@@ -1721,9 +1725,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype.stop = function() {
+      var error;
       try {
         return this.audio.currentTime = 0;
-      } catch (_error) {
+      } catch (error) {
 
       } finally {
         this.audio.pause();
@@ -1756,9 +1761,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype.setCurrentPosition = function(ms) {
+      var error;
       try {
         this.audio.currentTime = ms / 1000;
-      } catch (_error) {
+      } catch (error) {
         return;
       } finally {
         this.play();
@@ -1849,7 +1855,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     }
 
     Engine.prototype._initEngines = function() {
-      var args, engine, i, j, len, opts, ref1, type;
+      var args, engine, error, i, j, len, opts, ref1, type;
       this.engines = [];
       opts = this.opts;
       this._lastE = {};
@@ -1864,7 +1870,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
             type = eval(type);
           }
           engine = new type(args);
-        } catch (_error) {
+        } catch (error) {
           throw new Error("Missing engine type: " + (String(engine.type)));
         }
         if (engine._test && engine._test()) {

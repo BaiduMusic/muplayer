@@ -1,12 +1,10 @@
 nobone = require 'nobone'
+kit = require 'nokit'
 
 {
-    kit,
-    kit: {
-        _, log, copy, remove, spawn, symlink, Promise,
-        path: { join }
-    }
-} = nobone
+    _, log, copy, remove, spawn, symlink, Promise,
+    path: { join }
+} = kit
 
 class NofileBuilder
     constructor: (options) ->

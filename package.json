@@ -1,6 +1,6 @@
 {
   "name": "muplayer-mobile",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": "https://github.com/Baidu-Music-FE",
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "karma-safari-launcher": "1.0.0",
     "mocha": "2.5.3",
     "nobone": "1.7.0",
+    "nokit": "^0.20.12",
     "requirejs": "2.2.0",
     "uglify-js": "2.6.2"
   }

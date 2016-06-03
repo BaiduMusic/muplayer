@@ -1,6 +1,6 @@
-utils = require './utils'
+kit = require 'nokit'
 
-{ kit } = require 'nobone'
+br = kit.require 'brush'
 
 {
     _, log, copy, glob, spawn, remove, Promise,
@@ -37,7 +37,7 @@ class Builder
     copy_to_dist: (from, to) =>
         to = join @dist_path, to
         copy(from, to).then ->
-            log '>> Copy: '.cyan + from + ' -> '.green + to
+            log br.cyan('>> Copy: ') + from + br.green(' -> ') + to
 
     update_build_dir: ->
         self = @
@@ -57,11 +57,11 @@ class Builder
                     /\.(swf|cache)$/.test(path)
                 ).map (path) ->
                     remove (path)
-                    log '>> Clean: '.cyan + path
+                    log br.cyan('>> Clean: ') + path
             )
         .then ->
             copy(from_js, to_js).then ->
-                log '>> Copy: '.cyan + from_js + ' -> '.green + build_temp_path
+                log br.cyan('>> Copy: ') + from_js + br.green(' -> ') + build_temp_path
         .then ->
             Promise.all([
                 copy_to_dist join(lib_path, 'expressInstall.swf'), 'expressInstall.swf'
@@ -78,7 +78,7 @@ class Builder
         .run build_temp_path
 
     combine_js: (options = {}) ->
-        log '>> Compile client js with requirejs ...'.cyan
+        log br.cyan('>> Compile client js with requirejs ...')
 
         {
             dist_path, copy_to_dist,
@@ -117,7 +117,7 @@ class Builder
         new Promise (resolve) ->
             # PC
             requirejs.optimize opts_pc, (buildResponse) ->
-                log '>> r.js for PC'.cyan
+                log br.cyan('>> r.js for PC')
                 log buildResponse
 
                 Promise.all(
@@ -139,7 +139,7 @@ class Builder
 
                     # Webapp
                     requirejs.optimize opts_webapp, (buildResponse) ->
-                        log '>> r.js for WebApp'.cyan
+                        log br.cyan('>> r.js for WebApp')
                         log buildResponse
 
                         zepto_path = join(require_temp_path, 'js', 'lib', 'zepto')
@@ -154,11 +154,16 @@ class Builder
                             mod = opts_webapp.modules[0]
                             file = join require_temp_path, (mod.name.replace(/^muplayer/, 'js') + '.js')
                             fname = 'zepto-' + file.split('/').slice(-1)[0]
+                            # utils.concat_files(file_list, join(dist_path, fname), ';')
                             file_list.push(file)
-                            utils.concat_files(file_list, join(dist_path, fname), ';')
+                            kit.warp(file_list).load(
+                              kit.drives.concat join(dist_path, fname)
+                            ).run()
                         .then ->
-                            log '>> Compile client js done.'.cyan
+                            log br.cyan('>> Compile client js done.')
                             resolve()
+                        .catch (err) ->
+                            log err
 
     compress_js: (files = []) ->
         { dist_path } = @
@@ -179,7 +184,7 @@ class Builder
             files.map (path) ->
                 compress join(dist_path, path)
         ).then ->
-            log '>> Compress js done.'.cyan
+            log br.cyan('>> Compress js done.')
 
     add_license: (match = '*.js') ->
         { dist_path } = @
@@ -196,7 +201,7 @@ class Builder
         .then (paths) ->
             Promise.all _.map(paths, (path) ->
                 kit.readFile(path, 'utf8').then (str) ->
-                    log '>> License info added: '.cyan + path
+                    log br.cyan('>> License info added: ') + path
                     kit.outputFile path, info + str
             )
 
@@ -227,11 +232,11 @@ class Builder
             compile 'MP3Core', 'muplayer_mp3'
             compile 'MP4Core', 'muplayer_mp4'
         ]).then ->
-            log '>> Build AS done.'.cyan
+            log br.cyan('>> Build AS done.')
 
     clean: ->
         { build_temp_path, require_temp_path } = @
-        log '>> Clean temp folders...'.cyan
+        log br.cyan('>> Clean temp folders...')
         Promise.all [
             remove build_temp_path
             remove require_temp_path

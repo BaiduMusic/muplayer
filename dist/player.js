@@ -1321,11 +1321,11 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
             }
           } else {
             t = setTimeout(function() {
-              var e;
+              var e, error;
               try {
                 return fn.apply(self, args);
-              } catch (_error) {
-                e = _error;
+              } catch (error) {
+                e = error;
                 return typeof console !== "undefined" && console !== null ? typeof console.error === "function" ? console.error('error: ', e) : void 0 : void 0;
               }
             }, 1000);
@@ -1353,9 +1353,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype.stop = function() {
+      var error;
       try {
         return this.audio.currentTime = 0;
-      } catch (_error) {
+      } catch (error) {
 
       } finally {
         this.audio.pause();
@@ -1388,9 +1389,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     AudioCore.prototype.setCurrentPosition = function(ms) {
+      var error;
       try {
         this.audio.currentTime = ms / 1000;
-      } catch (_error) {
+      } catch (error) {
         return;
       } finally {
         this.play();
@@ -1842,11 +1844,11 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
         name = fnames[i];
         results.push(this[name] = utils.wrap(this[name], (function(_this) {
           return function() {
-            var args, fn;
+            var args, error, fn;
             fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
             try {
               return fn.apply(_this, args);
-            } catch (_error) {
+            } catch (error) {
               return 0;
             }
           };
@@ -1887,12 +1889,12 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     };
 
     FlashCore.prototype.play = function() {
-      var err;
+      var err, error;
       if (this.getUrl()) {
         try {
           this.flash.f_play();
-        } catch (_error) {
-          err = _error;
+        } catch (error) {
+          err = error;
           this.trigger(EVENTS.ERROR, err);
         }
       }
@@ -2109,7 +2111,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
     }
 
     Engine.prototype._initEngines = function() {
-      var args, engine, i, j, len, opts, ref1, type;
+      var args, engine, error, i, j, len, opts, ref1, type;
       this.engines = [];
       opts = this.opts;
       this._lastE = {};
@@ -2124,7 +2126,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
             type = eval(type);
           }
           engine = new type(args);
-        } catch (_error) {
+        } catch (error) {
           throw new Error("Missing engine type: " + (String(engine.type)));
         }
         if (engine._test && engine._test()) {

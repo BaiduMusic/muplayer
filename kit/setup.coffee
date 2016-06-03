@@ -1,4 +1,4 @@
-{ kit } = require 'nobone'
+kit = require 'nokit'
 
 { _, spawn, log, path: { join } } = kit
 

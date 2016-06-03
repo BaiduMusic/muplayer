@@ -1,9 +1,4 @@
 # nofile-pre-require: coffee-script/register
-nobone = require 'nobone'
-
-{ kit } = nobone
-
-kit.require 'colors'
 
 module.exports = (task, option) ->
     nofile_builder = new (require './kit/nofile_builder')(dirname: __dirname)
