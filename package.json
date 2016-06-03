@@ -1,5 +1,5 @@
 {
-  "name": "muplayer-official",
+  "name": "muplayer-mobile",
   "version": "1.0.0",
   "authors": "https://github.com/Baidu-Music-FE",
   "repository": {
@@ -11,6 +11,7 @@
     "start": "no setup",
     "test": "no --cli test"
   },
+  "main": "dist/zepto-player.js",
   "license": "BSD",
   "devDependencies": {
     "bower": "1.7.9",
