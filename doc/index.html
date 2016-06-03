@@ -38,7 +38,7 @@
     </section>
     <section class="container bs-docs-container">
       <section id="Main"><h2 id="-">项目已经不再维护</h2>
-<p>非常抱歉，我（@hustKiwi）是 <code>MuPlayer</code> 的主要开发者，但已在2015年6月时离开百度音乐了。这个项目后续负责的经理好像不太希望持续维护开源的版本，因此github上的这个项目实际已经处于无人接手的停滞状态。作为替代，可以评估使用 <a href="https://github.com/scottschiller/SoundManager2/">SoundManager2</a></p>
+<p>非常抱歉，我（@hustKiwi）是 <code>MuPlayer</code> 的主要开发者，但已在2015年6月时离开百度音乐了。这个项目后续负责的经理好像不太希望持续维护开源的版本，因此 github 上的这个项目实际已经处于无人接手的停滞状态。作为替代，可以评估使用 <a href="https://github.com/scottschiller/SoundManager2/">SoundManager2</a> 或 <a href="https://github.com/goldfire/howler.js/">howler.js</a></p>
 <h2 id="-">概述</h2>
 <p><strong>MuPlayer</strong> 是百度 <a href="http://weibo.com/musicfe">@音乐前端</a> 团队开发维护的浏览端音频播放内核，它基于 HTML5 Audio 及 Flash 音频技术，实现了<em>多端通用（PC &amp; WebApp）、浏览器兼容（ie6+、firefox、chrome、safari etc）及可扩展的多音频格式解码插件</em>的音频文件播放功能，并在百度音乐多个线上产品线中应用，具备相当的灵活性和稳定性。</p>
 <h2 id="-">安装</h2>
@@ -66,7 +66,10 @@ cd muplayer</code></pre>
 </ol>
 <h2 id="-">修订文档</h2>
 <ol>
-<li><p>编译文档</p>
+<li><p>安装文档静态文件依赖</p>
+<pre><code>bower install</code></pre>
+</li>
+<li><p>编译文档<br>编译文档需先安装 compass 依赖，参见：<a href="http://compass-style.org/install/">http://compass-style.org/install/</a> ，之后运行：</p>
 <pre><code>npm run no -- doc</code></pre>
 </li>
 <li><p>预览文档需要启动本地服务器，启动后访问 <a href="http://127.0.0.1:8077">http://127.0.0.1:8077</a></p>
