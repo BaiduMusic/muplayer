@@ -11,13 +11,12 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
             preload: false
             autoplay: false
             needPlayEmpty: true
-            emptyMP3: 'empty.mp3'
         _supportedTypes: []
+        _emptyAudio: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
         engineType: TYPES.AUDIO
 
         constructor: (options) ->
             @opts = $.extend({}, AudioCore.defaults, options)
-            @opts.emptyMP3 = @opts.baseDir + @opts.emptyMP3
             opts = @opts
 
             levels =
@@ -74,11 +73,11 @@ do (root = @, factory = (cfg, utils, EngineCore, Modernizr) ->
         _playEmpty: =>
             # 当前没有set过url时才set一个空音频，以免影响到成功自动播放的后续交互
             unless @getUrl()
-                @setUrl(@opts.emptyMP3).play()
+                @setUrl(@_emptyAudio).play()
             win.removeEventListener('touchstart', @_playEmpty, false)
 
         _isEmpty: ->
-            @getUrl() is @opts.emptyMP3
+            @getUrl() is @_emptyAudio
 
         # 事件类型参考: http://www.w3schools.com/tags/ref_eventattributes.asp
         _initEvents: ->

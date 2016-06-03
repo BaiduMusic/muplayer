@@ -1530,11 +1530,12 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       confidence: 'maybe',
       preload: false,
       autoplay: false,
-      needPlayEmpty: true,
-      emptyMP3: 'empty.mp3'
+      needPlayEmpty: true
     };
 
     AudioCore.prototype._supportedTypes = [];
+
+    AudioCore.prototype._emptyAudio = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 
     AudioCore.prototype.engineType = TYPES.AUDIO;
 
@@ -1542,7 +1543,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       this._playEmpty = bind(this._playEmpty, this);
       var _eventHandlers, audio, k, least, levels, opts, v;
       this.opts = $.extend({}, AudioCore.defaults, options);
-      this.opts.emptyMP3 = this.opts.baseDir + this.opts.emptyMP3;
       opts = this.opts;
       levels = {
         '': 0,
@@ -1607,13 +1607,13 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 
     AudioCore.prototype._playEmpty = function() {
       if (!this.getUrl()) {
-        this.setUrl(this.opts.emptyMP3).play();
+        this.setUrl(this._emptyAudio).play();
       }
       return win.removeEventListener('touchstart', this._playEmpty, false);
     };
 
     AudioCore.prototype._isEmpty = function() {
-      return this.getUrl() === this.opts.emptyMP3;
+      return this.getUrl() === this._emptyAudio;
     };
 
     AudioCore.prototype._initEvents = function() {
