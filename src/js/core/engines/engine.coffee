@@ -141,11 +141,12 @@ do (root = @, factory = (
         setUrl: (url) ->
             return @ unless url
 
-            ext = utils.getExt(url)
-            if @canPlayType(ext)
-                @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
-            else
-                throw new Error("Can not play with: #{ext}")
+            if @opts.checkCanPlay
+                ext = utils.getExt(url)
+                if @canPlayType(ext)
+                    @switchEngineByType(ext) unless @curEngine.canPlayType(ext)
+                else
+                    throw new Error("Can not play with: #{ext}")
 
             @curEngine.reset().setUrl(url)
             @

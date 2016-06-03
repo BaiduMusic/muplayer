@@ -42,6 +42,7 @@ do (root = this, factory = (
             volume: 80
             singleton: true
             absoluteUrl: true
+            checkCanPlay: true
             maxRetryTimes: 1
             maxWaitingTime: 4
             recoverMethod: 'retry'
@@ -135,6 +136,7 @@ do (root = this, factory = (
             @_initEngine(new Engine(
                 baseDir: baseDir
                 engines: opts.engines
+                checkCanPlay: opts.checkCanPlay
             ))
             @setMute(opts.mute)
             @setVolume(opts.volume)

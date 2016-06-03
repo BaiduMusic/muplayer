@@ -2242,13 +2242,15 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
       if (!url) {
         return this;
       }
-      ext = utils.getExt(url);
-      if (this.canPlayType(ext)) {
-        if (!this.curEngine.canPlayType(ext)) {
-          this.switchEngineByType(ext);
+      if (this.opts.checkCanPlay) {
+        ext = utils.getExt(url);
+        if (this.canPlayType(ext)) {
+          if (!this.curEngine.canPlayType(ext)) {
+            this.switchEngineByType(ext);
+          }
+        } else {
+          throw new Error("Can not play with: " + ext);
         }
-      } else {
-        throw new Error("Can not play with: " + ext);
       }
       this.curEngine.reset().setUrl(url);
       return this;
@@ -2398,6 +2400,7 @@ var slice = [].slice;
       volume: 80,
       singleton: true,
       absoluteUrl: true,
+      checkCanPlay: true,
       maxRetryTimes: 1,
       maxWaitingTime: 4,
       recoverMethod: 'retry',
@@ -2490,7 +2493,8 @@ var slice = [].slice;
       this.playlist.setMode(opts.mode);
       this._initEngine(new Engine({
         baseDir: baseDir,
-        engines: opts.engines
+        engines: opts.engines,
+        checkCanPlay: opts.checkCanPlay
       }));
       this.setMute(opts.mute);
       this.setVolume(opts.volume);
