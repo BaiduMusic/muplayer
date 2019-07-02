@@ -17,8 +17,8 @@ bower install muplayer
 
 
 ## 文档
-### 参见：[MuPlayer API](http://labs.music.baidu.com/demo/muplayer/doc/api.html)
-### 示例：[Demo](http://labs.music.baidu.com/demo/muplayer/doc/demo.html)
+### 参见：[MuPlayer API](http://886.enimo.cn/muplayer/doc/api.html)
+### 示例：[Demo](http://886.enimo.cn/muplayer/doc/demo.html)
 ### [常用事件说明](https://github.com/Baidu-Music-FE/muplayer/wiki/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E8%AF%B4%E6%98%8E)
 
 
